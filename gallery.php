@@ -26,6 +26,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION
      ========================================================================== -->
 <section class="gallery-hero" id="gallery-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="gallery-hero-badge">Spiritual Sanctuary</span>
         <h1 class="gallery-hero-title">Our <em>Gallery</em></h1>

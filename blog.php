@@ -43,6 +43,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION
      ========================================================================== -->
 <section class="blog-hero" id="blog-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="blog-hero-badge">Spiritual Knowledge</span>
         <h1 class="blog-hero-title">Healing <em>Insights</em></h1>

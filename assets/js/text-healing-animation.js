@@ -4,9 +4,15 @@
  * 100% in the background layer (z-index: 1) behind all hero section text (z-index: 2).
  */
 document.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('hero-bg-canvas');
-  if (!canvas) return;
+  const canvases = document.querySelectorAll('.hero-bg-canvas, #hero-bg-canvas');
+  if (!canvases || canvases.length === 0) return;
 
+  canvases.forEach(canvas => {
+    initSingleHeroCanvas(canvas);
+  });
+});
+
+function initSingleHeroCanvas(canvas) {
   const ctx = canvas.getContext('2d');
   let animationFrameId = null;
   let width = 0;
@@ -191,4 +197,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   init();
   animate();
-});
+}

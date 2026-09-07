@@ -34,6 +34,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION
      ========================================================================== -->
 <section class="order-hero" id="order-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="order-hero-badge"><?php echo $heroBadge; ?></span>
         <h1 class="order-hero-title"><?php echo $heroTitle; ?></h1>

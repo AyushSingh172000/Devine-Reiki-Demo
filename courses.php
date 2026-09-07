@@ -26,6 +26,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION
      ========================================================================== -->
 <section class="courses-hero" id="courses-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="courses-hero-badge">Certified Energy Training</span>
         <h1 class="courses-hero-title">Certification <em>Courses</em></h1>

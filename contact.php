@@ -28,6 +28,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION (FREE CONSULTATION CTA)
      ========================================================================== -->
 <section class="contact-hero" id="consultation-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="contact-hero-badge">Free Online Consultation</span>
         <h1 class="contact-hero-title">30 Minutes with <em>Anupama Agrawal</em></h1>

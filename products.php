@@ -67,6 +67,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION
      ========================================================================== -->
 <section class="products-hero" id="shop-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="products-hero-badge">Reiki Charged Crystals</span>
         <h1 class="products-hero-title">Crystal <em>Shop</em></h1>

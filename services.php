@@ -30,6 +30,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION & FILTER TABS
      ========================================================================== -->
 <section class="services-hero" id="services-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="services-hero-badge">What We Offer</span>
         <h1 class="services-hero-title">Holistic Healing Services</h1>

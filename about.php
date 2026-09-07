@@ -72,6 +72,7 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION & SCROLLING MARQUEE
      ========================================================================== -->
 <section class="about-hero" id="about-hero">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
         <span class="about-hero-badge">Est. 2014 · Adajan, Surat</span>
         <h1 class="about-hero-title">
