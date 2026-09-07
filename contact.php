@@ -126,13 +126,14 @@ include __DIR__ . '/includes/header.php';
      3. CONTACT FORM SECTION (#contact-form-section)
      ========================================================================== -->
 <section class="contact-form-section" id="contact-form-section">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container">
         
         <div class="contact-form-card animate-on-scroll" id="book-form">
             <div class="form-title-box">
-                <span class="badge" style="margin-bottom: 10px;">Direct Message</span>
-                <h2 class="section-heading" style="font-size: 2.4rem; margin-bottom: 10px;">Send Us a <em>Message</em></h2>
-                <p style="color: var(--muted-gray); font-size: 0.98rem;">Fill out the form below and Reiki Grandmaster Anupama Agrawal will reach out to you within 24 hours.</p>
+                <span class="badge" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Direct Message</span>
+                <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #ffffff;">Send Us a <em>Message</em></h2>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Fill out the form below and Reiki Grandmaster Anupama Agrawal will reach out to you within 24 hours.</p>
             </div>
 
             <!-- AJAX Response Alert Box -->

@@ -56,16 +56,17 @@ include __DIR__ . '/includes/header.php';
      2. ORDER FORM SECTION
      ========================================================================== -->
 <section class="order-form-section" id="order-form-section">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container">
         
         <!-- Success Confirmation Container -->
         <div id="order-success-box" class="order-success-box">
             <div class="success-icon-circle">✓</div>
-            <h2 class="section-heading" style="font-size: 2.2rem; margin-bottom: 12px;">Order Inquiry Received!</h2>
-            <p class="success-msg-text" style="font-size: 1.05rem; color: #2e7d32; max-width: 600px; margin: 0 auto 20px;">
+            <h2 class="section-heading" style="font-size: 2.2rem; margin-bottom: 12px; color: #ffffff;">Order Inquiry Received!</h2>
+            <p class="success-msg-text" style="font-size: 1.05rem; color: #4cd964; max-width: 600px; margin: 0 auto 20px;">
                 Thank you! Your custom bracelet request has been recorded.
             </p>
-            <p style="font-size: 0.95rem; color: var(--dark-text);">
+            <p style="font-size: 0.95rem; color: rgba(255, 255, 255, 0.88);">
                 To complete your custom gemstone selection and confirm wrist measurements, click the button below to connect with Reiki Grandmaster Anupama Agrawal on WhatsApp:
             </p>
             <div>
@@ -78,9 +79,9 @@ include __DIR__ . '/includes/header.php';
         <!-- Form Card Container -->
         <div class="order-card animate-on-scroll">
             <div style="text-align: center; margin-bottom: 36px;">
-                <span class="badge badge-gold" style="margin-bottom: 10px;">Custom Order Form</span>
-                <h2 class="section-heading" style="font-size: 2.3rem;">Provide Your Details</h2>
-                <p style="color: var(--muted-gray); font-size: 0.96rem;">
+                <span class="badge badge-gold" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Custom Order Form</span>
+                <h2 class="section-heading" style="font-size: 2.4rem; color: #ffffff; margin-bottom: 10px;">Provide <em>Your Details</em></h2>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.98rem; max-width: 620px; margin: 0 auto;">
                     <?php echo ($type === 'birth-chart') 
                         ? 'Please enter your precise birth details so our astrology team can calculate your natal planetary chart.' 
                         : 'Please select your primary spiritual intention and describe any specific gemstones or wrist dimensions.'; ?>
