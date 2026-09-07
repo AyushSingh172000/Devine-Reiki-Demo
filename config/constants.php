@@ -1,9 +1,17 @@
 <?php
 // Project Constants and Environment Configurations
 
-// Base URL definition
+// Dynamic Base URL definition
 if (!defined('BASE_URL')) {
-    define('BASE_URL', 'http://localhost/DemoWebsite/');
+    if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['SCRIPT_NAME'])) {
+        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        $baseDir = rtrim($dir, '/') . '/';
+        define('BASE_URL', "{$scheme}://{$host}{$baseDir}");
+    } else {
+        define('BASE_URL', 'http://localhost/reikibliss/');
+    }
 }
 
 // File Upload Path definitions

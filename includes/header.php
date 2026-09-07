@@ -10,7 +10,7 @@ $pageTitle = $pageTitle ?? SITE_NAME . ' | Authentic Usui Reiki & Energy Healing
 $pageDescription = $pageDescription ?? 'Discover authentic Usui Reiki healing sessions, certified courses, and Reiki-charged crystal bracelets at Reiki Bliss.';
 $currentPage = basename($_SERVER['PHP_SELF'] ?? '');
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$uri = $_SERVER['REQUEST_URI'] ?? '/DemoWebsite/';
+$uri = $_SERVER['REQUEST_URI'] ?? '/reikibliss/';
 $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://{$host}{$uri}";
 ?>
 <!DOCTYPE html>
