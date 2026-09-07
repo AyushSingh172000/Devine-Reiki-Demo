@@ -18,16 +18,14 @@ if (!defined('CHAT_REFUSAL_MESSAGE')) {
     define('CHAT_REFUSAL_MESSAGE', "I'm only able to help with questions about Reiki Bliss. For anything else, please consult a general-purpose resource.");
 }
 
-// Local Ollama LLM Cloudflare Tunnel Base URL
-// SECURITY NOTE: Cloudflare trycloudflare.com URLs are temporary and unauthenticated.
-// Replace with a persistent named Cloudflare Tunnel with access control or reverse proxy before production deployment.
+// Local Ollama LLM Ngrok Tunnel Base URL
 if (!defined('OLLAMA_BASE_URL')) {
-    define('OLLAMA_BASE_URL', 'https://computer-williams-fairly-mistress.trycloudflare.com');
+    define('OLLAMA_BASE_URL', 'https://jogging-mobility-bath.ngrok-free.dev');
 }
 
 // Ollama Model
 if (!defined('OLLAMA_MODEL')) {
-    define('OLLAMA_MODEL', 'llama3.2');
+    define('OLLAMA_MODEL', 'qwen3:8b');
 }
 
 // Max history messages to load for context window (last N messages)

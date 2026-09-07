@@ -410,7 +410,8 @@ try {
         CURLOPT_POSTFIELDS => json_encode($ollamaPayload),
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',
-            'Accept: application/json'
+            'Accept: application/json',
+            'ngrok-skip-browser-warning: true'
         ],
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT => CHAT_CURL_TIMEOUT,

@@ -100,12 +100,12 @@ When your local Cloudflare tunnel URL changes, update the `OLLAMA_BASE_URL` cons
 **File:** `config/chat-config.php`
 
 ```php
-// Local Ollama LLM Cloudflare Tunnel Base URL
-define('OLLAMA_BASE_URL', 'https://computer-williams-fairly-mistress.trycloudflare.com');
+// Local Ollama LLM Ngrok Tunnel Base URL
+define('OLLAMA_BASE_URL', 'https://jogging-mobility-bath.ngrok-free.dev');
 
 
 // Ollama Model Name
-define('OLLAMA_MODEL', 'llama3.2');
+define('OLLAMA_MODEL', 'qwen3:8b');
 ```
 
 No changes to `api/chat.php` or frontend JS files are necessary when changing the tunnel URL.
