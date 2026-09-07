@@ -45,7 +45,7 @@ try {
 
     echo json_encode([
         'success' => true, 
-        'message' => 'Thank you ' . htmlspecialchars($name) . '! Your message has been sent successfully. Dr. Chirag or Binal Gajjar will respond to you shortly.'
+        'message' => 'Thank you ' . htmlspecialchars($name) . '! Your message has been sent successfully. Reiki Grandmaster Anupama Agrawal will respond to you shortly.'
     ]);
 } catch (PDOException $e) {
     error_log("Database insertion error in contact-submit.php: " . $e->getMessage());

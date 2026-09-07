@@ -65,7 +65,7 @@ if ($orderType === 'birth-chart') {
 }
 
 // Build WhatsApp follow-up URL
-$waSummary = "Hello Dr. Chirag & Binal Gajjar, I have submitted my " . ($orderType === 'birth-chart' ? 'Birth Chart' : 'Custom Intention') . " bracelet order!\n\n";
+$waSummary = "Hello Anupama Agrawal, I have submitted my " . ($orderType === 'birth-chart' ? 'Birth Chart' : 'Custom Intention') . " bracelet order!\n\n";
 $waSummary .= "Name: " . $name . "\nPhone: " . $phone . "\n";
 if ($orderType === 'birth-chart') {
     $waSummary .= "DOB: " . $dob . "\nTime: " . ($tob ?: 'Not specified') . "\nPlace: " . $pob . "\n";

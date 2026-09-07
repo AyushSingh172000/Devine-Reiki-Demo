@@ -42,11 +42,11 @@ foreach ($teamMembers as $member) {
 // Fallback founder data if DB search is empty
 if (!$founder1) {
     $founder1 = [
-        'name' => 'Dr. Chirag Gajjar',
-        'role' => 'Founder & Reiki Grand Master',
-        'title' => 'Reiki Grand Master & Spiritual Healer',
-        'bio' => 'Dr. Chirag Gajjar is a renowned Reiki Grand Master with over 25 years of experience in energy medicine, aura transformation, and holistic wellness. He has guided over 30,000 individuals worldwide to unlock their natural healing capacity.',
-        'specialties' => json_encode(["Usui Reiki Grand Master", "Aura Transformation", "Energy Medicine", "Spiritual Counseling"]),
+        'name' => 'Anupama Agrawal',
+        'role' => 'Founder & Reiki Grandmaster',
+        'title' => 'Reiki Grandmaster & Spiritual Healer',
+        'bio' => 'Anupama Agrawal is a renowned Reiki Grandmaster with extensive experience in energy medicine, aura transformation, chakra alignment, and holistic spiritual wellness. She has guided thousands of individuals worldwide to unlock their natural healing capacity.',
+        'specialties' => json_encode(["Usui Reiki Grandmaster", "Aura Transformation", "Energy Medicine", "Spiritual Counseling"]),
         'image' => 'assets/images/team/dr-chirag-gajjar.jpg'
     ];
 }

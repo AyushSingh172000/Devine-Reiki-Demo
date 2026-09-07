@@ -11,14 +11,14 @@ $prefilledCourse = $_GET['course'] ?? '';
 $defaultMessage = '';
 
 if (!empty($prefilledService)) {
-    $defaultMessage = "Hello Dr. Chirag & Binal Gajjar, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
+    $defaultMessage = "Hello Anupama Agrawal, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
 } elseif (!empty($prefilledCourse)) {
-    $defaultMessage = "Hello Dr. Chirag & Binal Gajjar, I am interested in enrolling in the " . htmlspecialchars($prefilledCourse) . " certification course.";
+    $defaultMessage = "Hello Anupama Agrawal, I am interested in enrolling in the " . htmlspecialchars($prefilledCourse) . " certification course.";
 }
 
 // Page Metadata
 $pageTitle = "Contact Us & Book Free Session | Reiki Bliss";
-$pageDescription = "Get in touch with Dr. Chirag Gajjar & Binal Gajjar at Reiki Bliss in Adajan, Surat. Book a free 30-minute consultation or send an inquiry.";
+$pageDescription = "Get in touch with Reiki Grandmaster Anupama Agrawal at Reiki Bliss. Book a free 30-minute consultation or send an inquiry.";
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
@@ -30,9 +30,9 @@ include __DIR__ . '/includes/header.php';
 <section class="contact-hero" id="consultation-hero">
     <div class="container animate-on-scroll">
         <span class="contact-hero-badge">Free Online Consultation</span>
-        <h1 class="contact-hero-title">30 Minutes with <em>Dr. Chirag Gajjar</em></h1>
+        <h1 class="contact-hero-title">30 Minutes with <em>Anupama Agrawal</em></h1>
         <p class="contact-hero-subtext">
-            Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with Reiki Grandmaster Dr. Chirag Gajjar.
+            Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with Reiki Grandmaster Anupama Agrawal.
         </p>
 
         <ul class="contact-hero-bullets">
@@ -42,7 +42,7 @@ include __DIR__ . '/includes/header.php';
         </ul>
 
         <div class="contact-hero-btns">
-            <a href="https://wa.me/919726581787?text=Hello%20Dr.%20Chirag%20Gajjar,%20I%20would%20like%20to%20schedule%20my%20free%2030-minute%20consultation." 
+            <a href="https://wa.me/919726581787?text=Hello%20Anupama%20Agrawal,%20I%20would%20like%20to%20schedule%20my%20free%2030-minute%20consultation." 
                target="_blank" rel="noopener" class="btn-gold" style="padding: 14px 34px; font-size: 1.05rem;">
                 Book Free Session →
             </a>
@@ -131,7 +131,7 @@ include __DIR__ . '/includes/header.php';
             <div class="form-title-box">
                 <span class="badge" style="margin-bottom: 10px;">Direct Message</span>
                 <h2 class="section-heading" style="font-size: 2.4rem; margin-bottom: 10px;">Send Us a <em>Message</em></h2>
-                <p style="color: var(--muted-gray); font-size: 0.98rem;">Fill out the form below and Dr. Chirag or Binal Gajjar will reach out to you within 24 hours.</p>
+                <p style="color: var(--muted-gray); font-size: 0.98rem;">Fill out the form below and Reiki Grandmaster Anupama Agrawal will reach out to you within 24 hours.</p>
             </div>
 
             <!-- AJAX Response Alert Box -->

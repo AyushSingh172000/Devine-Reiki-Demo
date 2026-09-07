@@ -10,7 +10,7 @@ require_once __DIR__ . '/../config/constants.php';
         <span class="section-label cta-label">First Session is Free</span>
         <h2 class="cta-heading">Begin Your <em>Healing Journey</em> Today</h2>
         <p class="cta-subtext">
-            Take the first step. Meet <strong>Dr. Chirag Gajjar</strong> or <strong>Binal Gajjar</strong> and discover which modality resonates with your soul.
+            Take the first step. Connect with <strong>Reiki Grandmaster Anupama Agrawal</strong> and discover which modality resonates with your soul.
         </p>
         <div class="cta-buttons">
             <a href="<?php echo BASE_URL; ?>contact.php#consultation-hero" class="btn-gold btn-cta-primary">

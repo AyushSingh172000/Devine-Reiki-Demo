@@ -50,7 +50,7 @@ try {
 }
 
 // WhatsApp pre-filled order message
-$waText = "Hello Divine Reiki Center, I would like to order the " . $product['title'] . " (Price: ₹" . number_format($product['price'], 2) . "). Please assist me with payment and delivery details.";
+$waText = "Hello Reiki Bliss, I would like to order the " . $product['title'] . " (Price: ₹" . number_format($product['price'], 2) . "). Please assist me with payment and delivery details.";
 $waOrderUrl = "https://wa.me/919726581787?text=" . urlencode($waText);
 
 // Page Metadata

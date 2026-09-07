@@ -166,7 +166,7 @@ try {
                 $formData['email'] = strtolower($userMessage);
                 $formState['step'] = 'phone';
                 $formState['data'] = $formData;
-                $nextReply = "Got it! What is your Phone or WhatsApp number so Dr. Chirag or Binal Gajjar can reach out to you?";
+                $nextReply = "Got it! What is your Phone or WhatsApp number so Reiki Grandmaster Anupama Agrawal can reach out to you?";
                 $advanceStep = true;
             }
         } elseif ($step === 'phone') {
@@ -221,7 +221,7 @@ try {
                 $updateSess = $pdo->prepare("UPDATE chat_sessions SET pending_form = NULL, last_active_at = NOW() WHERE id = :id");
                 $updateSess->execute([':id' => $sessionId]);
 
-                $confirmReply = "Thank you " . htmlspecialchars($formData['name']) . "! ✨ Your message and booking request have been submitted successfully. Dr. Chirag or Binal Gajjar will respond to your inquiry shortly via WhatsApp (" . htmlspecialchars($formData['phone']) . ") or email (" . htmlspecialchars($formData['email']) . ").";
+                $confirmReply = "Thank you " . htmlspecialchars($formData['name']) . "! ✨ Your message and booking request have been submitted successfully. Reiki Grandmaster Anupama Agrawal will respond to your inquiry shortly via WhatsApp (" . htmlspecialchars($formData['phone']) . ") or email (" . htmlspecialchars($formData['email']) . ").";
 
                 $pdo->beginTransaction();
                 $insertMsg = $pdo->prepare("INSERT INTO chat_messages (session_id, role, content, was_blocked, created_at) VALUES (:sid, :role, :content, 0, NOW())");

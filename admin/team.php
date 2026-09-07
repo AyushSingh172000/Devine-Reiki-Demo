@@ -128,7 +128,7 @@ include __DIR__ . '/includes/admin-header.php';
             <div class="form-grid-2col">
                 <div class="form-group">
                     <label class="form-label">Practitioner Name *</label>
-                    <input type="text" name="name" class="form-input" value="<?php echo htmlspecialchars($editItem['name'] ?? ''); ?>" required placeholder="e.g. Dr. Chirag Gajjar">
+                    <input type="text" name="name" class="form-input" value="<?php echo htmlspecialchars($editItem['name'] ?? ''); ?>" required placeholder="e.g. Anupama Agrawal">
                 </div>
 
                 <div class="form-group">

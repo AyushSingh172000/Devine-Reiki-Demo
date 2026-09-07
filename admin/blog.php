@@ -41,7 +41,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     }
     $excerpt = trim($_POST['excerpt'] ?? '');
     $content = trim($_POST['content'] ?? '');
-    $author = trim($_POST['author'] ?? 'Dr. Chirag Gajjar');
+    $author = trim($_POST['author'] ?? 'Anupama Agrawal');
     $rawTags = trim($_POST['tags'] ?? '');
     
     // Convert comma-separated tags to JSON array
@@ -146,7 +146,7 @@ include __DIR__ . '/includes/admin-header.php';
 
                 <div class="form-group">
                     <label class="form-label">Author Name</label>
-                    <input type="text" name="author" class="form-input" value="<?php echo htmlspecialchars($editItem['author'] ?? 'Dr. Chirag Gajjar'); ?>" placeholder="Dr. Chirag Gajjar">
+                    <input type="text" name="author" class="form-input" value="<?php echo htmlspecialchars($editItem['author'] ?? 'Anupama Agrawal'); ?>" placeholder="Anupama Agrawal">
                 </div>
 
                 <div class="form-group">

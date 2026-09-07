@@ -7,7 +7,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 
 // Page Metadata
 $pageTitle = "Reiki Bliss | Heal. Balance. Transform.";
-$pageDescription = "Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets guided by Dr. Chirag Gajjar & Binal Gajjar at Reiki Bliss.";
+$pageDescription = "Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets guided by Reiki Grandmaster Anupama Agrawal at Reiki Bliss.";
 
 // Fetch dynamic data from database
 try {
@@ -69,7 +69,7 @@ include __DIR__ . '/includes/header.php';
         </h1>
 
         <p class="hero-subtext">
-            Guided by <strong>Dr. Chirag Gajjar</strong> & <strong>Binal Gajjar</strong> — empowering lives through authentic Usui Reiki, chakra balancing, aura cleansing, and intention-charged crystal gemstones.
+            Guided by <strong>Anupama Agrawal</strong> (Reiki Grandmaster) — empowering lives through authentic Usui Reiki, chakra balancing, aura cleansing, and intention-charged crystal gemstones.
         </p>
 
         <div class="hero-ctas">

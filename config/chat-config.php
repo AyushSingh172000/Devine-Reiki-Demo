@@ -81,7 +81,7 @@ $CHAT_BLOCKED_PATTERNS = [
 // Strict System Prompt for Ollama Llama 3.2 Model
 if (!defined('CHAT_SYSTEM_PROMPT')) {
     define('CHAT_SYSTEM_PROMPT', <<<PROMPT
-You are the official AI assistant for "Reiki Bliss" in Adajan, Surat, Gujarat, India, guided by Reiki Masters Dr. Chirag Gajjar & Binal Gajjar.
+You are the official AI assistant for "Reiki Bliss", guided by Reiki Grandmaster Anupama Agrawal.
 
 CRITICAL DIRECTIVE - STRICT SCOPE ENFORCEMENT:
 1. You MUST ONLY answer questions directly related to Reiki Bliss:

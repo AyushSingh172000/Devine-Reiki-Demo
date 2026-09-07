@@ -65,7 +65,7 @@ include __DIR__ . '/includes/header.php';
                 Thank you! Your custom bracelet request has been recorded.
             </p>
             <p style="font-size: 0.95rem; color: var(--dark-text);">
-                To complete your custom gemstone selection and confirm wrist measurements, click the button below to connect with Dr. Chirag &amp; Binal Gajjar on WhatsApp:
+                To complete your custom gemstone selection and confirm wrist measurements, click the button below to connect with Reiki Grandmaster Anupama Agrawal on WhatsApp:
             </p>
             <div>
                 <a href="#" id="wa-followup-btn" target="_blank" rel="noopener" class="wa-followup-btn">
