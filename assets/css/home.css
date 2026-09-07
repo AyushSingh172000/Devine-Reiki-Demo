@@ -10,7 +10,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px 0 35px;
+  margin-top: -75px;
+  padding: 95px 0 35px;
   background: #110724;
   color: #ffffff;
   overflow: hidden;

@@ -139,19 +139,6 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
 
 <!-- Header & Navigation Bar -->
 <header class="site-header" id="site-header">
-    <!-- Top Announcement / Info Bar -->
-    <div class="top-bar">
-        <div class="container top-bar-container">
-            <div class="top-info">
-                <span>📍 <?php echo htmlspecialchars(SITE_ADDRESS); ?></span>
-                <span>📞 <a href="tel:<?php echo htmlspecialchars(SITE_PHONE); ?>"><?php echo htmlspecialchars(SITE_PHONE); ?></a></span>
-            </div>
-            <div class="top-hours">
-                <span>🕒 <?php echo htmlspecialchars(WORKING_HOURS); ?></span>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container navbar-container">
