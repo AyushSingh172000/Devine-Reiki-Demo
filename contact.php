@@ -58,12 +58,13 @@ include __DIR__ . '/includes/header.php';
      2. CENTER INFO SECTION (REIKI BLISS)
      ========================================================================== -->
 <section class="center-info-section" id="center-info">
+    <canvas class="hero-bg-canvas"></canvas>
     <div class="container">
         
-        <div style="text-align: center; margin-bottom: 50px;" class="animate-on-scroll">
-            <span class="badge badge-gold" style="margin-bottom: 12px;">Our Sanctuary Location</span>
-            <h2 class="section-heading" style="font-size: 2.8rem;">Reiki Bliss <em>Healing Center</em></h2>
-            <p style="color: var(--muted-gray); max-width: 600px; margin: 0 auto; font-size: 1.05rem;">
+        <div style="text-align: center; margin-bottom: 50px; position: relative; z-index: 2;" class="animate-on-scroll">
+            <span class="badge badge-gold" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Our Sanctuary Location</span>
+            <h2 class="section-heading" style="font-size: 2.8rem; color: #ffffff;">Reiki Bliss <em>Healing Center</em></h2>
+            <p style="color: rgba(255, 255, 255, 0.82); max-width: 600px; margin: 0 auto; font-size: 1.05rem;">
                 Located in the heart of Adajan, Surat. Visit our peaceful center or connect with our healing practitioners virtually.
             </p>
         </div>
