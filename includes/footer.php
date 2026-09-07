@@ -202,13 +202,11 @@ require_once __DIR__ . '/../config/constants.php';
     </svg>
 </button>
 
-<!-- Main JavaScript Modules & Chat Widget -->
-<link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/chat-widget.css">
+<!-- Main JavaScript Modules -->
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/text-healing-animation.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/counter.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/carousel.js"></script>
-<script src="<?php echo BASE_URL; ?>assets/js/chat-widget.js"></script>
 
 <?php if (isset($currentPage) && $currentPage == 'gallery.php'): ?>
 
