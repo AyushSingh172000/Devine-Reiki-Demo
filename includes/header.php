@@ -22,7 +22,9 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <meta name="description" content="<?php echo htmlspecialchars($pageDescription); ?>">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/images/favicon.svg">
+    <link rel="icon" type="image/jpeg" href="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg">
+    <link rel="apple-touch-icon" href="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg">
 
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:type" content="website">
