@@ -158,5 +158,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sync badges on initial page load
   window.updateDivineCartBadges();
+
+  // 7. Interactive WhatsApp Inquiry Modal Logic
+  const waFloatBtn = document.getElementById('whatsapp-float-btn');
+  const waModalWrapper = document.getElementById('wa-modal-wrapper');
+  const waModalClose = document.getElementById('wa-modal-close');
+  const waStep1 = document.getElementById('wa-step-1');
+  const waStep2 = document.getElementById('wa-step-2');
+  const waOptionItems = document.querySelectorAll('.wa-option-item');
+  const waPillText = document.getElementById('wa-pill-text');
+  const waPillRemove = document.getElementById('wa-pill-remove');
+  const waBackBtn = document.getElementById('wa-back-btn');
+  const waSubmitBtn = document.getElementById('wa-submit-btn');
+  const waCustomMessage = document.getElementById('wa-custom-message');
+
+  let selectedWaTopic = '';
+
+  const toggleWaModal = (show) => {
+    if (waModalWrapper) {
+      const isOpen = show !== undefined ? show : !waModalWrapper.classList.contains('open');
+      waModalWrapper.classList.toggle('open', isOpen);
+      if (isOpen) {
+        waModalWrapper.setAttribute('aria-hidden', 'false');
+      } else {
+        waModalWrapper.setAttribute('aria-hidden', 'true');
+      }
+    }
+  };
+
+  if (waFloatBtn) {
+    waFloatBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleWaModal();
+    });
+  }
+
+  if (waModalClose) {
+    waModalClose.addEventListener('click', () => {
+      toggleWaModal(false);
+    });
+  }
+
+  // Option selection (Step 1 -> Step 2)
+  waOptionItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const topic = item.getAttribute('data-topic');
+      const icon = item.querySelector('.wa-option-icon')?.innerText || '';
+      selectedWaTopic = topic;
+      
+      if (waPillText) {
+        waPillText.innerText = `${icon} ${topic}`.trim();
+      }
+
+      if (waStep1 && waStep2) {
+        waStep1.style.display = 'none';
+        waStep2.style.display = 'block';
+      }
+    });
+  });
+
+  const resetToStep1 = () => {
+    selectedWaTopic = '';
+    if (waCustomMessage) waCustomMessage.value = '';
+    if (waStep1 && waStep2) {
+      waStep2.style.display = 'none';
+      waStep1.style.display = 'block';
+    }
+  };
+
+  if (waPillRemove) waPillRemove.addEventListener('click', resetToStep1);
+  if (waBackBtn) waBackBtn.addEventListener('click', resetToStep1);
+
+  // Submit & Navigate to WhatsApp
+  if (waSubmitBtn) {
+    waSubmitBtn.addEventListener('click', () => {
+      if (!selectedWaTopic) {
+        alert('Please select an inquiry topic.');
+        resetToStep1();
+        return;
+      }
+
+      const extraMsg = waCustomMessage ? waCustomMessage.value.trim() : '';
+      let fullMessage = `Hello Reiki Bliss! I am reaching out regarding: ${selectedWaTopic}.`;
+      if (extraMsg) {
+        fullMessage += `\n\nNotes / Details: ${extraMsg}`;
+      }
+
+      const waPhone = '919971655705';
+      const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(fullMessage)}`;
+
+      window.open(waUrl, '_blank');
+      toggleWaModal(false);
+      resetToStep1();
+    });
+  }
+
+  // Close modal when clicking outside
+  document.addEventListener('click', (e) => {
+    if (waModalWrapper && waModalWrapper.classList.contains('open')) {
+      if (!waModalWrapper.contains(e.target) && (!waFloatBtn || !waFloatBtn.contains(e.target))) {
+        toggleWaModal(false);
+      }
+    }
+  });
 });
+
 

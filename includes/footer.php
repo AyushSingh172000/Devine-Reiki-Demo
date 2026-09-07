@@ -118,16 +118,89 @@ require_once __DIR__ . '/../config/constants.php';
     </div>
 </footer>
 
-<!-- Floating WhatsApp Chat Button -->
-<a href="https://wa.me/919971655705?text=Hello%20Reiki%20Bliss,%20I%20would%20like%20to%20inquire%20about%20a%20healing%20session." 
-   target="_blank" 
-   rel="noopener" 
-   class="whatsapp-float-btn" 
-   aria-label="Chat on WhatsApp">
+<!-- Interactive WhatsApp Inquiry Modal -->
+<div class="wa-modal-wrapper" id="wa-modal-wrapper" aria-hidden="true">
+    <div class="wa-modal-card">
+        <!-- Modal Header -->
+        <div class="wa-modal-header">
+            <div class="wa-header-info">
+                <div class="wa-badge-icon">
+                    <svg width="24" height="24" fill="#ffffff" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                    </svg>
+                </div>
+                <div class="wa-header-text">
+                    <h4 class="wa-modal-title">How can we help?</h4>
+                    <p class="wa-modal-subtitle">Reiki Bliss · Usually replies in hours</p>
+                </div>
+            </div>
+            <button class="wa-modal-close" id="wa-modal-close" aria-label="Close modal">✕</button>
+        </div>
+
+        <!-- Body Step 1: Select Topic -->
+        <div class="wa-modal-body" id="wa-step-1">
+            <span class="wa-section-label">WHAT'S THIS ABOUT?</span>
+            <div class="wa-options-list">
+                <button class="wa-option-item" data-topic="Book a Healing Session">
+                    <span class="wa-option-icon">🙏</span>
+                    <span class="wa-option-text">Book a Healing Session</span>
+                </button>
+                <button class="wa-option-item" data-topic="Enquire About a Course">
+                    <span class="wa-option-icon">📚</span>
+                    <span class="wa-option-text">Enquire About a Course</span>
+                </button>
+                <button class="wa-option-item" data-topic="Order Birth Chart Bracelet">
+                    <span class="wa-option-icon">🔮</span>
+                    <span class="wa-option-text">Order Birth Chart Bracelet</span>
+                </button>
+                <button class="wa-option-item" data-topic="Order Customized Bracelet">
+                    <span class="wa-option-icon">✨</span>
+                    <span class="wa-option-text">Order Customized Bracelet</span>
+                </button>
+                <button class="wa-option-item" data-topic="Product / Shop Query">
+                    <span class="wa-option-icon">🛍️</span>
+                    <span class="wa-option-text">Product / Shop Query</span>
+                </button>
+                <button class="wa-option-item" data-topic="Something Else">
+                    <span class="wa-option-icon">💬</span>
+                    <span class="wa-option-text">Something Else</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Body Step 2: Add Details & Open WhatsApp -->
+        <div class="wa-modal-body" id="wa-step-2" style="display: none;">
+            <div class="wa-selected-pill-box">
+                <span class="wa-selected-pill" id="wa-selected-pill">
+                    <span id="wa-pill-text">🙏 Book a Healing Session</span>
+                    <button class="wa-pill-remove" id="wa-pill-remove" aria-label="Remove topic">✕</button>
+                </span>
+            </div>
+
+            <label class="wa-section-label" for="wa-custom-message">
+                ANYTHING TO ADD? <span class="wa-optional-tag">(optional)</span>
+            </label>
+            
+            <textarea id="wa-custom-message" class="wa-textarea" rows="3" placeholder="e.g. Preferred day/time, specific concern..."></textarea>
+
+            <button id="wa-submit-btn" class="wa-btn-submit">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                </svg>
+                Open WhatsApp
+            </button>
+
+            <button class="wa-back-link" id="wa-back-btn">← Change topic</button>
+        </div>
+    </div>
+</div>
+
+<!-- Floating WhatsApp Chat Button Trigger -->
+<button class="whatsapp-float-btn" id="whatsapp-float-btn" aria-label="Open WhatsApp Help Menu">
     <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
     </svg>
-</a>
+</button>
 
 <!-- Main JavaScript Modules & Chat Widget -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/chat-widget.css">
