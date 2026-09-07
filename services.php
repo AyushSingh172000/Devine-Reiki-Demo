@@ -6,7 +6,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "Healing Services | Divine Reiki & Energy Healing Center";
+$pageTitle = "Healing Services | Reiki Bliss";
 $pageDescription = "Explore our holistic healing services including Usui Reiki sessions, distance healing, chakra balancing, aura repair, and crystal energy therapy.";
 
 // Fetch Services from MySQL

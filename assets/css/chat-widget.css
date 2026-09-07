@@ -126,6 +126,15 @@
   height: 44px;
 }
 
+.reiki-chat-avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  border: 2px solid var(--rc-primary-gold);
+}
+
 .reiki-chat-avatar {
   width: 44px;
   height: 44px;

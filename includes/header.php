@@ -7,7 +7,7 @@ require_once __DIR__ . '/../config/constants.php';
 
 // Default page metadata fallbacks
 $pageTitle = $pageTitle ?? SITE_NAME . ' | Authentic Usui Reiki & Energy Healing';
-$pageDescription = $pageDescription ?? 'Discover authentic Usui Reiki healing sessions, certified courses, and Reiki-charged crystal bracelets at Divine Reiki Center.';
+$pageDescription = $pageDescription ?? 'Discover authentic Usui Reiki healing sessions, certified courses, and Reiki-charged crystal bracelets at Reiki Bliss.';
 $currentPage = basename($_SERVER['PHP_SELF'] ?? '');
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $uri = $_SERVER['REQUEST_URI'] ?? '/DemoWebsite/';
@@ -157,9 +157,9 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
         <div class="container navbar-container">
             <!-- Brand Logo -->
             <a href="<?php echo BASE_URL; ?>" class="navbar-logo">
-                <span class="logo-icon">✨</span>
+                <img src="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg" alt="Reiki Bliss Logo" class="brand-logo-img">
                 <span class="logo-text">
-                    <strong class="logo-title">Divine Reiki</strong>
+                    <strong class="logo-title">Reiki Bliss</strong>
                     <span class="logo-subtitle">Healing Center</span>
                 </span>
             </a>

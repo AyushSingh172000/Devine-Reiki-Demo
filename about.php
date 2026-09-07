@@ -6,8 +6,8 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "About Us | Divine Reiki & Energy Healing Center";
-$pageDescription = "Learn about the founding story of Divine Reiki Center in Adajan, Surat, guided by Dr. Chirag Gajjar & Binal Gajjar, and meet our team of dedicated energy practitioners.";
+$pageTitle = "About Us | Reiki Bliss";
+$pageDescription = "Learn about the founding story of Reiki Bliss in Adajan, Surat, guided by Dr. Chirag Gajjar & Binal Gajjar, and meet our team of dedicated energy practitioners.";
 
 // Fetch Team Members from MySQL
 try {

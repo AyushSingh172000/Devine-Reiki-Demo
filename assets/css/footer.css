@@ -106,6 +106,15 @@
   text-decoration: none;
 }
 
+.footer-logo-img {
+  height: 44px;
+  width: 44px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--accent-gold);
+  box-shadow: 0 2px 8px rgba(201, 168, 76, 0.3);
+}
+
 .footer-col-about .logo-title {
   color: #ffffff;
 }

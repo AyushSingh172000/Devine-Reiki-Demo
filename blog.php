@@ -6,7 +6,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "Healing Insights & Spiritual Blog | Divine Reiki Center";
+$pageTitle = "Healing Insights & Spiritual Blog | Reiki Bliss";
 $pageDescription = "Read authentic articles on Reiki healing, chakra unblocking, crystal energy frequencies, and holistic wellness guidance.";
 
 // Pagination settings

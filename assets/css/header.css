@@ -84,6 +84,15 @@
   text-decoration: none;
 }
 
+.brand-logo-img {
+  height: 42px;
+  width: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--accent-gold);
+  box-shadow: 0 2px 8px rgba(201, 168, 76, 0.25);
+}
+
 .logo-icon {
   font-size: 1.8rem;
   line-height: 1;

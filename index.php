@@ -6,8 +6,8 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "Divine Reiki & Energy Healing Center | Heal. Balance. Transform.";
-$pageDescription = "Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets guided by Dr. Chirag Gajjar & Binal Gajjar.";
+$pageTitle = "Reiki Bliss | Heal. Balance. Transform.";
+$pageDescription = "Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets guided by Dr. Chirag Gajjar & Binal Gajjar at Reiki Bliss.";
 
 // Fetch dynamic data from database
 try {

@@ -6,7 +6,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "Reiki Charged Crystal Shop | Divine Reiki Center";
+$pageTitle = "Reiki Charged Crystal Shop | Reiki Bliss";
 $pageDescription = "Explore 100% natural, white-sage cleansed and Reiki Master charged crystal bracelets, pendulums, gemstones, and energetic home hangings.";
 
 // Get parameters

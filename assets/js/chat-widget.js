@@ -91,7 +91,7 @@
     // 1. Floating Trigger Button
     triggerBtn = document.createElement('button');
     triggerBtn.className = 'reiki-chat-trigger-btn';
-    triggerBtn.setAttribute('aria-label', 'Chat with Divine Reiki AI');
+    triggerBtn.setAttribute('aria-label', 'Chat with Reiki Bliss AI');
     triggerBtn.innerHTML = `
       <span class="reiki-chat-badge"></span>
       <svg viewBox="0 0 24 24">
@@ -111,11 +111,11 @@
       <div class="reiki-chat-header">
         <div class="reiki-chat-header-info">
           <div class="reiki-chat-avatar-wrapper">
-            <div class="reiki-chat-avatar">✨</div>
+            <img src="assets/images/reikilogo.jpg" alt="Reiki Bliss Avatar" class="reiki-chat-avatar-img">
             <div class="reiki-chat-status-dot"></div>
           </div>
           <div class="reiki-chat-header-text">
-            <h3>Divine Reiki Assistant</h3>
+            <h3>Reiki Bliss Assistant</h3>
             <p>Powered by Reiki AI • Online</p>
           </div>
         </div>

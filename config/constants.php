@@ -33,7 +33,7 @@ try {
 }
 
 // Define Site Constants from $settings
-define('SITE_NAME', $settings['site_name'] ?? 'Divine Reiki & Energy Healing Center');
+define('SITE_NAME', $settings['site_name'] ?? 'Reiki Bliss');
 define('SITE_PHONE', $settings['phone'] ?? '');
 define('SITE_EMAIL', $settings['email'] ?? '');
 define('SITE_ADDRESS', $settings['address'] ?? '');

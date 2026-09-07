@@ -30,9 +30,9 @@ require_once __DIR__ . '/../config/constants.php';
             <!-- Column 1: Logo & About Dr. Chirag & Binal Gajjar -->
             <div class="footer-col footer-col-about">
                 <a href="<?php echo BASE_URL; ?>" class="footer-logo">
-                    <span class="logo-icon">✨</span>
+                    <img src="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg" alt="Reiki Bliss Logo" class="footer-logo-img">
                     <span class="logo-text">
-                        <strong class="logo-title">Divine Reiki</strong>
+                        <strong class="logo-title">Reiki Bliss</strong>
                         <span class="logo-subtitle">Healing Center</span>
                     </span>
                 </a>

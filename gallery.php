@@ -6,7 +6,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "Spiritual Sanctuary Gallery | Divine Reiki Center";
+$pageTitle = "Spiritual Sanctuary Gallery | Reiki Bliss";
 $pageDescription = "View photo gallery of our Reiki attunement workshops, healing sanctuary, group sound meditations, and crystal energy layouts.";
 
 // Fetch Gallery Images from MySQL
@@ -30,7 +30,7 @@ include __DIR__ . '/includes/header.php';
         <span class="gallery-hero-badge">Spiritual Sanctuary</span>
         <h1 class="gallery-hero-title">Our <em>Gallery</em></h1>
         <p class="gallery-hero-subtext">
-            Explore moments of spiritual transformation, attunement workshops, crystal energy layouts, and peaceful sanctuary spaces at Divine Reiki Center.
+            Explore moments of spiritual transformation, attunement workshops, crystal energy layouts, and peaceful sanctuary spaces at Reiki Bliss.
         </p>
     </div>
 </section>

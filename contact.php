@@ -17,8 +17,8 @@ if (!empty($prefilledService)) {
 }
 
 // Page Metadata
-$pageTitle = "Contact Us & Book Free Session | Divine Reiki Healing Center";
-$pageDescription = "Get in touch with Dr. Chirag Gajjar & Binal Gajjar at Divine Reiki Healing Center in Adajan, Surat. Book a free 30-minute consultation or send an inquiry.";
+$pageTitle = "Contact Us & Book Free Session | Reiki Bliss";
+$pageDescription = "Get in touch with Dr. Chirag Gajjar & Binal Gajjar at Reiki Bliss in Adajan, Surat. Book a free 30-minute consultation or send an inquiry.";
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
@@ -54,14 +54,14 @@ include __DIR__ . '/includes/header.php';
 </section>
 
 <!-- ==========================================================================
-     2. CENTER INFO SECTION (DIVINE REIKI HEALING CENTER)
+     2. CENTER INFO SECTION (REIKI BLISS)
      ========================================================================== -->
 <section class="center-info-section" id="center-info">
     <div class="container">
         
         <div style="text-align: center; margin-bottom: 50px;" class="animate-on-scroll">
             <span class="badge badge-gold" style="margin-bottom: 12px;">Our Sanctuary Location</span>
-            <h2 class="section-heading" style="font-size: 2.8rem;">Divine Reiki <em>Healing Center</em></h2>
+            <h2 class="section-heading" style="font-size: 2.8rem;">Reiki Bliss <em>Healing Center</em></h2>
             <p style="color: var(--muted-gray); max-width: 600px; margin: 0 auto; font-size: 1.05rem;">
                 Located in the heart of Adajan, Surat. Visit our peaceful center or connect with our healing practitioners virtually.
             </p>

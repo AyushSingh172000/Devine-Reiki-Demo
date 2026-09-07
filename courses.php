@@ -6,7 +6,7 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 // Page Metadata
-$pageTitle = "Reiki Certification Courses | Divine Reiki Center";
+$pageTitle = "Reiki Certification Courses | Reiki Bliss";
 $pageDescription = "Enroll in certified Usui Reiki training courses from Level 1 First Degree to Master Teacher Level 3B with Dr. Chirag Gajjar & Binal Gajjar.";
 
 // Fetch Courses from MySQL
