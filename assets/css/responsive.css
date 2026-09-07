@@ -1,0 +1,191 @@
+/* ==========================================================================
+   Responsive Design System - Divine Reiki & Energy Healing Center
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. LAPTOPS & TABLETS (max-width: 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  /* Reduce heading sizes by ~15% */
+  h1, .hero-title, .order-hero-title, .section-heading {
+    font-size: 2.5rem;
+  }
+  h2 {
+    font-size: 2.1rem;
+  }
+  h3 {
+    font-size: 1.45rem;
+  }
+
+  /* Services / Courses / Blog Grid: 2 columns */
+  .services-grid,
+  .courses-grid,
+  .blog-grid,
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px;
+  }
+
+  /* Products Grid: 3 columns */
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px;
+  }
+
+  /* Footer: 2-column grid */
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 36px 24px;
+  }
+
+  /* Gallery Masonry Grid */
+  .gallery-grid {
+    column-count: 2 !important;
+  }
+
+  /* Center info grid */
+  .center-info-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. TABLETS & LARGE PHONES (max-width: 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Hero heading */
+  h1, .hero-title, .order-hero-title {
+    font-size: 2.2rem !important;
+    line-height: 1.25;
+  }
+  .section-heading {
+    font-size: 2rem !important;
+  }
+
+  /* Hide Desktop Nav, Show Hamburger */
+  .desktop-nav, .nav-cta-btn {
+    display: none !important;
+  }
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  /* Cards: single column stack */
+  .services-grid,
+  .courses-grid,
+  .blog-grid,
+  .related-grid,
+  .about-founders-grid,
+  .service-detail-grid,
+  .course-detail-grid,
+  .product-detail-grid,
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Products Grid: 2 columns */
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px;
+  }
+
+  /* Footer: single column stack */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+  }
+
+  /* Stat counters: 2x2 grid */
+  .stats-grid,
+  .counter-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px;
+  }
+
+  /* Bracelet cards / Order form cards: stack vertically */
+  .order-card,
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Contact info: stack vertically */
+  .center-info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Gallery Masonry Grid */
+  .gallery-grid {
+    column-count: 1 !important;
+  }
+
+  .top-bar-content {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. MOBILE PHONES (max-width: 480px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  /* Hero heading */
+  h1, .hero-title, .order-hero-title {
+    font-size: 1.8rem !important;
+  }
+  .section-heading {
+    font-size: 1.6rem !important;
+  }
+  .hero-subtext, .order-hero-subtext {
+    font-size: 0.95rem !important;
+  }
+
+  /* Product grid: single column */
+  .products-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce all section padding to 60px 0 */
+  section,
+  .services-section,
+  .courses-section,
+  .products-section,
+  .gallery-section,
+  .blog-section,
+  .contact-section,
+  .about-section,
+  .cta-section {
+    padding: 60px 0 !important;
+  }
+
+  /* Buttons: full width */
+  .btn-gold,
+  .btn-secondary,
+  .btn-primary,
+  .hero-cta-btn,
+  .wa-followup-btn,
+  #order-submit-btn,
+  #contact-submit-btn {
+    width: 100% !important;
+    text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* Font sizes slightly reduced */
+  body {
+    font-size: 0.92rem;
+  }
+  .container {
+    padding: 0 16px !important;
+  }
+
+  /* Filter pills wrap */
+  .filter-pills, .type-toggle-pills, .gallery-filter-tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-pill, .type-pill-btn, .gallery-tab {
+    text-align: center;
+  }
+}

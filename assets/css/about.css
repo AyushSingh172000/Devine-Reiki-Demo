@@ -1,0 +1,369 @@
+/* ==========================================================================
+   About Page Specific Stylesheet
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Hero Section & Marquee
+   -------------------------------------------------------------------------- */
+.about-hero {
+  position: relative;
+  padding: 130px 0 70px;
+  background: linear-gradient(135deg, #160a2c 0%, #2D1B69 60%, #120726 100%);
+  color: #ffffff;
+  text-align: center;
+  overflow: hidden;
+}
+
+.about-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold);
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  padding: 6px 20px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.about-hero-title {
+  font-family: var(--font-serif);
+  font-size: 3.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+.about-hero-title em {
+  font-style: italic;
+  color: var(--accent-gold);
+  font-weight: 400;
+}
+
+.about-hero-text {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Marquee Bar */
+.marquee-container {
+  margin-top: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 18px 0;
+  background: rgba(0, 0, 0, 0.25);
+  width: 100%;
+}
+
+.marquee-track {
+  display: inline-flex;
+  gap: 50px;
+  animation: slideInfinite 25s linear infinite;
+}
+
+.marquee-item {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--accent-gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.marquee-dot {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. Founders Section
+   -------------------------------------------------------------------------- */
+.founders-section {
+  padding: 100px 0;
+  background-color: var(--light-cream);
+}
+
+.founders-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-top: 48px;
+}
+
+.founder-card {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  background-color: var(--white);
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(45, 27, 105, 0.08);
+  transition: var(--transition);
+}
+
+.founder-card.reverse {
+  flex-direction: row-reverse;
+}
+
+.founder-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.founder-img-box {
+  flex: 0 0 340px;
+  height: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border: 3px solid var(--white);
+  background-color: var(--light-lavender);
+}
+
+.founder-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.founder-card:hover .founder-img-box img {
+  transform: scale(1.06);
+}
+
+.founder-content-box {
+  flex-grow: 1;
+}
+
+.founder-role-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold-dark);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.founder-name {
+  font-family: var(--font-serif);
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.founder-bio-text {
+  font-size: 1.05rem;
+  color: var(--dark-text);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.specialties-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-gray);
+  margin-bottom: 12px;
+}
+
+.specialty-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.specialty-tag-badge {
+  background-color: var(--light-lavender);
+  color: var(--primary-purple);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(45, 27, 105, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   3. Team Section
+   -------------------------------------------------------------------------- */
+.team-section {
+  padding: 100px 0;
+  background-color: var(--white);
+}
+
+.team-carousel-wrapper {
+  margin-top: 48px;
+}
+
+.team-member-card {
+  flex: 0 0 310px;
+  background-color: var(--light-cream);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: var(--transition);
+}
+
+.team-member-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.team-img-box {
+  position: relative;
+  width: 100%;
+  height: 270px;
+  overflow: hidden;
+  background-color: var(--light-lavender);
+}
+
+.team-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.team-member-card:hover .team-img-box img {
+  transform: scale(1.08);
+}
+
+.team-badge-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+}
+
+.team-info-body {
+  padding: 24px;
+}
+
+.team-name-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 6px;
+}
+
+.team-role-subtitle {
+  font-size: 0.88rem;
+  color: var(--accent-gold-dark);
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.team-bio-short {
+  font-size: 0.88rem;
+  color: var(--muted-gray);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Values Section
+   -------------------------------------------------------------------------- */
+.values-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, var(--white) 0%, var(--light-cream) 100%);
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.value-card {
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 44px 40px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(45, 27, 105, 0.08);
+  transition: var(--transition);
+  position: relative;
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.value-number {
+  font-family: var(--font-serif);
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.value-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 12px;
+}
+
+.value-card-text {
+  font-size: 0.98rem;
+  color: var(--muted-gray);
+  line-height: 1.65;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .about-hero-title {
+    font-size: 3rem;
+  }
+  .founder-card,
+  .founder-card.reverse {
+    flex-direction: column;
+    padding: 32px;
+    gap: 30px;
+  }
+  .founder-img-box {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 340px;
+  }
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-hero-title {
+    font-size: 2.2rem;
+  }
+  .founder-name {
+    font-size: 1.8rem;
+  }
+  .value-card {
+    padding: 30px 24px;
+  }
+}

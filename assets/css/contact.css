@@ -1,0 +1,311 @@
+/* ==========================================================================
+   Contact Page Specific Stylesheet
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Hero Section
+   -------------------------------------------------------------------------- */
+.contact-hero {
+  position: relative;
+  padding: 150px 0 90px;
+  background: linear-gradient(135deg, rgba(22, 10, 44, 0.92) 0%, rgba(45, 27, 105, 0.92) 60%, rgba(18, 7, 38, 0.95) 100%), url('../images/journey.jpg') center/cover no-repeat;
+  color: #ffffff;
+  text-align: center;
+  overflow: hidden;
+}
+
+.contact-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold);
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  padding: 6px 20px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.contact-hero-title {
+  font-family: var(--font-serif);
+  font-size: 3.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.contact-hero-subtext {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 760px;
+  margin: 0 auto 28px;
+  line-height: 1.65;
+}
+
+.contact-hero-bullets {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin-bottom: 40px;
+}
+
+.contact-hero-bullets li {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.contact-hero-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   2. Center Info Section
+   -------------------------------------------------------------------------- */
+.center-info-section {
+  padding: 90px 0;
+  background-color: var(--light-cream);
+}
+
+.center-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+.center-info-card {
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 36px 24px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(45, 27, 105, 0.08);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.center-info-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.center-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--light-lavender);
+  color: var(--primary-purple);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(45, 27, 105, 0.1);
+  flex-shrink: 0;
+}
+
+.center-info-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.center-info-text {
+  font-size: 0.94rem;
+  color: var(--dark-text);
+  line-height: 1.65;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.center-info-link {
+  margin-top: auto;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-gold-dark);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: var(--transition);
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(201, 168, 76, 0.2);
+}
+
+.center-info-link:hover {
+  color: var(--primary-purple);
+  transform: translateX(3px);
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Contact Form Section
+   -------------------------------------------------------------------------- */
+.contact-form-section {
+  padding: 90px 0;
+  background-color: var(--white);
+}
+
+.contact-form-card {
+  max-width: 840px;
+  margin: 0 auto;
+  background-color: var(--light-cream);
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(45, 27, 105, 0.08);
+}
+
+.form-title-box {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--primary-purple);
+  margin-bottom: 8px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 13px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--white);
+  color: var(--dark-text);
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 3px rgba(45, 27, 105, 0.12);
+}
+
+.form-textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-alert-box {
+  display: none;
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.form-alert-box.alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.form-alert-box.alert-danger {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+/* --------------------------------------------------------------------------
+   4. Google Maps Frame Section
+   -------------------------------------------------------------------------- */
+.map-section {
+  width: 100%;
+  height: 450px;
+  background-color: var(--light-lavender);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.map-section iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .contact-hero-title {
+    font-size: 3rem;
+  }
+  .center-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .contact-form-card {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-hero-title {
+    font-size: 2.2rem;
+  }
+  .center-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+}

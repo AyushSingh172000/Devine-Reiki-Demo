@@ -1,0 +1,616 @@
+/* ==========================================================================
+   Homepage Specific Stylesheet
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Hero Section
+   -------------------------------------------------------------------------- */
+.hero-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0 35px;
+  background: #110724;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+/* Background Canvas Layer - Absolute positioning out of document flow, z-index 1 */
+#hero-bg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.hero-location-badge,
+.hero-title,
+.hero-subtext,
+.hero-ctas {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold);
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  padding: 6px 20px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  backdrop-filter: blur(4px);
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 3.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent-gold);
+  font-weight: 400;
+}
+
+.hero-subtext {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 720px;
+  margin: 0 auto 38px;
+  line-height: 1.65;
+}
+
+.hero-subtext strong {
+  color: var(--accent-gold);
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
+/* Bottom Stats Row */
+.hero-stats-wrapper {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 36px;
+  margin-top: auto;
+}
+
+.hero-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.hero-stat-card {
+  padding: 10px;
+}
+
+.hero-stat-number {
+  font-family: var(--font-serif);
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.hero-stat-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --------------------------------------------------------------------------
+   2. Section Header Common Layout
+   -------------------------------------------------------------------------- */
+.section-header-flex {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.view-all-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-purple);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.view-all-link:hover {
+  color: var(--accent-gold-dark);
+  transform: translateX(4px);
+}
+
+/* --------------------------------------------------------------------------
+   3. Crystal Bracelets Section
+   -------------------------------------------------------------------------- */
+.bracelets-section {
+  padding: 100px 0;
+  background-color: var(--light-cream);
+}
+
+.carousel-photos-row {
+  margin-bottom: 60px;
+}
+
+.bracelet-photo-item {
+  flex: 0 0 220px;
+  height: 220px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 2px solid var(--white);
+  background: var(--white);
+}
+
+.bracelet-photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.bracelet-photo-item:hover img {
+  transform: scale(1.08);
+}
+
+.bracelets-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.bracelet-card {
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 44px 40px;
+  border: 1px solid rgba(45, 27, 105, 0.08);
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bracelet-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.bracelet-icon-circle {
+  font-size: 2.2rem;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background-color: var(--light-lavender);
+  color: var(--primary-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.bracelet-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 12px;
+}
+
+.bracelet-features {
+  margin: 24px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bracelet-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--dark-text);
+}
+
+.feature-check {
+  color: var(--accent-gold-dark);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   4. Horizontal Scrollable Rows (Services, Courses)
+   -------------------------------------------------------------------------- */
+.services-section,
+.courses-section,
+.products-section {
+  padding: 100px 0;
+}
+
+.services-section {
+  background-color: var(--white);
+}
+
+.courses-section {
+  background-color: var(--light-cream);
+}
+
+.scroll-cards-row {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scroll-cards-row::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.scroll-card {
+  flex: 0 0 360px;
+  scroll-snap-align: start;
+  background-color: var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.scroll-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.card-img-box {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  overflow: hidden;
+  background-color: var(--light-lavender);
+}
+
+.card-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.scroll-card:hover .card-img-box img {
+  transform: scale(1.08);
+}
+
+.card-badge-pos {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+}
+
+.card-body-content {
+  padding: 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-repeat-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-gold-dark);
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.card-main-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.card-desc-text {
+  font-size: 0.92rem;
+  color: var(--muted-gray);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.card-footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.card-price-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+}
+
+.card-duration {
+  font-size: 0.85rem;
+  color: var(--muted-gray);
+}
+
+/* --------------------------------------------------------------------------
+   5. Testimonials Section
+   -------------------------------------------------------------------------- */
+.testimonials-section {
+  padding: 100px 0;
+  background-color: var(--white);
+}
+
+.testimonials-photos-row {
+  margin-bottom: 50px;
+}
+
+.testimonial-photo-item {
+  flex: 0 0 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--accent-gold);
+  box-shadow: var(--card-shadow);
+}
+
+.testimonial-photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.testimonial-card-box {
+  background-color: var(--light-cream);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(45, 27, 105, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.quote-mark {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  line-height: 0.8;
+  color: var(--accent-gold);
+  margin-bottom: 12px;
+}
+
+.testimonial-text-body {
+  font-size: 0.96rem;
+  color: var(--dark-text);
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.testimonial-author-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.author-initial-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: var(--primary-purple);
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.author-info-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--primary-purple);
+}
+
+.author-info-text span {
+  font-size: 0.82rem;
+  color: var(--muted-gray);
+}
+
+/* --------------------------------------------------------------------------
+   6. Products Section
+   -------------------------------------------------------------------------- */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.product-card-item {
+  background-color: var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-card-item:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.product-img-box {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background-color: var(--light-lavender);
+}
+
+.product-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card-item:hover .product-img-box img {
+  transform: scale(1.08);
+}
+
+.product-badge-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+}
+
+.product-details-body {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-category-name {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-gold-dark);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.product-title-text {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dark-text);
+  margin-bottom: 12px;
+  line-height: 1.35;
+}
+
+.product-price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.sale-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: var(--muted-gray);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  .hero-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .bracelets-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+  .hero-location-badge {
+    font-size: 0.75rem;
+    padding: 5px 14px;
+  }
+  .hero-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .section-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

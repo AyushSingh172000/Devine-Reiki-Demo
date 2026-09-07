@@ -1,0 +1,188 @@
+<?php
+// Contact & Consultation Page - Divine Reiki & Energy Healing Center
+require_once __DIR__ . '/config/constants.php';
+if (!isset($pdo) || !($pdo instanceof PDO)) {
+    $pdo = require __DIR__ . '/config/db.php';
+}
+
+// Pre-filled Service/Course Parameter Handling
+$prefilledService = $_GET['service'] ?? '';
+$prefilledCourse = $_GET['course'] ?? '';
+$defaultMessage = '';
+
+if (!empty($prefilledService)) {
+    $defaultMessage = "Hello Dr. Chirag & Binal Gajjar, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
+} elseif (!empty($prefilledCourse)) {
+    $defaultMessage = "Hello Dr. Chirag & Binal Gajjar, I am interested in enrolling in the " . htmlspecialchars($prefilledCourse) . " certification course.";
+}
+
+// Page Metadata
+$pageTitle = "Contact Us & Book Free Session | Divine Reiki Healing Center";
+$pageDescription = "Get in touch with Dr. Chirag Gajjar & Binal Gajjar at Divine Reiki Healing Center in Adajan, Surat. Book a free 30-minute consultation or send an inquiry.";
+
+// Include Header Component
+include __DIR__ . '/includes/header.php';
+?>
+
+<!-- ==========================================================================
+     1. HERO SECTION (FREE CONSULTATION CTA)
+     ========================================================================== -->
+<section class="contact-hero" id="consultation-hero">
+    <div class="container animate-on-scroll">
+        <span class="contact-hero-badge">Free Online Consultation</span>
+        <h1 class="contact-hero-title">30 Minutes with <em>Dr. Chirag Gajjar</em></h1>
+        <p class="contact-hero-subtext">
+            Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with Reiki Grandmaster Dr. Chirag Gajjar.
+        </p>
+
+        <ul class="contact-hero-bullets">
+            <li>🌐 100% Online &amp; Confidential Call</li>
+            <li>🧘 Understand root cause of energy blockages</li>
+            <li>🎁 Completely Free — No Obligations</li>
+        </ul>
+
+        <div class="contact-hero-btns">
+            <a href="https://wa.me/919726581787?text=Hello%20Dr.%20Chirag%20Gajjar,%20I%20would%20like%20to%20schedule%20my%20free%2030-minute%20consultation." 
+               target="_blank" rel="noopener" class="btn-gold" style="padding: 14px 34px; font-size: 1.05rem;">
+                Book Free Session →
+            </a>
+            <a href="#contact-form-section" class="btn-secondary" style="padding: 14px 30px; font-size: 0.95rem;">
+                Send a Message
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     2. CENTER INFO SECTION (DIVINE REIKI HEALING CENTER)
+     ========================================================================== -->
+<section class="center-info-section" id="center-info">
+    <div class="container">
+        
+        <div style="text-align: center; margin-bottom: 50px;" class="animate-on-scroll">
+            <span class="badge badge-gold" style="margin-bottom: 12px;">Our Sanctuary Location</span>
+            <h2 class="section-heading" style="font-size: 2.8rem;">Divine Reiki <em>Healing Center</em></h2>
+            <p style="color: var(--muted-gray); max-width: 600px; margin: 0 auto; font-size: 1.05rem;">
+                Located in the heart of Adajan, Surat. Visit our peaceful center or connect with our healing practitioners virtually.
+            </p>
+        </div>
+
+        <div class="center-info-grid">
+            <!-- Info 1: Address -->
+            <div class="center-info-card animate-on-scroll">
+                <div class="center-icon-box">📍</div>
+                <h3 class="center-info-title">Visit Us</h3>
+                <p class="center-info-text"><?php echo SITE_ADDRESS; ?></p>
+                <a href="<?php echo MAPS_URL; ?>" target="_blank" rel="noopener" class="center-info-link">
+                    View on Google Maps →
+                </a>
+            </div>
+
+            <!-- Info 2: Call & WhatsApp -->
+            <div class="center-info-card animate-on-scroll">
+                <div class="center-icon-box">📞</div>
+                <h3 class="center-info-title">Call / WhatsApp</h3>
+                <p class="center-info-text">
+                    <a href="tel:<?php echo SITE_PHONE; ?>" style="color: inherit; text-decoration: none; font-weight: 600; display: block; margin-bottom: 4px;"><?php echo SITE_PHONE; ?></a>
+                    <span>WhatsApp: +91 97265 81787</span>
+                </p>
+                <a href="https://wa.me/919726581787?text=Hello%20Divine%20Reiki%20Center" target="_blank" rel="noopener" class="center-info-link">
+                    Chat on WhatsApp →
+                </a>
+            </div>
+
+            <!-- Info 3: Email -->
+            <div class="center-info-card animate-on-scroll">
+                <div class="center-icon-box">✉️</div>
+                <h3 class="center-info-title">Email Us</h3>
+                <p class="center-info-text">
+                    <a href="mailto:<?php echo SITE_EMAIL; ?>" style="color: inherit; text-decoration: none; font-weight: 500;"><?php echo SITE_EMAIL; ?></a>
+                </p>
+                <a href="mailto:<?php echo SITE_EMAIL; ?>" class="center-info-link">
+                    Send Email Inquiry →
+                </a>
+            </div>
+
+            <!-- Info 4: Center Hours -->
+            <div class="center-info-card animate-on-scroll">
+                <div class="center-icon-box">⏰</div>
+                <h3 class="center-info-title">Center Hours</h3>
+                <p class="center-info-text">
+                    <strong>Monday – Saturday:</strong><br>7:00 AM – 6:00 PM<br>
+                    <strong style="margin-top: 6px; display: inline-block;">Sunday:</strong><br>9:00 AM – 1:00 PM
+                </p>
+                <a href="#consultation-hero" class="center-info-link">
+                    Book Consultation →
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ==========================================================================
+     3. CONTACT FORM SECTION (#contact-form-section)
+     ========================================================================== -->
+<section class="contact-form-section" id="contact-form-section">
+    <div class="container">
+        
+        <div class="contact-form-card animate-on-scroll" id="book-form">
+            <div class="form-title-box">
+                <span class="badge" style="margin-bottom: 10px;">Direct Message</span>
+                <h2 class="section-heading" style="font-size: 2.4rem; margin-bottom: 10px;">Send Us a <em>Message</em></h2>
+                <p style="color: var(--muted-gray); font-size: 0.98rem;">Fill out the form below and Dr. Chirag or Binal Gajjar will reach out to you within 24 hours.</p>
+            </div>
+
+            <!-- AJAX Response Alert Box -->
+            <div id="form-response-alert" class="form-alert-box" role="alert"></div>
+
+            <form id="contact-form-element" action="<?php echo BASE_URL; ?>api/contact-submit.php" method="POST" novalidate>
+                <div class="form-grid-2col">
+                    <!-- Name Input -->
+                    <div class="form-group">
+                        <label for="contact-name" class="form-label">Your Full Name *</label>
+                        <input type="text" id="contact-name" name="name" class="form-input" placeholder="e.g. Ananya Sharma" required>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="form-group">
+                        <label for="contact-email" class="form-label">Your Email Address *</label>
+                        <input type="email" id="contact-email" name="email" class="form-input" placeholder="name@example.com" required>
+                    </div>
+
+                    <!-- Phone Input -->
+                    <div class="form-group full-width">
+                        <label for="contact-phone" class="form-label">Phone / WhatsApp Number *</label>
+                        <input type="tel" id="contact-phone" name="phone" class="form-input" placeholder="+91 98765 43210" required>
+                    </div>
+
+                    <!-- Message Textarea -->
+                    <div class="form-group full-width">
+                        <label for="contact-message" class="form-label">Your Message or Healing Concern *</label>
+                        <textarea id="contact-message" name="message" class="form-textarea" placeholder="Tell us about your physical, emotional, or spiritual healing goals..." required><?php echo htmlspecialchars($defaultMessage); ?></textarea>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 10px;">
+                    <button type="submit" id="contact-submit-btn" class="btn-gold" style="padding: 14px 44px; font-size: 1.05rem; cursor: pointer; border: none;">
+                        Send Message →
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!-- ==========================================================================
+     4. GOOGLE MAP EMBED SECTION
+     ========================================================================== -->
+<section class="map-section" id="location-map">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.866755490487!2d72.7981504758784!3d21.19745918228308!2m3!1f02f000!0f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04e6c38bbcd69%3A0x6b13280c42eb5598!2sAdajan%2C%20Surat%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Shree Sai Reiki & Yog Centre Location Map">
+    </iframe>
+</section>
+
+<!-- Include Footer Component -->
+<?php include __DIR__ . '/includes/footer.php'; ?>

@@ -1,0 +1,262 @@
+<?php
+// About Us Page - Divine Reiki & Energy Healing Center
+require_once __DIR__ . '/config/constants.php';
+if (!isset($pdo) || !($pdo instanceof PDO)) {
+    $pdo = require __DIR__ . '/config/db.php';
+}
+
+// Page Metadata
+$pageTitle = "About Us | Divine Reiki & Energy Healing Center";
+$pageDescription = "Learn about the founding story of Divine Reiki Center in Adajan, Surat, guided by Dr. Chirag Gajjar & Binal Gajjar, and meet our team of dedicated energy practitioners.";
+
+// Fetch Team Members from MySQL
+try {
+    $teamStmt = $pdo->query("SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order ASC");
+    $teamMembers = $teamStmt ? $teamStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (PDOException $e) {
+    error_log("Database error in about.php: " . $e->getMessage());
+    $teamMembers = [];
+}
+
+// Filter main founders if present, or provide structured fallbacks
+$founder1 = null;
+$founder2 = null;
+$practitioners = [];
+
+foreach ($teamMembers as $member) {
+    if (strpos($member['name'], 'Chirag') !== false || strpos($member['role'], 'Grand Master') !== false) {
+        if (!$founder1) {
+            $founder1 = $member;
+            continue;
+        }
+    }
+    if (strpos($member['name'], 'Binal') !== false || strpos($member['role'], 'Crystal') !== false) {
+        if (!$founder2) {
+            $founder2 = $member;
+            continue;
+        }
+    }
+    $practitioners[] = $member;
+}
+
+// Fallback founder data if DB search is empty
+if (!$founder1) {
+    $founder1 = [
+        'name' => 'Dr. Chirag Gajjar',
+        'role' => 'Founder & Reiki Grand Master',
+        'title' => 'Reiki Grand Master & Spiritual Healer',
+        'bio' => 'Dr. Chirag Gajjar is a renowned Reiki Grand Master with over 25 years of experience in energy medicine, aura transformation, and holistic wellness. He has guided over 30,000 individuals worldwide to unlock their natural healing capacity.',
+        'specialties' => json_encode(["Usui Reiki Grand Master", "Aura Transformation", "Energy Medicine", "Spiritual Counseling"]),
+        'image' => 'assets/images/team/dr-chirag-gajjar.jpg'
+    ];
+}
+if (!$founder2) {
+    $founder2 = [
+        'name' => 'Binal Gajjar',
+        'role' => 'Co-Founder & Crystal Healing Master',
+        'title' => 'Crystal Healing & Numerology Expert',
+        'bio' => 'Binal Gajjar is a master crystal energy therapist and numerology consultant. Her intuitive gemstone attunements and personalized energy grids help clients manifest harmony, health, and prosperity.',
+        'specialties' => json_encode(["Crystal Healing Expert", "Numerology Consultant", "Chakra Alignment", "Gemstone Attunement"]),
+        'image' => 'assets/images/team/binal-gajjar.jpg'
+    ];
+}
+
+// Ensure practitioners includes all team members for full team carousel
+$allTeam = !empty($teamMembers) ? $teamMembers : [$founder1, $founder2];
+
+// Include Header Component
+include __DIR__ . '/includes/header.php';
+?>
+
+<!-- ==========================================================================
+     1. HERO SECTION & SCROLLING MARQUEE
+     ========================================================================== -->
+<section class="about-hero" id="about-hero">
+    <div class="container animate-on-scroll">
+        <span class="about-hero-badge">Est. 2014 · Adajan, Surat</span>
+        <h1 class="about-hero-title">
+            Healing with <em>Heart</em> & Purpose
+        </h1>
+        <p class="about-hero-text">
+            Established in 2014 in Adajan, Surat, Divine Reiki & Energy Healing Center was born out of a profound commitment to restore emotional balance, physical health, and spiritual alignment. Over the last decade, we have empowered over 30,000 individuals through authentic Usui Reiki attunements, chakra balancing, and intention-charged crystal energy.
+        </p>
+    </div>
+
+    <!-- Infinite Scrolling Stats Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <div class="marquee-item"><span>30K+ Healed Clients</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>25+ Years Experience</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>25K+ Sessions Completed</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>6 Course Levels Offered</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>100% Authentic Lineage</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>30K+ Healed Clients</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>25+ Years Experience</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span>25K+ Sessions Completed</span> <span class="marquee-dot">✦</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     2. FOUNDERS SECTION
+     ========================================================================== -->
+<section class="founders-section" id="founders">
+    <div class="container">
+        <div class="text-center animate-on-scroll">
+            <span class="section-label">The Founders</span>
+            <h2 class="section-heading">The People Behind Every <em>Healing</em></h2>
+            <p>Meet our visionary founders who have dedicated their lives to raising spiritual consciousness and healing hearts.</p>
+        </div>
+
+        <div class="founders-grid">
+            <!-- Founder Card 1: Dr. Chirag Gajjar -->
+            <div class="founder-card animate-on-scroll">
+                <div class="founder-img-box">
+                    <img src="<?php echo htmlspecialchars($founder1['image'] ?: 'assets/images/team/dr-chirag-gajjar.jpg'); ?>" alt="<?php echo htmlspecialchars($founder1['name']); ?>" loading="lazy">
+                </div>
+                <div class="founder-content-box">
+                    <span class="founder-role-title"><?php echo htmlspecialchars($founder1['role']); ?></span>
+                    <h3 class="founder-name"><?php echo htmlspecialchars($founder1['name']); ?></h3>
+                    <p class="founder-bio-text"><?php echo htmlspecialchars($founder1['bio']); ?></p>
+                    <div>
+                        <div class="specialties-title">Core Specialties</div>
+                        <div class="specialty-tags-list">
+                            <?php 
+                            $specs = is_string($founder1['specialties']) ? json_decode($founder1['specialties'], true) : $founder1['specialties'];
+                            if (is_array($specs)):
+                                foreach ($specs as $tag):
+                            ?>
+                                <span class="specialty-tag-badge"><?php echo htmlspecialchars($tag); ?></span>
+                            <?php 
+                                endforeach;
+                            endif;
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Founder Card 2: Binal Gajjar (Reverse Layout) -->
+            <div class="founder-card reverse animate-on-scroll">
+                <div class="founder-img-box">
+                    <img src="<?php echo htmlspecialchars($founder2['image'] ?: 'assets/images/team/binal-gajjar.jpg'); ?>" alt="<?php echo htmlspecialchars($founder2['name']); ?>" loading="lazy">
+                </div>
+                <div class="founder-content-box">
+                    <span class="founder-role-title"><?php echo htmlspecialchars($founder2['role']); ?></span>
+                    <h3 class="founder-name"><?php echo htmlspecialchars($founder2['name']); ?></h3>
+                    <p class="founder-bio-text"><?php echo htmlspecialchars($founder2['bio']); ?></p>
+                    <div>
+                        <div class="specialties-title">Core Specialties</div>
+                        <div class="specialty-tags-list">
+                            <?php 
+                            $specs2 = is_string($founder2['specialties']) ? json_decode($founder2['specialties'], true) : $founder2['specialties'];
+                            if (is_array($specs2)):
+                                foreach ($specs2 as $tag):
+                            ?>
+                                <span class="specialty-tag-badge"><?php echo htmlspecialchars($tag); ?></span>
+                            <?php 
+                                endforeach;
+                            endif;
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     3. TEAM SECTION
+     ========================================================================== -->
+<section class="team-section" id="team">
+    <div class="container">
+        <div class="text-center animate-on-scroll">
+            <span class="section-label">Our Practitioners</span>
+            <h2 class="section-heading">Meet Our <em>Healing</em> Team</h2>
+            <p>Our certified masters and energy therapists bring deep wisdom, compassion, and specialized healing techniques to every session.</p>
+        </div>
+
+        <!-- Infinite Auto-Scrolling Team Carousel -->
+        <div class="infinite-carousel team-carousel-wrapper">
+            <div class="infinite-carousel-track">
+                <?php foreach ($allTeam as $member): ?>
+                    <div class="team-member-card">
+                        <div class="team-img-box">
+                            <img src="<?php echo htmlspecialchars($member['image'] ?: 'assets/images/team/ananya-sharma.jpg'); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" loading="lazy">
+                            <span class="badge badge-gold team-badge-tag">Reiki Master</span>
+                        </div>
+                        <div class="team-info-body">
+                            <h3 class="team-name-title"><?php echo htmlspecialchars($member['name']); ?></h3>
+                            <span class="team-role-subtitle"><?php echo htmlspecialchars($member['role']); ?></span>
+                            <p class="team-bio-short"><?php echo htmlspecialchars(substr($member['bio'], 0, 110)) . '...'; ?></p>
+                            <div class="specialty-tags-list">
+                                <?php 
+                                $mSpecs = is_string($member['specialties']) ? json_decode($member['specialties'], true) : $member['specialties'];
+                                if (is_array($mSpecs)):
+                                    foreach (array_slice($mSpecs, 0, 2) as $t):
+                                ?>
+                                    <span class="specialty-tag-badge" style="font-size: 0.75rem; padding: 4px 10px;"><?php echo htmlspecialchars($t); ?></span>
+                                <?php 
+                                    endforeach;
+                                endif;
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     4. VALUES SECTION
+     ========================================================================== -->
+<section class="values-section" id="values">
+    <div class="container">
+        <div class="text-center animate-on-scroll">
+            <span class="section-label">What We Stand For</span>
+            <h2 class="section-heading">Our Core <em>Values</em></h2>
+            <p>Principles that guide every healing session, attunement workshop, and crystal recommendation at our center.</p>
+        </div>
+
+        <div class="values-grid">
+            <!-- Value 01 -->
+            <div class="value-card animate-on-scroll">
+                <div class="value-number">01</div>
+                <h3 class="value-card-title">Authenticity</h3>
+                <p class="value-card-text">Rooted in traditional Usui Reiki lineage and pure spiritual energy practices without compromise or diluted shortcuts.</p>
+            </div>
+
+            <!-- Value 02 -->
+            <div class="value-card animate-on-scroll">
+                <div class="value-number">02</div>
+                <h3 class="value-card-title">Compassion</h3>
+                <p class="value-card-text">Meeting every student and client without judgment, holding a safe and supportive space for deep emotional recovery and spiritual growth.</p>
+            </div>
+
+            <!-- Value 03 -->
+            <div class="value-card animate-on-scroll">
+                <div class="value-number">03</div>
+                <h3 class="value-card-title">Empowerment</h3>
+                <p class="value-card-text">Equipping individuals with practical self-healing tools and knowledge to take control of their lifelong energy balance and well-being.</p>
+            </div>
+
+            <!-- Value 04 -->
+            <div class="value-card animate-on-scroll">
+                <div class="value-number">04</div>
+                <h3 class="value-card-title">Community</h3>
+                <p class="value-card-text">Building an inclusive global family of practitioners and clients who uplift, support, and inspire each other's spiritual evolution.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     5. CTA SECTION
+     ========================================================================== -->
+<?php include __DIR__ . '/includes/cta-section.php'; ?>
+
+<!-- Include Footer Component -->
+<?php include __DIR__ . '/includes/footer.php'; ?>
