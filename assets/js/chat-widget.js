@@ -288,7 +288,7 @@
       } else {
         const errorMsg = data.message || 'Unable to connect to AI Assistant. Please try again.';
         showError(errorMsg);
-        appendMessageUI('assistant', '🙏 I am temporarily having trouble reaching the energy network. Please call/WhatsApp us directly at +91 97265 81787 for immediate healing guidance.');
+        appendMessageUI('assistant', '🙏 I am temporarily having trouble reaching the energy network. Please call/WhatsApp us directly at +91 99716 55705 for immediate healing guidance.');
       }
     } catch (err) {
       console.error('Reiki Chat API Error:', err);

@@ -77,7 +77,7 @@ if (!empty($message)) {
 }
 $waSummary .= "Please confirm my custom gemstone recommendation.";
 
-$waUrl = "https://wa.me/919726581787?text=" . urlencode($waSummary);
+$waUrl = "https://wa.me/919971655705?text=" . urlencode($waSummary);
 
 // Insert into Database
 try {

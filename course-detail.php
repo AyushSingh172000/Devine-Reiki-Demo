@@ -114,7 +114,7 @@ include __DIR__ . '/includes/header.php';
                     <a href="<?php echo BASE_URL; ?>contact.php?course=<?php echo urlencode($course['slug']); ?>#enquire" class="btn-gold w-full text-center" style="padding: 12px; font-size: 1rem;">
                         Enquire Now →
                     </a>
-                    <a href="https://wa.me/919726581787?text=Hello%20Divine%20Reiki,%20I%20want%20to%20enquire%20about%20the%20<?php echo urlencode($course['title']); ?>%20course." target="_blank" rel="noopener" class="btn-secondary w-full text-center" style="padding: 12px; font-size: 0.92rem;">
+                    <a href="https://wa.me/919971655705?text=Hello%20Reiki%20Bliss,%20I%20want%20to%20enquire%20about%20the%20<?php echo urlencode($course['title']); ?>%20course." target="_blank" rel="noopener" class="btn-secondary w-full text-center" style="padding: 12px; font-size: 0.92rem;">
                         💬 Chat on WhatsApp
                     </a>
                 </div>

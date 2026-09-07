@@ -42,7 +42,7 @@ include __DIR__ . '/includes/header.php';
         </ul>
 
         <div class="contact-hero-btns">
-            <a href="https://wa.me/919726581787?text=Hello%20Anupama%20Agrawal,%20I%20would%20like%20to%20schedule%20my%20free%2030-minute%20consultation." 
+            <a href="https://wa.me/919971655705?text=Hello%20Anupama%20Agrawal,%20I%20would%20like%20to%20schedule%20my%20free%2030-minute%20consultation." 
                target="_blank" rel="noopener" class="btn-gold" style="padding: 14px 34px; font-size: 1.05rem;">
                 Book Free Session →
             </a>
@@ -84,9 +84,9 @@ include __DIR__ . '/includes/header.php';
                 <h3 class="center-info-title">Call / WhatsApp</h3>
                 <p class="center-info-text">
                     <a href="tel:<?php echo SITE_PHONE; ?>" style="color: inherit; text-decoration: none; font-weight: 600; display: block; margin-bottom: 4px;"><?php echo SITE_PHONE; ?></a>
-                    <span>WhatsApp: +91 97265 81787</span>
+                    <span>WhatsApp: +91 99716 55705</span>
                 </p>
-                <a href="https://wa.me/919726581787?text=Hello%20Divine%20Reiki%20Center" target="_blank" rel="noopener" class="center-info-link">
+                <a href="https://wa.me/919971655705?text=Hello%20Reiki%20Bliss" target="_blank" rel="noopener" class="center-info-link">
                     Chat on WhatsApp →
                 </a>
             </div>

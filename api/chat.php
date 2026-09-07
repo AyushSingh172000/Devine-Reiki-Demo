@@ -239,7 +239,7 @@ try {
 
             } catch (\PDOException $e) {
                 error_log("Contact submission error from Chatbot: " . $e->getMessage());
-                $failReply = "I encountered an error submitting your request. Please try again or WhatsApp us directly at +91 97265 81787.";
+                $failReply = "I encountered an error submitting your request. Please try again or WhatsApp us directly at +91 99716 55705.";
                 
                 echo json_encode([
                     'status' => 'error',

@@ -98,7 +98,7 @@ require_once __DIR__ . '/../config/constants.php';
                     </li>
                     <li>
                         <span class="contact-icon">💬</span>
-                        <a href="https://wa.me/919726581787" target="_blank" rel="noopener">WhatsApp Us (+91 97265 81787)</a>
+                        <a href="https://wa.me/919971655705" target="_blank" rel="noopener">WhatsApp Us (+91 99716 55705)</a>
                     </li>
                     <li>
                         <span class="contact-icon">🗺️</span>
@@ -119,7 +119,7 @@ require_once __DIR__ . '/../config/constants.php';
 </footer>
 
 <!-- Floating WhatsApp Chat Button -->
-<a href="https://wa.me/919726581787?text=Hello%20Divine%20Reiki%20Center,%20I%20would%20like%20to%20inquire%20about%20a%20healing%20session." 
+<a href="https://wa.me/919971655705?text=Hello%20Reiki%20Bliss,%20I%20would%20like%20to%20inquire%20about%20a%20healing%20session." 
    target="_blank" 
    rel="noopener" 
    class="whatsapp-float-btn" 
