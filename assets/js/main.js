@@ -57,7 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
     anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
       if (targetId && targetId !== '#') {
-        const targetElement = document.querySelector(targetId);
+        let targetElement = document.querySelector(targetId);
+        if (!targetElement && targetId === '#contact-form') {
+          targetElement = document.getElementById('contact-form-section');
+        }
         if (targetElement) {
           e.preventDefault();
           closeMobileMenu();
@@ -258,6 +261,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (waModalWrapper && waModalWrapper.classList.contains('open')) {
       if (!waModalWrapper.contains(e.target) && (!waFloatBtn || !waFloatBtn.contains(e.target))) {
         toggleWaModal(false);
+      }
+    }
+  });
+
+  // 7. Google Calendar Appointment Scheduling Popup Trigger
+  document.addEventListener('click', (e) => {
+    const bookingBtn = e.target.closest('a[href*="calendar.google.com"], .btn-book-session, .open-gcal-popup');
+    if (bookingBtn) {
+      const gcalBtn = document.querySelector('.qxCTlb');
+      if (gcalBtn) {
+        e.preventDefault();
+        gcalBtn.click();
       }
     }
   });

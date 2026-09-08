@@ -41,6 +41,7 @@ try {
 }
 
 // Define Site Constants from $settings
+define('BOOKING_URL', $settings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1RI6bVu-iU0Oi4_H09OlL-bQglgmpskaOrSO0nCevRuaKlWfCVYv1XsrEzLz-g7HUkgeiO0C2c');
 define('SITE_NAME', $settings['site_name'] ?? 'Reiki Bliss');
 define('SITE_PHONE', $settings['phone'] ?? '');
 define('SITE_EMAIL', $settings['email'] ?? '');

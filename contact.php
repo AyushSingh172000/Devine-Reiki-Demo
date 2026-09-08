@@ -43,13 +43,39 @@ include __DIR__ . '/includes/header.php';
         </ul>
 
         <div class="contact-hero-btns">
-            <a href="https://wa.me/919971655705?text=Hello%20Anupama%20Agrawal,%20I%20would%20like%20to%20schedule%20my%20free%2030-minute%20consultation." 
+            <a href="<?php echo BOOKING_URL; ?>" 
                target="_blank" rel="noopener" class="btn-gold" style="padding: 14px 34px; font-size: 1.05rem;">
                 Book Free Session →
             </a>
-            <a href="#contact-form-section" class="btn-secondary" style="padding: 14px 30px; font-size: 0.95rem;">
-                Send a Message
+            <a href="#booking-embed-section" class="btn-secondary" style="padding: 14px 30px; font-size: 0.95rem;">
+                Schedule directly on page ↓
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     1b. EMBEDDED GOOGLE CALENDAR BOOKING SECTION
+     ========================================================================== -->
+<section class="booking-embed-section" id="booking-embed-section">
+    <canvas class="hero-bg-canvas"></canvas>
+    <div class="container animate-on-scroll">
+        <div style="text-align: center; margin-bottom: 35px; position: relative; z-index: 2;">
+            <span class="badge badge-gold" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Online Calendar</span>
+            <h2 class="section-heading" style="font-size: 2.6rem; color: #ffffff;">Schedule Your <em>Free Session</em></h2>
+            <p style="color: rgba(255, 255, 255, 0.82); max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+                Pick a time that works for you. A Google Meet link will be sent to your email automatically.
+            </p>
+        </div>
+
+        <div class="booking-embed-wrapper">
+            <iframe 
+                src="<?php echo BOOKING_URL; ?>?gv=true" 
+                title="Book a free healing consultation"
+                class="booking-iframe"
+                loading="lazy"
+                frameborder="0">
+            </iframe>
         </div>
     </div>
 </section>
@@ -113,7 +139,7 @@ include __DIR__ . '/includes/header.php';
                     <strong>Monday – Saturday:</strong><br>7:00 AM – 6:00 PM<br>
                     <strong style="margin-top: 6px; display: inline-block;">Sunday:</strong><br>9:00 AM – 1:00 PM
                 </p>
-                <a href="#consultation-hero" class="center-info-link">
+                <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="center-info-link">
                     Book Consultation →
                 </a>
             </div>

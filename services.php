@@ -39,7 +39,7 @@ include __DIR__ . '/includes/header.php';
         </p>
 
         <div style="margin-bottom: 28px;">
-            <a href="<?php echo BASE_URL; ?>contact.php#consultation-hero" class="btn-gold" style="padding: 12px 30px; font-size: 1rem; text-decoration: none;">
+            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold" style="padding: 12px 30px; font-size: 1rem; text-decoration: none;">
                 Book Free Session →
             </a>
         </div>
@@ -92,7 +92,7 @@ include __DIR__ . '/includes/header.php';
                             <?php endif; ?>
                             <span class="featured-duration"> · <?php echo htmlspecialchars($featuredService['duration_minutes']); ?> mins session</span>
                         </div>
-                        <a href="<?php echo BASE_URL; ?>contact.php?service=<?php echo urlencode($featuredService['slug']); ?>#contact-form-section" class="btn-primary">
+                        <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary">
                             Book Session →
                         </a>
                     </div>
@@ -125,7 +125,7 @@ include __DIR__ . '/includes/header.php';
                                 <?php endif; ?>
                                 <span style="font-size: 0.82rem; color: var(--muted-gray);"> (<?php echo htmlspecialchars($service['duration_minutes']); ?> mins)</span>
                             </div>
-                            <a href="<?php echo BASE_URL; ?>contact.php?service=<?php echo urlencode($service['slug']); ?>#contact-form-section" class="btn-secondary" style="padding: 6px 14px; font-size: 0.84rem;">
+                            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-secondary" style="padding: 6px 14px; font-size: 0.84rem;">
                                 Book Session →
                             </a>
                         </div>

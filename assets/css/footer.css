@@ -567,3 +567,8 @@
     height: 50px;
   }
 }
+
+/* Hide Google Calendar default scheduling button so only site's custom styled buttons trigger it */
+.qxCTlb {
+  display: none !important;
+}

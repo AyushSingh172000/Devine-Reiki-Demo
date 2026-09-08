@@ -109,9 +109,8 @@ include __DIR__ . '/includes/header.php';
                     ?>
                 </div>
 
-                <!-- Book Session Action Button -->
                 <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-                    <a href="<?php echo BASE_URL; ?>contact.php?service=<?php echo urlencode($service['slug']); ?>#book-form" class="btn-gold" style="font-size: 1.1rem; padding: 14px 36px;">
+                    <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold" style="font-size: 1.1rem; padding: 14px 36px;">
                         Book Session Now →
                     </a>
                 </div>

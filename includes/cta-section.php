@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/constants.php';
             Take the first step. Connect with <strong>Reiki Grandmaster Anupama Agrawal</strong> and discover which modality resonates with your soul.
         </p>
         <div class="cta-buttons">
-            <a href="<?php echo BASE_URL; ?>contact.php#consultation-hero" class="btn-gold btn-cta-primary">
+            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold btn-cta-primary">
                 Book Free Session <span class="btn-arrow">→</span>
             </a>
             <a href="<?php echo BASE_URL; ?>about.php" class="btn-secondary btn-cta-secondary">

@@ -73,7 +73,7 @@ include __DIR__ . '/includes/header.php';
         </p>
 
         <div class="hero-ctas">
-            <a href="<?php echo BASE_URL; ?>contact.php#consultation-hero" class="btn-gold btn-hero-primary">
+            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
                 Book Free Session <span class="btn-arrow">→</span>
             </a>
             <a href="<?php echo BASE_URL; ?>courses.php" class="btn-secondary btn-hero-secondary">
@@ -214,7 +214,7 @@ include __DIR__ . '/includes/header.php';
                                         <span class="card-price-value">₹<?php echo number_format($service['price'], 2); ?></span>
                                     <?php endif; ?>
                                 </div>
-                                <a href="<?php echo BASE_URL; ?>services.php#book" class="btn-primary btn-book-nav">Book Session →</a>
+                                <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary btn-book-nav">Book Session →</a>
                             </div>
                         </div>
                     </div>

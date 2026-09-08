@@ -21,7 +21,7 @@ require_once __DIR__ . '/../config/constants.php';
                 <p>Your first 20-minute spiritual consultation with our Reiki Masters is completely free.</p>
             </div>
             <div class="footer-cta-action">
-                <a href="<?php echo BASE_URL; ?>contact.php#consultation-hero" class="btn-gold">Book Free Session ✨</a>
+                <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold">Book Free Session ✨</a>
             </div>
         </div>
 
@@ -76,7 +76,7 @@ require_once __DIR__ . '/../config/constants.php';
                     <li><a href="<?php echo BASE_URL; ?>services.php#chakra-balancing">Chakra Balancing</a></li>
                     <li><a href="<?php echo BASE_URL; ?>services.php#aura-cleansing">Aura Cleansing & Repair</a></li>
                     <li><a href="<?php echo BASE_URL; ?>services.php#crystal-therapy">Crystal Energy Therapy</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>contact.php#consultation-hero">Free Consultation</a></li>
+                    <li><a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener">Free Consultation</a></li>
                 </ul>
             </div>
 
@@ -218,5 +218,33 @@ require_once __DIR__ . '/../config/constants.php';
 <?php if (isset($currentPage) && ($currentPage == 'order-bracelet.php' || $currentPage == 'custom-bracelet.php')): ?>
 <script src="<?php echo BASE_URL; ?>assets/js/order-bracelet.js"></script>
 <?php endif; ?>
+
+<!-- Google Calendar Appointment Scheduling Popup Integration -->
+<style>
+.qxCTlb {
+  display: none !important;
+}
+</style>
+<div id="gcal-scheduling-target-wrapper" style="display: none !important;" aria-hidden="true">
+    <div id="gcal-scheduling-target"></div>
+</div>
+<script src="https://calendar.google.com/calendar/scheduling-button-script.js" async onload="initGCalButton()"></script>
+<script>
+function initGCalButton() {
+  if (window.calendar && window.calendar.schedulingButton) {
+    var target = document.getElementById('gcal-scheduling-target');
+    if (target && !document.querySelector('.qxCTlb')) {
+      calendar.schedulingButton.load({
+        url: '<?php echo BOOKING_URL; ?>?gv=true',
+        color: '#C9A84C',
+        label: 'Book an appointment',
+        target: target,
+      });
+    }
+  }
+}
+window.addEventListener('load', initGCalButton);
+</script>
+<!-- end Google Calendar Appointment Scheduling -->
 </body>
 </html>

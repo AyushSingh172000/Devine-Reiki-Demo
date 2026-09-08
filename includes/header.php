@@ -136,6 +136,9 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/order-bracelet.css">
     <?php endif; ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/responsive.css">
+    
+    <!-- Google Calendar Appointment Scheduling Stylesheet -->
+    <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
 </head>
 <body>
 
@@ -193,7 +196,7 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
 
             <!-- Navbar Actions (CTA & Hamburger) -->
             <div class="navbar-actions">
-                <a href="<?php echo BASE_URL; ?>contact.php" class="btn-primary btn-book-nav">Book Session</a>
+                <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary btn-book-nav">Book Session</a>
                 
                 <!-- Mobile Hamburger Toggle -->
                 <button class="hamburger-toggle" id="hamburger-toggle" aria-label="Toggle Navigation Menu">
@@ -228,7 +231,7 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
             </ul>
 
             <div class="mobile-nav-cta">
-                <a href="<?php echo BASE_URL; ?>services.php#book" class="btn-primary w-full">Book Session</a>
+                <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary w-full">Book Session</a>
             </div>
         </div>
     </div>
