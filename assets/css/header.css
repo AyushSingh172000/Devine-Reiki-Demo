@@ -86,12 +86,20 @@
 }
 
 .brand-logo-img {
-  height: 42px;
-  width: 42px;
-  object-fit: cover;
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
   border-radius: 50%;
+  background: #ffffff;
+  padding: 3px;
   border: 2px solid var(--accent-gold);
-  box-shadow: 0 2px 8px rgba(201, 168, 76, 0.25);
+  box-shadow: 0 2px 10px rgba(201, 168, 76, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.brand-logo-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(201, 168, 76, 0.5);
 }
 
 .logo-icon {

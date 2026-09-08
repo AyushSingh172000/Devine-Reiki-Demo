@@ -64,8 +64,10 @@ body {
 .admin-brand-logo-img {
   height: 38px;
   width: 38px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
+  background: #ffffff;
+  padding: 2px;
   border: 2px solid var(--accent-gold, #C9A84C);
 }
 

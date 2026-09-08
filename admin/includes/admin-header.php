@@ -41,7 +41,7 @@ $currentAdminPage = basename($_SERVER['PHP_SELF'] ?? '');
 <aside class="admin-sidebar">
     <div>
         <a href="<?php echo BASE_URL; ?>admin/index.php" class="sidebar-brand">
-            <img src="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg" alt="Reiki Bliss Admin Logo" class="admin-brand-logo-img">
+            <img src="<?php echo BASE_URL; ?>assets/images/reikilogo1.png" alt="Reiki Bliss Admin Logo" class="admin-brand-logo-img">
             <div class="sidebar-brand-title">
                 Reiki Bliss
                 <span>Admin Control</span>

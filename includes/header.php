@@ -149,7 +149,7 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
         <div class="container navbar-container">
             <!-- Brand Logo -->
             <a href="<?php echo BASE_URL; ?>" class="navbar-logo">
-                <img src="<?php echo BASE_URL; ?>assets/images/reikilogo.jpg" alt="Reiki Bliss Logo" class="brand-logo-img">
+                <img src="<?php echo BASE_URL; ?>assets/images/reikilogo1.png" alt="Reiki Bliss Logo" class="brand-logo-img">
                 <span class="logo-text">
                     <strong class="logo-title">Reiki Bliss</strong>
                     <span class="logo-subtitle">Healing Center</span>
