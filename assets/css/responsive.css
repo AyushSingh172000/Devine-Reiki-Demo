@@ -189,3 +189,89 @@
     text-align: center;
   }
 }
+
+/* --------------------------------------------------------------------------
+   4. GOOGLE CALENDAR APPOINTMENT SCHEDULING (MOBILE & TABLET OVERRIDES)
+   -------------------------------------------------------------------------- */
+.qxCTlb {
+  display: none !important;
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .hur54b {
+    padding: 32px !important;
+  }
+  .Xfsokf {
+    top: 14px !important;
+    right: 32px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hur54b {
+    padding: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(10, 5, 22, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    z-index: 999999 !important;
+    box-sizing: border-box !important;
+  }
+
+  .Xfsokf {
+    position: fixed !important;
+    top: 12px !important;
+    right: 14px !important;
+    z-index: 1000000 !important;
+    background: linear-gradient(135deg, #251343, #15092a) !important;
+    border: 1.5px solid #C9A84C !important;
+    color: #ffffff !important;
+    border-radius: 999px !important;
+    padding: 8px 18px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 10px rgba(201, 168, 76, 0.3) !important;
+    font-family: inherit !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .Xfsokf:active, .Xfsokf:hover {
+    background: #C9A84C !important;
+    color: #110724 !important;
+  }
+
+  .Xfsokf .L0Dvsd {
+    color: inherit !important;
+    font-size: 18px !important;
+    margin-right: 4px !important;
+  }
+
+  .Xfsokf .uE25ec {
+    color: inherit !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .mmGMM {
+    width: 100vw !important;
+    height: calc(100vh - 58px) !important;
+    margin: 58px 0 0 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    border: none !important;
+    background: #ffffff !important;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.7) !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: auto !important;
+  }
+}
