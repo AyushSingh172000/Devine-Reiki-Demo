@@ -1,13 +1,28 @@
 <?php
 // Database configuration and PDO connection
 
-$host = 'localhost';
-$dbname = 'reiki_website';
-$username = 'root';
-$password = '';
-$charset = 'utf8mb4';
+// Check if running on Local XAMPP
+$hostHeader = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+$isLocal = (strpos($hostHeader, 'localhost') !== false || strpos($hostHeader, '127.0.0.1') !== false);
 
-$dsn = "mysql:host={$host};dbname={$dbname};charset={$charset}";
+if ($isLocal) {
+    // Localhost XAMPP
+    $host = 'localhost';
+    $port = 3306;
+    $dbname = 'reiki_website';
+    $username = 'root';
+    $password = '';
+} else {
+    // InfinityFree Cloud (Default for live server)
+    $host = 'sql206.infinityfree.com';
+    $port = 3306;
+    $dbname = 'if0_42861215_reikibliss';
+    $username = 'if0_42861215';
+    $password = 'Ayush171998';
+}
+
+$charset = 'utf8mb4';
+$dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset={$charset}";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,

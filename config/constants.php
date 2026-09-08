@@ -4,7 +4,9 @@
 // Dynamic Base URL definition
 if (!defined('BASE_URL')) {
     if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['SCRIPT_NAME'])) {
-        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+        $scheme = $isHttps ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
         $dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
         $baseDir = rtrim($dir, '/') . '/';

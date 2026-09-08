@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>InfinityFree Cloud Deployment Guide - Reiki Bliss</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  @page {
+    size: A4;
+    margin: 14mm 14mm 15mm 14mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+    font-size: 10.5pt;
+    background: #ffffff;
+  }
+
+  .cover-header {
+    border-bottom: 3px solid #C9A84C;
+    padding-bottom: 16px;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .brand-title {
+    font-size: 23pt;
+    font-weight: 800;
+    color: #110724;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .brand-title span {
+    color: #C9A84C;
+  }
+
+  .brand-subtitle {
+    font-size: 11.5pt;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  .meta-tag {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 8.5pt;
+    color: #475569;
+    text-align: right;
+  }
+
+  h1, h2, h3, h4 {
+    color: #0f172a;
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+
+  h2 {
+    font-size: 13.5pt;
+    border-left: 4px solid #C9A84C;
+    padding-left: 10px;
+    color: #110724;
+    margin-top: 18px;
+  }
+
+  h3 {
+    font-size: 11pt;
+    color: #334155;
+    margin-top: 12px;
+  }
+
+  p {
+    margin-bottom: 8px;
+    color: #334155;
+  }
+
+  ul, ol {
+    margin-left: 20px;
+    margin-bottom: 8px;
+    color: #334155;
+  }
+
+  li {
+    margin-bottom: 3px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 12px;
+    font-size: 9pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+  }
+
+  th {
+    background-color: #0e051d;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 9.5pt;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 8.5pt;
+    font-weight: 600;
+  }
+
+  .badge-success {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .badge-info {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .badge-gold {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  pre.code-block {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    line-height: 1.55;
+    margin: 12px 0 16px;
+    page-break-inside: avoid;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-left: 4px solid #C9A84C;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 8.5pt;
+  }
+
+  .alert-box {
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+
+  .alert-tip {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+  }
+
+  .alert-warning {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .footer-note {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 8.5pt;
+    color: #94a3b8;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover-header">
+  <div>
+    <div class="brand-title">Reiki Bliss <span>·</span> Deployment Guide</div>
+    <div class="brand-subtitle">Complete InfinityFree.com Production Cloud Setup</div>
+  </div>
+  <div class="meta-tag">
+    <strong>Project:</strong> Shree Sai Reiki Healing Center<br>
+    <strong>Domain:</strong> reikibliss.infinityfreeapp.com<br>
+    <strong>Updated:</strong> September 2026
+  </div>
+</div>
+
+<div class="alert-box alert-tip">
+  <strong>Goal Achieved:</strong> The website is configured to run <strong>24/7 in the cloud</strong> on InfinityFree. Visitors and clients worldwide can access the site, book free consultations via Google Calendar, send contact inquiries, and purchase Reiki products even when your local computer is powered off.
+</div>
+
+<h2>1. Deployment Credentials &amp; Overview</h2>
+<p>Below are the official hosting and database connection parameters generated for your InfinityFree account:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Production Value</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Live Website URL</strong></td>
+      <td><code>http://reikibliss.infinityfreeapp.com/</code></td>
+      <td>Public client-facing web address</td>
+    </tr>
+    <tr>
+      <td><strong>Account Username</strong></td>
+      <td><code>if0_42861215</code></td>
+      <td>InfinityFree hosting account identifier</td>
+    </tr>
+    <tr>
+      <td><strong>MySQL Hostname</strong></td>
+      <td><code>sql206.infinityfree.com</code></td>
+      <td>Remote cloud database server</td>
+    </tr>
+    <tr>
+      <td><strong>MySQL Database</strong></td>
+      <td><code>if0_42861215_reikibliss</code></td>
+      <td>Production database name</td>
+    </tr>
+    <tr>
+      <td><strong>MySQL Port</strong></td>
+      <td><code>3306</code></td>
+      <td>Standard TCP MySQL communication port</td>
+    </tr>
+    <tr>
+      <td><strong>MySQL Username</strong></td>
+      <td><code>if0_42861215</code></td>
+      <td>Database administrative user</td>
+    </tr>
+    <tr>
+      <td><strong>MySQL Password</strong></td>
+      <td><code>Ayush171998</code></td>
+      <td>Database authentication password</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>2. File Directory Architecture</h2>
+<p>In the InfinityFree File Manager (<code>filemanager.ai</code>), the web root folder is always <code>htdocs/</code>.</p>
+
+<div class="alert-box alert-warning">
+  <strong>Important Root Placement Rule:</strong><br>
+  All files (<code>index.php</code>, <code>contact.php</code>, <code>assets/</code>, <code>config/</code>, <code>includes/</code>, etc.) must reside <strong>directly inside <code>htdocs/</code></strong>, NOT nested inside a subfolder like <code>htdocs/DemoWebsite/</code>.<br>
+  This ensures clients visit <code>reikibliss.infinityfreeapp.com/</code> directly without typing extra folder names.
+</div>
+
+<pre class="code-block">
+htdocs/                  &lt;-- InfinityFree Root Directory
+├── assets/              &lt;-- CSS stylesheets, JS scripts, and images
+│   ├── css/
+│   ├── images/
+│   │   ├── reikilogo1.png       (Brand Logo)
+│   │   └── favicon-circle.png   (Circular Tab Icon)
+│   └── js/
+├── config/
+│   ├── db.php           &lt;-- Database configuration (Cloud + Local dual-mode)
+│   └── constants.php    &lt;-- Site constants, BASE_URL &amp; BOOKING_URL
+├── includes/
+│   ├── header.php       &lt;-- Sticky navigation bar &amp; branding
+│   ├── footer.php       &lt;-- Footer &amp; Google Calendar scheduler scripts
+│   └── cta-section.php  &lt;-- Reusable booking CTA blocks
+├── index.php            &lt;-- Homepage
+├── contact.php          &lt;-- Contact &amp; Inquiry page
+├── services.php         &lt;-- Reiki healing services
+└── database.sql         &lt;-- SQL schema and seed data backup
+</pre>
+
+<div class="page-break"></div>
+
+<h2>3. Database Setup &amp; SQL Import</h2>
+<p>To populate your cloud database with all services, products, testimonials, and site settings:</p>
+
+<ol>
+  <li>Log into your <strong>InfinityFree Dashboard</strong> at <code>dash.infinityfree.com</code>.</li>
+  <li>Under your account (<code>if0_42861215</code>), go to <strong>MySQL Databases</strong>.</li>
+  <li>Verify that database <code>if0_42861215_reikibliss</code> exists.</li>
+  <li>Click the purple <strong>phpMyAdmin</strong> button next to your database name.</li>
+  <li>In phpMyAdmin, click the <strong>Import</strong> tab in the top navigation bar.</li>
+  <li>Click <strong>Choose File</strong> and select <code>database.sql</code> from your project.</li>
+  <li>Click <strong>Go</strong> (or <strong>Import</strong>) at the bottom. All tables and initial seed data will be created in seconds.</li>
+</ol>
+
+<h2>4. Dynamic URL &amp; Reverse-Proxy Resolution (<code>config/constants.php</code>)</h2>
+<p>InfinityFree and Cloudflare utilize edge reverse-proxies to terminate SSL/TLS. <code>config/constants.php</code> dynamically detects whether traffic is coming through <code>HTTP_X_FORWARDED_PROTO</code> so that assets never face mixed-content security blocks:</p>
+
+<pre class="code-block">// Dynamic Base URL definition
+if (!defined('BASE_URL')) {
+    if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['SCRIPT_NAME'])) {
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+        $scheme = $isHttps ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        $baseDir = rtrim($dir, '/') . '/';
+        define('BASE_URL', "{$scheme}://{$host}{$baseDir}");
+    } else {
+        define('BASE_URL', 'http://localhost/reikibliss/');
+    }
+}
+</pre>
+
+<div class="page-break"></div>
+
+<h2>5. Smart Dual-Environment Database Configuration (<code>config/db.php</code>)</h2>
+<p>To ensure you can continue developing locally on <strong>XAMPP</strong> while simultaneously running live on <strong>InfinityFree</strong> without breaking either environment, <code>config/db.php</code> uses dynamic host-detection:</p>
+
+<pre class="code-block">&lt;?php
+// Database configuration and PDO connection
+
+// Check if running on Local XAMPP
+$hostHeader = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+$isLocal = (strpos($hostHeader, 'localhost') !== false || strpos($hostHeader, '127.0.0.1') !== false);
+
+if ($isLocal) {
+    // Localhost XAMPP Environment
+    $host = 'localhost';
+    $port = 3306;
+    $dbname = 'reiki_website';
+    $username = 'root';
+    $password = '';
+} else {
+    // InfinityFree Cloud Production Environment
+    $host = 'sql206.infinityfree.com';
+    $port = 3306;
+    $dbname = 'if0_42861215_reikibliss';
+    $username = 'if0_42861215';
+    $password = 'Ayush171998';
+}
+
+$charset = 'utf8mb4';
+$dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset={$charset}";
+
+$options = [
+    PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   =&gt; false,
+];
+
+try {
+    $pdo = new PDO($dsn, $username, $password, $options);
+    $pdo-&gt;exec("SET NAMES utf8mb4");
+} catch (\PDOException $e) {
+    die("Database Connection Failed: " . $e-&gt;getMessage());
+}
+
+return $pdo;
+</pre>
+
+<div class="page-break"></div>
+
+<h2>6. Common Issues &amp; Solutions</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 30%;">Issue / Error</th>
+      <th style="width: 30%;">Root Cause</th>
+      <th style="width: 40%;">Exact Solution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>SQLSTATE[HY000] [2002] No such file or directory</code></td>
+      <td>PHP tried connecting to <code>'localhost'</code> on InfinityFree, attempting to use a local Unix socket instead of TCP network host.</td>
+      <td>Set <code>$host = 'sql206.infinityfree.com'</code> and explicitly specify <code>port=3306</code> in the PDO DSN string.</td>
+    </tr>
+    <tr>
+      <td>Website shows <code>Index of /</code> directory listing</td>
+      <td>Files were uploaded inside a nested subfolder (e.g. <code>htdocs/DemoWebsite/</code>) instead of directly in <code>htdocs/</code>.</td>
+      <td>In File Manager, select all files inside <code>DemoWebsite</code> and move them directly to the parent <code>htdocs/</code> directory.</td>
+    </tr>
+    <tr>
+      <td>CSS or Images not loading</td>
+      <td>Hardcoded <code>BASE_URL</code> pointing to localhost.</td>
+      <td>Ensure <code>config/constants.php</code> uses dynamic <code>$_SERVER['HTTP_HOST']</code> resolution (already implemented).</td>
+    </tr>
+    <tr>
+      <td>Free SSL Certificate (HTTPS)</td>
+      <td>InfinityFree subdomains start on HTTP by default.</td>
+      <td>In the InfinityFree dashboard, go to <strong>Free SSL Certificates</strong>, click <strong>New SSL Certificate</strong>, choose <strong>Let's Encrypt / ZeroSSL</strong>, and follow the 1-click install.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>7. Google Calendar Appointment Scheduling Integration</h2>
+<p>The website is integrated with Google Calendar Appointment Scheduling:</p>
+
+<ul>
+  <li><strong>Schedule URL:</strong> Configured in <code>config/constants.php</code> via <code>BOOKING_URL</code>.</li>
+  <li><strong>Modal Popup Experience:</strong> Clicking <em>"Book Free Session"</em> anywhere on the site triggers Google's full-screen modal overlay without taking visitors away from the website.</li>
+  <li><strong>Auto Google Meet:</strong> Confirmed appointments automatically generate unique Google Meet links and email invites to both the client and Dr. Chirag / Anupama Agrawal.</li>
+  <li><strong>Hidden Native Trigger:</strong> The default generic Google button (<code>.qxCTlb</code>) is safely hidden so only your custom gold-themed buttons initiate bookings.</li>
+</ul>
+
+<h2>8. Maintenance &amp; Updating Code</h2>
+<p>When you make improvements or changes to your website in the future:</p>
+
+<ol>
+  <li><strong>Via Online File Manager:</strong> Open <code>filemanager.ai</code> from your InfinityFree dashboard, navigate to the file, click <strong>Edit</strong>, save, and refresh.</li>
+  <li><strong>Via FTP (FileZilla):</strong> Use your FTP Host (<code>ftpupload.net</code>), Username (<code>if0_42861215</code>), and Password to upload bulk updates with drag-and-drop.</li>
+</ol>
+
+<div class="footer-note">
+  <span>Reiki Bliss Healing Center · Technical Deployment Documentation</span>
+  <span>Document ID: DOC-INF-2026-09</span>
+</div>
+
+</body>
+</html>
