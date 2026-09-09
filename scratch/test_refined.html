@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Pure Video (No White Bars)</title>
+    <style>
+        body { background: #0c0814; color: #fff; font-family: sans-serif; padding: 40px; display: flex; gap: 24px; justify-content: center; }
+        
+        .reel-embed-card {
+            width: 340px;
+            height: 405px; /* Completely hides top and bottom white bars */
+            border-radius: 20px;
+            overflow: hidden;
+            background: #140b28;
+            border: 1px solid rgba(201, 168, 76, 0.35);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(201, 168, 76, 0.15);
+            position: relative;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reel-embed-card:hover {
+            transform: translateY(-6px);
+            border-color: #C9A84C;
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(201, 168, 76, 0.35);
+        }
+
+        .reel-floating-header {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .reel-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(14, 6, 28, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 168, 76, 0.45);
+            color: #C9A84C;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .reel-brand-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(14, 6, 28, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .reel-pulse-dot {
+            width: 7px;
+            height: 7px;
+            background: #E1306C;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #E1306C;
+        }
+
+        .reel-embed-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .reel-embed-frame iframe {
+            position: absolute;
+            top: -56px;
+            left: 0;
+            width: 100%;
+            height: 520px;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="reel-embed-card">
+        <div class="reel-floating-header">
+            <span class="reel-badge-pill">✨ Sacred Mudra</span>
+            <span class="reel-brand-pill">
+                <span class="reel-pulse-dot"></span>
+                @reiki_bliss
+            </span>
+        </div>
+        <div class="reel-embed-frame">
+            <iframe src="https://www.instagram.com/reel/C7nY4MESYo7/embed/" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+    </div>
+
+    <div class="reel-embed-card">
+        <div class="reel-floating-header">
+            <span class="reel-badge-pill">✨ Mudra Science</span>
+            <span class="reel-brand-pill">
+                <span class="reel-pulse-dot"></span>
+                @reiki_bliss
+            </span>
+        </div>
+        <div class="reel-embed-frame">
+            <iframe src="https://www.instagram.com/reel/C7gIJshyc6G/embed/" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+    </div>
+
+    <div class="reel-embed-card">
+        <div class="reel-floating-header">
+            <span class="reel-badge-pill">✨ Aura Healing</span>
+            <span class="reel-brand-pill">
+                <span class="reel-pulse-dot"></span>
+                @reiki_bliss
+            </span>
+        </div>
+        <div class="reel-embed-frame">
+            <iframe src="https://www.instagram.com/reel/C4La4vmSWaA/embed/" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+    </div>
+</body>
+</html>

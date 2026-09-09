@@ -439,6 +439,13 @@ $instagram_reels = [
         <div class="reels-cards-grid animate-on-scroll">
             <?php foreach ($instagram_reels as $idx => $reel): ?>
                 <div class="reel-embed-card" data-reel-id="<?php echo htmlspecialchars($reel['id']); ?>">
+                    <div class="reel-floating-header">
+                        <span class="reel-badge-pill">✨ <?php echo htmlspecialchars($reel['category']); ?></span>
+                        <span class="reel-brand-pill">
+                            <span class="reel-pulse-dot"></span>
+                            @reiki_bliss
+                        </span>
+                    </div>
                     <div class="reel-embed-frame">
                         <iframe 
                             class="reel-direct-iframe"
