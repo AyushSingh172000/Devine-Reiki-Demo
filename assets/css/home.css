@@ -615,3 +615,231 @@
     align-items: flex-start;
   }
 }
+
+/* ==========================================================================
+   9. INSTAGRAM REELS SHOWCASE & PLAYABLE THEATER SECTION
+   ========================================================================== */
+.reels-section {
+  position: relative;
+  background: linear-gradient(180deg, #0a0416 0%, #130728 50%, #0c0418 100%);
+  padding: 95px 0 100px;
+  overflow: hidden;
+  border-top: 1px solid rgba(201, 168, 76, 0.22);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.22);
+}
+
+.reels-section::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.reels-section::after {
+  content: '';
+  position: absolute;
+  bottom: -120px;
+  left: -120px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(225, 48, 108, 0.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Header Area */
+.reels-header-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.reels-title-box {
+  max-width: 680px;
+}
+
+.insta-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #C9A84C;
+  margin-bottom: 14px;
+  backdrop-filter: blur(8px);
+}
+
+.insta-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f43f5e;
+  box-shadow: 0 0 10px #f43f5e;
+  animation: instaPulse 2s infinite ease-in-out;
+}
+
+@keyframes instaPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.insta-gradient-icon {
+  color: #E1306C;
+}
+
+.reels-subtext {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.05rem;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.reels-header-cta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+
+
+.btn-insta-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 26px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(225, 48, 108, 0.35);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-insta-brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(225, 48, 108, 0.5);
+  filter: brightness(1.08);
+}
+
+/* Reels Directly Playable Grid */
+.reels-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+  margin-top: 10px;
+}
+
+/* Individual Reel Embed Card */
+.reel-embed-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #150c2a;
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateZ(0);
+}
+
+.reel-embed-card:hover {
+  transform: translateY(-6px);
+  border-color: #C9A84C;
+  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(201, 168, 76, 0.3);
+}
+
+.reel-embed-frame {
+  position: relative;
+  width: 100%;
+  height: 510px;
+  overflow: hidden;
+  background: #0d061c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reel-direct-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: #0d061c;
+}
+
+/* Responsive Reels Grid */
+@media (max-width: 1100px) {
+  .reels-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reels-section {
+    padding: 60px 0 70px;
+  }
+
+  .reels-header-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+
+  .reels-header-cta-group {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .btn-insta-brand {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Horizontal Snap-Scroll on Mobile */
+  .reels-cards-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding-bottom: 16px;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .reels-cards-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reel-embed-card {
+    flex: 0 0 310px;
+    max-width: 86vw;
+    scroll-snap-align: center;
+  }
+
+  .reel-embed-frame {
+    height: 490px;
+  }
+}
