@@ -64,6 +64,16 @@ if (!$founder2) {
 // Ensure practitioners includes all team members for full team carousel
 $allTeam = !empty($teamMembers) ? $teamMembers : [$founder1, $founder2];
 
+// Dynamic About Page Content from $siteSettings & $siteStats
+$aboutHeading = $siteSettings['about_heading'] ?? 'Healing with Heart & Purpose';
+$aboutDescription = $siteSettings['about_description'] ?? 'Shree Sai Reiki Healing Center was born from a single conviction — that every person deserves access to authentic energy healing. We have been guiding seekers on their healing journey since 2014.';
+$foundingYear = $siteSettings['founding_year'] ?? '2014';
+
+$healedCount = !empty($siteStats['lives_healed']['stat_value']) ? $siteStats['lives_healed']['stat_value'] . '+' : '30K+';
+$expYears = !empty($siteStats['years_experience']['stat_value']) ? $siteStats['years_experience']['stat_value'] . '+ Years Experience' : '25+ Years Experience';
+$sessionsCount = !empty($siteStats['sessions_completed']['stat_value']) ? $siteStats['sessions_completed']['stat_value'] . '+ Sessions' : '25K+ Sessions Completed';
+$coursesCount = !empty($siteStats['course_levels']['stat_value']) ? $siteStats['course_levels']['stat_value'] . ' Course Levels' : '6 Course Levels Offered';
+
 // Include Header Component
 include __DIR__ . '/includes/header.php';
 ?>
@@ -74,26 +84,26 @@ include __DIR__ . '/includes/header.php';
 <section class="about-hero" id="about-hero">
     <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
-        <span class="about-hero-badge">Est. 2014 · Adajan, Surat</span>
+        <span class="about-hero-badge">Est. <?php echo htmlspecialchars($foundingYear); ?> · Adajan, Surat</span>
         <h1 class="about-hero-title">
-            Healing with <em>Heart</em> & Purpose
+            <?php echo nl2br(htmlspecialchars($aboutHeading)); ?>
         </h1>
         <p class="about-hero-text">
-            Established in 2014 in Adajan, Surat, Divine Reiki & Energy Healing Center was born out of a profound commitment to restore emotional balance, physical health, and spiritual alignment. Over the last decade, we have empowered over 30,000 individuals through authentic Usui Reiki attunements, chakra balancing, and intention-charged crystal energy.
+            <?php echo htmlspecialchars($aboutDescription); ?>
         </p>
     </div>
 
     <!-- Infinite Scrolling Stats Marquee -->
     <div class="marquee-container">
         <div class="marquee-track">
-            <div class="marquee-item"><span>30K+ Healed Clients</span> <span class="marquee-dot">✦</span></div>
-            <div class="marquee-item"><span>25+ Years Experience</span> <span class="marquee-dot">✦</span></div>
-            <div class="marquee-item"><span>25K+ Sessions Completed</span> <span class="marquee-dot">✦</span></div>
-            <div class="marquee-item"><span>6 Course Levels Offered</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($healedCount); ?> Healed Clients</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($expYears); ?></span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($sessionsCount); ?></span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($coursesCount); ?></span> <span class="marquee-dot">✦</span></div>
             <div class="marquee-item"><span>100% Authentic Lineage</span> <span class="marquee-dot">✦</span></div>
-            <div class="marquee-item"><span>30K+ Healed Clients</span> <span class="marquee-dot">✦</span></div>
-            <div class="marquee-item"><span>25+ Years Experience</span> <span class="marquee-dot">✦</span></div>
-            <div class="marquee-item"><span>25K+ Sessions Completed</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($healedCount); ?> Healed Clients</span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($expYears); ?></span> <span class="marquee-dot">✦</span></div>
+            <div class="marquee-item"><span><?php echo htmlspecialchars($sessionsCount); ?></span> <span class="marquee-dot">✦</span></div>
         </div>
     </div>
 </section>
@@ -226,29 +236,29 @@ include __DIR__ . '/includes/header.php';
             <!-- Value 01 -->
             <div class="value-card animate-on-scroll">
                 <div class="value-number">01</div>
-                <h3 class="value-card-title">Authenticity</h3>
-                <p class="value-card-text">Rooted in traditional Usui Reiki lineage and pure spiritual energy practices without compromise or diluted shortcuts.</p>
+                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_1_title'] ?? 'Authenticity'); ?></h3>
+                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_1_desc'] ?? 'Rooted in traditional Usui Reiki lineage and pure spiritual energy practices without compromise or diluted shortcuts.'); ?></p>
             </div>
 
             <!-- Value 02 -->
             <div class="value-card animate-on-scroll">
                 <div class="value-number">02</div>
-                <h3 class="value-card-title">Compassion</h3>
-                <p class="value-card-text">Meeting every student and client without judgment, holding a safe and supportive space for deep emotional recovery and spiritual growth.</p>
+                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_2_title'] ?? 'Compassion'); ?></h3>
+                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_2_desc'] ?? 'Meeting every student and client without judgment, holding a safe and supportive space for deep emotional recovery and spiritual growth.'); ?></p>
             </div>
 
             <!-- Value 03 -->
             <div class="value-card animate-on-scroll">
                 <div class="value-number">03</div>
-                <h3 class="value-card-title">Empowerment</h3>
-                <p class="value-card-text">Equipping individuals with practical self-healing tools and knowledge to take control of their lifelong energy balance and well-being.</p>
+                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_3_title'] ?? 'Empowerment'); ?></h3>
+                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_3_desc'] ?? 'Equipping individuals with practical self-healing tools and knowledge to take control of their lifelong energy balance and well-being.'); ?></p>
             </div>
 
             <!-- Value 04 -->
             <div class="value-card animate-on-scroll">
                 <div class="value-number">04</div>
-                <h3 class="value-card-title">Community</h3>
-                <p class="value-card-text">Building an inclusive global family of practitioners and clients who uplift, support, and inspire each other's spiritual evolution.</p>
+                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_4_title'] ?? 'Community'); ?></h3>
+                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_4_desc'] ?? 'Building an inclusive global family of practitioners and clients who uplift, support, and inspire each other\'s spiritual evolution.'); ?></p>
             </div>
         </div>
     </div>

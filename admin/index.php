@@ -1,249 +1,304 @@
 <?php
-// Admin Dashboard Controller - Divine Reiki Portal
-$pageTitle = "Dashboard Overview";
+define('ADMIN_ACCESS', true);
+require_once 'auth-check.php';
+$pageTitle = 'Dashboard';
 
-require_once __DIR__ . '/../config/constants.php';
-if (!isset($pdo) || !($pdo instanceof PDO)) {
-    $pdo = require __DIR__ . '/../config/db.php';
-}
-
-// Fetch Counts for Stat Cards
+// Database queries for statistics
 $totalServices = 0;
-$totalCourses = 0;
 $totalProducts = 0;
-$totalBlogPosts = 0;
+$totalCourses = 0;
 $unreadInquiries = 0;
+
+$totalBlogPosts = 0;
 $pendingOrders = 0;
+$totalGallery = 0;
 
-try {
-    $totalServices = (int)$pdo->query("SELECT COUNT(*) FROM services")->fetchColumn();
-    $totalCourses = (int)$pdo->query("SELECT COUNT(*) FROM courses")->fetchColumn();
-    $totalProducts = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
-    $totalBlogPosts = (int)$pdo->query("SELECT COUNT(*) FROM blog_posts")->fetchColumn();
-    $unreadInquiries = (int)$pdo->query("SELECT COUNT(*) FROM contact_inquiries WHERE is_read = 0")->fetchColumn();
-    $pendingOrders = (int)$pdo->query("SELECT COUNT(*) FROM bracelet_orders WHERE status = 'pending'")->fetchColumn();
-} catch (PDOException $e) {
-    error_log("Database count error in admin/index.php: " . $e->getMessage());
-}
-
-// Fetch Recent 5 Inquiries
 $recentInquiries = [];
+$recentOrders = [];
+
 try {
+    // 1. Stats Row 1
+    $totalServices = (int)$pdo->query("SELECT COUNT(*) FROM services")->fetchColumn();
+    $totalProducts = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
+    $totalCourses = (int)$pdo->query("SELECT COUNT(*) FROM courses")->fetchColumn();
+    $unreadInquiries = (int)$pdo->query("SELECT COUNT(*) FROM contact_inquiries WHERE is_read = 0")->fetchColumn();
+
+    // 2. Stats Row 2
+    $totalBlogPosts = (int)$pdo->query("SELECT COUNT(*) FROM blog_posts")->fetchColumn();
+    $pendingOrders = (int)$pdo->query("SELECT COUNT(*) FROM bracelet_orders WHERE status = 'pending'")->fetchColumn();
+    $totalGallery = (int)$pdo->query("SELECT COUNT(*) FROM gallery_images")->fetchColumn();
+
+    // 3. Recent 5 Inquiries
     $inqStmt = $pdo->query("SELECT * FROM contact_inquiries ORDER BY created_at DESC LIMIT 5");
     $recentInquiries = $inqStmt ? $inqStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-} catch (PDOException $e) {
-    error_log("Database error fetching inquiries: " . $e->getMessage());
-}
 
-// Fetch Recent 5 Bracelet Orders
-$recentOrders = [];
-try {
+    // 4. Recent 5 Bracelet Orders
     $ordStmt = $pdo->query("SELECT * FROM bracelet_orders ORDER BY created_at DESC LIMIT 5");
     $recentOrders = $ordStmt ? $ordStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 } catch (PDOException $e) {
-    error_log("Database error fetching orders: " . $e->getMessage());
+    error_log("Dashboard query error: " . $e->getMessage());
 }
 
-// Include Admin Header
-include __DIR__ . '/includes/admin-header.php';
+require_once 'includes/admin-header.php';
 ?>
 
-<!-- 1. SUMMARY STAT CARDS GRID -->
-<div class="stat-cards-grid">
-    <!-- Stat 1: Total Services -->
+<!-- 1. STATS ROW (Grid of 4 Stat Cards) -->
+<div class="grid-4 mb-3">
+    <!-- Total Services -->
     <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Services</span>
-            <span class="stat-icon">🧘</span>
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($totalServices) ?></span>
+            <span class="stat-label">Total Services</span>
         </div>
-        <div class="stat-number"><?php echo number_format($totalServices); ?></div>
+        <div class="stat-icon purple" title="Total Active Services">
+            <i data-lucide="clipboard-list"></i>
+        </div>
     </div>
 
-    <!-- Stat 2: Total Courses -->
+    <!-- Total Products -->
     <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Courses</span>
-            <span class="stat-icon">🎓</span>
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($totalProducts) ?></span>
+            <span class="stat-label">Total Products</span>
         </div>
-        <div class="stat-number"><?php echo number_format($totalCourses); ?></div>
+        <div class="stat-icon gold" title="Total Shop Products">
+            <i data-lucide="shopping-bag"></i>
+        </div>
     </div>
 
-    <!-- Stat 3: Total Products -->
+    <!-- Total Courses -->
     <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Products</span>
-            <span class="stat-icon">💎</span>
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($totalCourses) ?></span>
+            <span class="stat-label">Total Courses</span>
         </div>
-        <div class="stat-number"><?php echo number_format($totalProducts); ?></div>
+        <div class="stat-icon blue" title="Total Healing Courses">
+            <i data-lucide="graduation-cap"></i>
+        </div>
     </div>
 
-    <!-- Stat 4: Total Blog Posts -->
+    <!-- Unread Inquiries -->
     <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Blog Posts</span>
-            <span class="stat-icon">📝</span>
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($unreadInquiries) ?></span>
+            <span class="stat-label">Unread Inquiries</span>
         </div>
-        <div class="stat-number"><?php echo number_format($totalBlogPosts); ?></div>
-    </div>
-
-    <!-- Stat 5: Unread Inquiries -->
-    <div class="stat-card <?php echo ($unreadInquiries > 0) ? 'alert' : ''; ?>">
-        <div class="stat-header">
-            <span class="stat-title">Unread Inquiries</span>
-            <span class="stat-icon">✉️</span>
+        <div class="stat-icon red <?= ($unreadInquiries > 0) ? 'pulse' : '' ?>" title="<?= $unreadInquiries ?> Pending Inquiries">
+            <i data-lucide="mail-warning"></i>
         </div>
-        <div class="stat-number"><?php echo number_format($unreadInquiries); ?></div>
-    </div>
-
-    <!-- Stat 6: Pending Orders -->
-    <div class="stat-card <?php echo ($pendingOrders > 0) ? 'highlight' : ''; ?>">
-        <div class="stat-header">
-            <span class="stat-title">Pending Orders</span>
-            <span class="stat-icon">🛍️</span>
-        </div>
-        <div class="stat-number"><?php echo number_format($pendingOrders); ?></div>
     </div>
 </div>
 
-<!-- 2. DASHBOARD TABLES GRID (RECENT INQUIRIES & RECENT ORDERS) -->
-<div class="dashboard-grid-2col">
-    
-    <!-- Recent Contact Inquiries -->
+<!-- 2. SECOND ROW (Grid of 3 Stat Cards) -->
+<div class="grid-3 mb-4">
+    <!-- Total Blog Posts -->
+    <div class="stat-card">
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($totalBlogPosts) ?></span>
+            <span class="stat-label">Blog Posts</span>
+        </div>
+        <div class="stat-icon purple">
+            <i data-lucide="newspaper"></i>
+        </div>
+    </div>
+
+    <!-- Pending Bracelet Orders -->
+    <div class="stat-card">
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($pendingOrders) ?></span>
+            <span class="stat-label">Pending Orders</span>
+        </div>
+        <div class="stat-icon gold">
+            <i data-lucide="package-check"></i>
+        </div>
+    </div>
+
+    <!-- Total Gallery Images -->
+    <div class="stat-card">
+        <div class="stat-info">
+            <span class="stat-number"><?= number_format($totalGallery) ?></span>
+            <span class="stat-label">Gallery Images</span>
+        </div>
+        <div class="stat-icon gold">
+            <i data-lucide="image"></i>
+        </div>
+    </div>
+</div>
+
+<!-- 3. QUICK ACTIONS ROW -->
+<div class="mb-4">
+    <div class="quick-actions-grid">
+        <a href="products.php?action=add" class="quick-action-card">
+            <div class="action-icon"><i data-lucide="shopping-bag"></i></div>
+            <div>
+                <div>Add Product</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New crystal / item</small>
+            </div>
+        </a>
+
+        <a href="services.php?action=add" class="quick-action-card">
+            <div class="action-icon"><i data-lucide="clipboard-list"></i></div>
+            <div>
+                <div>Add Service</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New healing therapy</small>
+            </div>
+        </a>
+
+        <a href="courses.php?action=add" class="quick-action-card">
+            <div class="action-icon"><i data-lucide="graduation-cap"></i></div>
+            <div>
+                <div>Add Course</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New training program</small>
+            </div>
+        </a>
+
+        <a href="blog.php?action=add" class="quick-action-card">
+            <div class="action-icon"><i data-lucide="file-text"></i></div>
+            <div>
+                <div>Add Blog Post</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Publish healing article</small>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- 4. TWO-COLUMN LAYOUT FOR RECENT TABLES -->
+<div class="grid-2 gap-3 mb-4">
+    <!-- RECENT INQUIRIES TABLE -->
     <div class="admin-card">
         <div class="admin-card-header">
-            <h2 class="admin-card-title">Recent Inquiries</h2>
-            <a href="<?php echo BASE_URL; ?>admin/inquiries.php" class="btn-admin btn-admin-secondary btn-admin-sm">
-                View All (<?php echo $unreadInquiries; ?> Unread) →
+            <div class="admin-card-title flex items-center gap-2">
+                <i data-lucide="mail"></i> Recent Inquiries
+            </div>
+            <a href="inquiries.php" class="btn-outline btn-sm text-gold" style="text-decoration: none;">
+                View All <i data-lucide="chevron-right" style="width: 14px; height: 14px; margin-right: 0;"></i>
             </a>
         </div>
 
-        <div style="overflow-x: auto;">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($recentInquiries)): ?>
+        <?php if (empty($recentInquiries)): ?>
+            <p class="text-muted" style="text-align: center; padding: 24px 0;">No inquiries received yet.</p>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <?php foreach ($recentInquiries as $inq): ?>
-                            <tr>
-                                <td style="white-space: nowrap; color: var(--admin-muted); font-size: 0.82rem;">
-                                    <?php echo date('M j, Y', strtotime($inq['created_at'])); ?>
+                            <?php 
+                                $isUnread = empty($inq['is_read']);
+                                $truncatedMsg = mb_strlen($inq['message'] ?? '') > 50 
+                                    ? mb_substr($inq['message'], 0, 47) . '...' 
+                                    : ($inq['message'] ?? '');
+                                $dateFormatted = !empty($inq['created_at']) 
+                                    ? date('M d, Y', strtotime($inq['created_at'])) 
+                                    : '—';
+                            ?>
+                            <tr class="<?= $isUnread ? 'row-unread' : '' ?>">
+                                <td>
+                                    <strong><?= htmlspecialchars($inq['name'] ?? 'Guest') ?></strong>
+                                </td>
+                                <td class="text-muted" style="font-size: 0.85rem;">
+                                    <?= htmlspecialchars($inq['email'] ?? '—') ?>
+                                </td>
+                                <td style="font-size: 0.84rem;">
+                                    <?= htmlspecialchars($truncatedMsg) ?>
+                                </td>
+                                <td class="text-muted" style="font-size: 0.8rem; white-space: nowrap;">
+                                    <?= $dateFormatted ?>
                                 </td>
                                 <td>
-                                    <strong><?php echo htmlspecialchars($inq['name']); ?></strong>
-                                    <span style="display: block; font-size: 0.78rem; color: var(--admin-muted);"><?php echo htmlspecialchars($inq['phone'] ?: $inq['email']); ?></span>
-                                </td>
-                                <td>
-                                    <?php if ($inq['is_read']): ?>
-                                        <span class="badge-status badge-read">Read</span>
+                                    <?php if ($isUnread): ?>
+                                        <span class="badge badge-warning">Unread</span>
                                     <?php else: ?>
-                                        <span class="badge-status badge-unread">Unread</span>
+                                        <span class="badge badge-success">Read</span>
                                     <?php endif; ?>
-                                </td>
-                                <td>
-                                    <a href="<?php echo BASE_URL; ?>admin/inquiries.php?id=<?php echo $inq['id']; ?>" class="btn-admin btn-admin-secondary btn-admin-sm">
-                                        View
-                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: var(--admin-muted); padding: 20px;">No recent inquiries found.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 
-    <!-- Recent Bracelet Orders -->
+    <!-- RECENT BRACELET ORDERS TABLE -->
     <div class="admin-card">
         <div class="admin-card-header">
-            <h2 class="admin-card-title">Recent Custom Orders</h2>
-            <a href="<?php echo BASE_URL; ?>admin/orders.php" class="btn-admin btn-admin-secondary btn-admin-sm">
-                View All (<?php echo $pendingOrders; ?> Pending) →
+            <div class="admin-card-title flex items-center gap-2">
+                <i data-lucide="package"></i> Recent Bracelet Orders
+            </div>
+            <a href="orders.php" class="btn-outline btn-sm text-gold" style="text-decoration: none;">
+                View All <i data-lucide="chevron-right" style="width: 14px; height: 14px; margin-right: 0;"></i>
             </a>
         </div>
 
-        <div style="overflow-x: auto;">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Customer</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($recentOrders)): ?>
-                        <?php foreach ($recentOrders as $ord): ?>
+        <?php if (empty($recentOrders)): ?>
+            <p class="text-muted" style="text-align: center; padding: 24px 0;">No bracelet orders recorded yet.</p>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentOrders as $order): ?>
+                            <?php 
+                                $orderType = $order['order_type'] ?? 'customized';
+                                $orderStatus = $order['status'] ?? 'pending';
+                                $orderDate = !empty($order['created_at']) 
+                                    ? date('M d, Y', strtotime($order['created_at'])) 
+                                    : '—';
+                            ?>
                             <tr>
-                                <td style="white-space: nowrap; color: var(--admin-muted); font-size: 0.82rem;">
-                                    <?php echo date('M j, Y', strtotime($ord['created_at'])); ?>
+                                <td>
+                                    <strong><?= htmlspecialchars($order['name'] ?? 'Anonymous') ?></strong>
                                 </td>
                                 <td>
-                                    <strong><?php echo htmlspecialchars($ord['name']); ?></strong>
-                                    <span style="display: block; font-size: 0.78rem; color: var(--admin-muted);"><?php echo htmlspecialchars($ord['phone']); ?></span>
-                                </td>
-                                <td>
-                                    <span style="font-size: 0.82rem; font-weight: 500;">
-                                        <?php echo ($ord['order_type'] === 'birth-chart') ? '⭐ Birth Chart' : '💎 Intention'; ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if ($ord['status'] === 'pending'): ?>
-                                        <span class="badge-status badge-pending">Pending</span>
-                                    <?php elseif ($ord['status'] === 'contacted'): ?>
-                                        <span class="badge-status badge-contacted">Contacted</span>
+                                    <?php if ($orderType === 'birth-chart'): ?>
+                                        <span class="badge badge-purple" style="background: rgba(124,107,196,0.18); color: #c4b8ff; border: 1px solid rgba(124,107,196,0.3);">
+                                            Birth Chart
+                                        </span>
                                     <?php else: ?>
-                                        <span class="badge-status badge-completed">Completed</span>
+                                        <span class="badge badge-gold">
+                                            Customized
+                                        </span>
                                     <?php endif; ?>
+                                </td>
+                                <td class="text-muted" style="font-size: 0.85rem;">
+                                    <?= htmlspecialchars($order['phone'] ?? '—') ?>
+                                </td>
+                                <td>
+                                    <?php if ($orderStatus === 'completed'): ?>
+                                        <span class="badge badge-success">Completed</span>
+                                    <?php elseif ($orderStatus === 'contacted'): ?>
+                                        <span class="badge badge-info">Contacted</span>
+                                    <?php else: ?>
+                                        <span class="badge badge-warning">Pending</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-muted" style="font-size: 0.8rem; white-space: nowrap;">
+                                    <?= $orderDate ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: var(--admin-muted); padding: 20px;">No recent custom orders found.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-</div>
-
-<!-- 3. QUICK ACTIONS GRID -->
-<div class="admin-card" style="margin-bottom: 36px;">
-    <h2 class="admin-card-title" style="margin-bottom: 20px;">Quick Content Management Shortcuts</h2>
-    <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-        <a href="<?php echo BASE_URL; ?>admin/services.php?action=add" class="btn-admin btn-admin-primary">
-            ➕ Add New Service
-        </a>
-        <a href="<?php echo BASE_URL; ?>admin/courses.php?action=add" class="btn-admin btn-admin-primary">
-            ➕ Add New Course
-        </a>
-        <a href="<?php echo BASE_URL; ?>admin/products.php?action=add" class="btn-admin btn-admin-primary">
-            ➕ Add New Product
-        </a>
-        <a href="<?php echo BASE_URL; ?>admin/blog.php?action=add" class="btn-admin btn-admin-primary">
-            ✍️ Write Blog Article
-        </a>
-        <a href="<?php echo BASE_URL; ?>admin/gallery.php?action=add" class="btn-admin btn-admin-secondary">
-            📷 Upload Gallery Image
-        </a>
-        <a href="<?php echo BASE_URL; ?>admin/settings.php" class="btn-admin btn-admin-secondary">
-            ⚙️ Edit Site Settings
-        </a>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
-<!-- Include Admin Footer -->
-<?php include __DIR__ . '/includes/admin-footer.php'; ?>
+<?php require_once 'includes/admin-footer.php'; ?>

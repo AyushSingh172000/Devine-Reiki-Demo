@@ -3,7 +3,7 @@
 
 // Check if running on Local XAMPP
 $hostHeader = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
-$isLocal = (strpos($hostHeader, 'localhost') !== false || strpos($hostHeader, '127.0.0.1') !== false);
+$isLocal = (empty($hostHeader) || php_sapi_name() === 'cli' || strpos($hostHeader, 'localhost') !== false || strpos($hostHeader, '127.0.0.1') !== false);
 
 if ($isLocal) {
     // Localhost XAMPP

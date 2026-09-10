@@ -1,6 +1,9 @@
 <?php
 // Main Footer Component
 require_once __DIR__ . '/../config/constants.php';
+$footerLogoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSettings['logo_path'], '/') : BASE_URL . 'assets/images/reikilogo1.png';
+$footerBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
+$footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defined('SITE_WHATSAPP') ? SITE_WHATSAPP : '919726581787'));
 ?>
 
 <!-- Footer Section -->
@@ -21,34 +24,40 @@ require_once __DIR__ . '/../config/constants.php';
                 <p>Your first 20-minute spiritual consultation with our Reiki Masters is completely free.</p>
             </div>
             <div class="footer-cta-action">
-                <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold">Book Free Session ✨</a>
+                <a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold">Book Free Session ✨</a>
             </div>
         </div>
 
         <!-- Main 4-Column Footer Grid -->
         <div class="footer-grid">
-            <!-- Column 1: Logo & About Dr. Chirag & Binal Gajjar -->
+            <!-- Column 1: Logo & About -->
             <div class="footer-col footer-col-about">
                 <a href="<?php echo BASE_URL; ?>" class="footer-logo">
-                    <img src="<?php echo BASE_URL; ?>assets/images/reikilogo1.png" alt="Reiki Bliss Logo" class="footer-logo-img">
+                    <img src="<?php echo htmlspecialchars($footerLogoUrl); ?>" alt="<?php echo htmlspecialchars(SITE_NAME); ?>" class="footer-logo-img">
                     <span class="logo-text">
-                        <strong class="logo-title">Reiki Bliss</strong>
-                        <span class="logo-subtitle">Healing Center</span>
+                        <strong class="logo-title"><?php echo htmlspecialchars(SITE_NAME); ?></strong>
+                        <span class="logo-subtitle"><?php echo htmlspecialchars(SITE_TAGLINE); ?></span>
                     </span>
                 </a>
                 <p class="footer-tagline">
-                    Guided by <strong>Anupama Agrawal</strong> — dedicated Reiki Grandmaster & Energy Healer empowering lives through authentic Usui Reiki, chakra alignment, and charged gemstones.
+                    Guided by <strong>Dr. Chirag Gajjar</strong> (Reiki Grand Master) & <strong>Binal Gajjar</strong> (Crystal & Numerology Expert) — dedicated to authentic healing, chakra alignment, and empowered living.
                 </p>
                 <div class="footer-socials">
+                    <?php if (!empty(FACEBOOK_URL)): ?>
                     <a href="<?php echo htmlspecialchars(FACEBOOK_URL); ?>" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon">
                         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.891h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
                     </a>
+                    <?php endif; ?>
+                    <?php if (!empty(YOUTUBE_URL)): ?>
                     <a href="<?php echo htmlspecialchars(YOUTUBE_URL); ?>" target="_blank" rel="noopener" aria-label="YouTube" class="social-icon">
                         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                     </a>
+                    <?php endif; ?>
+                    <?php if (!empty(INSTAGRAM_URL)): ?>
                     <a href="<?php echo htmlspecialchars(INSTAGRAM_URL); ?>" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon">
                         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     </a>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -76,7 +85,7 @@ require_once __DIR__ . '/../config/constants.php';
                     <li><a href="<?php echo BASE_URL; ?>services.php#chakra-balancing">Chakra Balancing</a></li>
                     <li><a href="<?php echo BASE_URL; ?>services.php#aura-cleansing">Aura Cleansing & Repair</a></li>
                     <li><a href="<?php echo BASE_URL; ?>services.php#crystal-therapy">Crystal Energy Therapy</a></li>
-                    <li><a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener">Free Consultation</a></li>
+                    <li><a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener">Free Consultation</a></li>
                 </ul>
             </div>
 
@@ -98,7 +107,7 @@ require_once __DIR__ . '/../config/constants.php';
                     </li>
                     <li>
                         <span class="contact-icon">💬</span>
-                        <a href="https://wa.me/919971655705" target="_blank" rel="noopener">WhatsApp Us (+91 99716 55705)</a>
+                        <a href="https://wa.me/<?php echo htmlspecialchars($footerCleanWa); ?>" target="_blank" rel="noopener">WhatsApp Us (<?php echo htmlspecialchars(SITE_PHONE); ?>)</a>
                     </li>
                     <li>
                         <span class="contact-icon">🗺️</span>

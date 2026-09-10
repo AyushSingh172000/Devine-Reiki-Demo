@@ -29,28 +29,47 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/db.php';
 }
 
-// Fetch all site_settings from database into $settings associative array
-$settings = [];
+// Fetch all site_settings from database into $siteSettings associative array
+$siteSettings = [];
 try {
     $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
     if ($stmt) {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $settings[$row['setting_key']] = $row['setting_value'];
+            $siteSettings[$row['setting_key']] = $row['setting_value'];
         }
     }
 } catch (\PDOException $e) {
     error_log("Failed to load site_settings: " . $e->getMessage());
 }
+$settings = $siteSettings; // Backwards compatibility
 
-// Define Site Constants from $settings
-define('BOOKING_URL', $settings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1RI6bVu-iU0Oi4_H09OlL-bQglgmpskaOrSO0nCevRuaKlWfCVYv1XsrEzLz-g7HUkgeiO0C2c');
-define('SITE_NAME', $settings['site_name'] ?? 'Reiki Bliss');
-define('SITE_PHONE', $settings['phone'] ?? '');
-define('SITE_EMAIL', $settings['email'] ?? '');
-define('SITE_ADDRESS', $settings['address'] ?? '');
-define('SITE_WHATSAPP', $settings['whatsapp'] ?? '');
-define('FACEBOOK_URL', $settings['facebook_url'] ?? 'https://www.facebook.com/ReikiblissbyAnu');
-define('YOUTUBE_URL', $settings['youtube_url'] ?? 'https://www.youtube.com/channel/UCWIDBDdEAN1XlZ2AsOCUqXA');
-define('INSTAGRAM_URL', $settings['instagram_url'] ?? 'https://www.instagram.com/reiki_bliss/');
-define('MAPS_URL', $settings['maps_url'] ?? '');
-define('WORKING_HOURS', $settings['working_hours'] ?? '');
+// Fetch all site_stats into $siteStats associative array
+$siteStats = [];
+try {
+    $stmt = $pdo->query("SELECT stat_key, stat_value, label FROM site_stats");
+    if ($stmt) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $siteStats[$row['stat_key']] = $row;
+        }
+    }
+} catch (\PDOException $e) {
+    error_log("Failed to load site_stats: " . $e->getMessage());
+}
+
+// Define Site Constants from $siteSettings
+define('BOOKING_URL', $siteSettings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1RI6bVu-iU0Oi4_H09OlL-bQglgmpskaOrSO0nCevRuaKlWfCVYv1XsrEzLz-g7HUkgeiO0C2c');
+define('SITE_NAME', $siteSettings['site_name'] ?? 'Shree Sai Reiki Healing Center');
+define('SITE_TAGLINE', $siteSettings['site_tagline'] ?? 'Heal. Balance. Transform.');
+define('SITE_PHONE', $siteSettings['phone'] ?? '+91 9726581787');
+define('SITE_EMAIL', $siteSettings['email'] ?? 'shreesaireikihealingcentre@gmail.com');
+define('SITE_ADDRESS', $siteSettings['address'] ?? '4th Floor, Keshav Arcade, Golden Park Society, Anand Mahal Road, Adajan, Surat – 395009');
+define('SITE_WHATSAPP', $siteSettings['whatsapp'] ?? '919726581787');
+define('FACEBOOK_URL', $siteSettings['facebook_url'] ?? 'https://www.facebook.com/profile.php?id=100063697185284');
+define('YOUTUBE_URL', $siteSettings['youtube_url'] ?? 'https://www.youtube.com/@chiraggajjarreikigrandmast8374');
+define('INSTAGRAM_URL', $siteSettings['instagram_url'] ?? '');
+define('MAPS_URL', $siteSettings['maps_url'] ?? 'https://maps.app.goo.gl/FaadyRvvvjf1QQHE6');
+define('MAPS_EMBED_URL', $siteSettings['maps_embed_url'] ?? '');
+define('WORKING_HOURS', $siteSettings['working_hours'] ?? 'Mon–Sat: 7 AM – 6 PM · Sun: 9 AM – 1 PM');
+define('LOGO_PATH', $siteSettings['logo_path'] ?? 'assets/images/logo.png');
+define('FAVICON_PATH', $siteSettings['favicon_path'] ?? 'assets/images/favicon.ico');
+define('OG_IMAGE_PATH', $siteSettings['og_image_path'] ?? 'assets/images/og-image.png');

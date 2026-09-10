@@ -21,10 +21,17 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
     <meta name="description" content="<?php echo htmlspecialchars($pageDescription); ?>">
     
-    <!-- Favicon (Circular Logo) -->
-    <link rel="icon" type="image/png" href="<?php echo BASE_URL; ?>assets/images/favicon-circle.png">
-    <link rel="shortcut icon" type="image/png" href="<?php echo BASE_URL; ?>assets/images/favicon-circle.png">
-    <link rel="apple-touch-icon" href="<?php echo BASE_URL; ?>assets/images/favicon-circle.png">
+    <?php
+    $faviconUrl = !empty($siteSettings['favicon_path']) ? BASE_URL . ltrim($siteSettings['favicon_path'], '/') : BASE_URL . 'assets/images/favicon-circle.png';
+    $logoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSettings['logo_path'], '/') : BASE_URL . 'assets/images/reikilogo1.png';
+    $ogImageUrl = !empty($siteSettings['og_image_path']) ? BASE_URL . ltrim($siteSettings['og_image_path'], '/') : BASE_URL . 'assets/images/hero-bg.jpg';
+    $bookingHref = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
+    ?>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
+    <link rel="shortcut icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
+    <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($faviconUrl); ?>">
 
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:type" content="website">
@@ -32,13 +39,13 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <meta property="og:url" content="<?php echo htmlspecialchars($currentUrl); ?>">
     <meta property="og:title" content="<?php echo htmlspecialchars($pageTitle); ?>">
     <meta property="og:description" content="<?php echo htmlspecialchars($pageDescription); ?>">
-    <meta property="og:image" content="<?php echo BASE_URL; ?>assets/images/hero-bg.jpg">
+    <meta property="og:image" content="<?php echo htmlspecialchars($ogImageUrl); ?>">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="twitter:description" content="<?php echo htmlspecialchars($pageDescription); ?>">
-    <meta name="twitter:image" content="<?php echo BASE_URL; ?>assets/images/hero-bg.jpg">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($ogImageUrl); ?>">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="<?php echo htmlspecialchars($currentUrl); ?>">
@@ -149,10 +156,10 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
         <div class="container navbar-container">
             <!-- Brand Logo -->
             <a href="<?php echo BASE_URL; ?>" class="navbar-logo">
-                <img src="<?php echo BASE_URL; ?>assets/images/reikilogo1.png" alt="Reiki Bliss Logo" class="brand-logo-img">
+                <img src="<?php echo htmlspecialchars($logoUrl); ?>" alt="<?php echo htmlspecialchars(SITE_NAME); ?>" class="brand-logo-img">
                 <span class="logo-text">
-                    <strong class="logo-title">Reiki Bliss</strong>
-                    <span class="logo-subtitle">Healing Center</span>
+                    <strong class="logo-title"><?php echo htmlspecialchars(SITE_NAME); ?></strong>
+                    <span class="logo-subtitle"><?php echo htmlspecialchars(SITE_TAGLINE); ?></span>
                 </span>
             </a>
 
@@ -196,7 +203,7 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
 
             <!-- Navbar Actions (CTA & Hamburger) -->
             <div class="navbar-actions">
-                <a href="<?php echo BASE_URL; ?>contact.php" class="btn-primary btn-book-nav">Book Session</a>
+                <a href="<?php echo htmlspecialchars($bookingHref); ?>" target="_blank" rel="noopener" class="btn-primary btn-book-nav">Book Session</a>
                 
                 <!-- Mobile Hamburger Toggle -->
                 <button class="hamburger-toggle" id="hamburger-toggle" aria-label="Toggle Navigation Menu">
@@ -231,7 +238,7 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
             </ul>
 
             <div class="mobile-nav-cta">
-                <a href="<?php echo BASE_URL; ?>contact.php" class="btn-primary w-full">Book Session</a>
+                <a href="<?php echo htmlspecialchars($bookingHref); ?>" target="_blank" rel="noopener" class="btn-primary w-full">Book Session</a>
             </div>
         </div>
     </div>

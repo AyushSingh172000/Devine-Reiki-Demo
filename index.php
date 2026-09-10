@@ -40,11 +40,17 @@ try {
     error_log("Database error in index.php: " . $e->getMessage());
 }
 
+// Dynamic Hero and Stats from $siteSettings and $siteStats
+$heroHeading = $siteSettings['hero_heading'] ?? 'Heal. Balance. Transform. Your Journey Starts Here';
+$heroSubtext = $siteSettings['hero_subtext'] ?? 'Guided by Dr. Chirag Gajjar (Reiki Grand Master) & Binal Gajjar (Crystal & Numerology Expert) — offering Reiki, Crystal Healing, Chakra Balancing & more.';
+$foundingYear = $siteSettings['founding_year'] ?? '2014';
+$heroBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
+
 // Fallback values for site stats if needed
-$livesHealed = $statsData['lives_healed']['stat_value'] ?? '30000';
-$yearsExp = $statsData['years_experience']['stat_value'] ?? '25';
-$courseLevels = $statsData['course_levels']['stat_value'] ?? '6';
-$sessionsDone = $statsData['sessions_completed']['stat_value'] ?? '25000';
+$livesHealed = $siteStats['lives_healed']['stat_value'] ?? ($statsData['lives_healed']['stat_value'] ?? '30000');
+$yearsExp = $siteStats['years_experience']['stat_value'] ?? ($statsData['years_experience']['stat_value'] ?? '25');
+$courseLevels = $siteStats['course_levels']['stat_value'] ?? ($statsData['course_levels']['stat_value'] ?? '6');
+$sessionsDone = $siteStats['sessions_completed']['stat_value'] ?? ($statsData['sessions_completed']['stat_value'] ?? '25000');
 
 // Include Header
 include __DIR__ . '/includes/header.php';
@@ -60,20 +66,19 @@ include __DIR__ . '/includes/header.php';
     <div class="container hero-content animate-on-scroll">
 
         <span class="hero-location-badge">
-            📍 Adajan, Surat · Est. 2014
+            📍 Adajan, Surat · Est. <?php echo htmlspecialchars($foundingYear); ?>
         </span>
 
         <h1 class="hero-title">
-            Heal. Balance. <em>Transform.</em><br>
-            Your Journey Starts Here
+            <?php echo nl2br(htmlspecialchars($heroHeading)); ?>
         </h1>
 
         <p class="hero-subtext">
-            Guided by <strong>Anupama Agrawal</strong> (Reiki Grandmaster) — empowering lives through authentic Usui Reiki, chakra balancing, aura cleansing, and intention-charged crystal gemstones.
+            <?php echo htmlspecialchars($heroSubtext); ?>
         </p>
 
         <div class="hero-ctas">
-            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
+            <a href="<?php echo htmlspecialchars($heroBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
                 Book Free Session <span class="btn-arrow">→</span>
             </a>
             <a href="<?php echo BASE_URL; ?>courses.php" class="btn-secondary btn-hero-secondary">
