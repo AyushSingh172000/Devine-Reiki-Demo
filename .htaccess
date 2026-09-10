@@ -1,9 +1,12 @@
 # Divine Reiki Website - Apache Configuration & URL Rewrites
 RewriteEngine On
-RewriteBase /DemoWebsite/
+
+# Clean trailing slash redirect using REQUEST_URI so it works for any folder name (reikibliss or DemoWebsite)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [R=301,L]
 
 # Custom Error Page
-ErrorDocument 404 /DemoWebsite/404.php
+ErrorDocument 404 404.php
 
 # Redirect to HTTPS (if supported by host environment)
 # RewriteCond %{HTTPS} off

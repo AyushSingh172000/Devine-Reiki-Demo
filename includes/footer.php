@@ -120,7 +120,7 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
         <!-- Bottom Bar -->
         <div class="footer-bottom">
             <div class="footer-bottom-content">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars(SITE_NAME); ?>. All Rights Reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars(SITE_NAME); ?>. All Rights Reserved. &middot; <a href="<?php echo BASE_URL; ?>admin/" style="color: inherit; opacity: 0.65; text-decoration: none; font-size: 0.9em;" title="Admin Portal">Admin Portal</a></p>
                 <p class="footer-location">📍 Located at Adajan, Surat · Gujarat, India</p>
             </div>
         </div>

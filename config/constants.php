@@ -9,11 +9,18 @@ if (!defined('BASE_URL')) {
         $scheme = $isHttps ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
         $dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        // If loaded from within the /admin subdirectory, strip /admin to get root site base directory
+        $dir = preg_replace('#/admin(?:/.*)?$#i', '', $dir);
         $baseDir = rtrim($dir, '/') . '/';
         define('BASE_URL', "{$scheme}://{$host}{$baseDir}");
     } else {
         define('BASE_URL', 'http://localhost/reikibliss/');
     }
+}
+
+// Admin URL definition
+if (!defined('ADMIN_URL')) {
+    define('ADMIN_URL', BASE_URL . 'admin/');
 }
 
 // File Upload Path definitions

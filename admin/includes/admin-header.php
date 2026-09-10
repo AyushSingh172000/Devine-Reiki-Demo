@@ -146,6 +146,9 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
           <span class="user-avatar"><?= $adminInitial ?></span>
           <span class="user-name"><?= htmlspecialchars($adminUser) ?></span>
         </div>
+        <a href="../index.php" target="_blank" class="btn btn-outline btn-sm" title="View Public Website">
+          <i data-lucide="external-link"></i> View Site
+        </a>
         <a href="logout.php" class="btn btn-outline btn-sm">
           <i data-lucide="log-out"></i> Logout
         </a>
