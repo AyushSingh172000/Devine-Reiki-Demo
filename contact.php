@@ -193,7 +193,7 @@ $contactMapsEmbed = !empty($siteSettings['maps_embed_url']) ? $siteSettings['map
      ========================================================================== -->
 <section class="map-section" id="location-map">
     <iframe src="<?php echo htmlspecialchars($contactMapsEmbed); ?>" 
-            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Shree Sai Reiki & Yog Centre Location Map">
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Reiki Bliss Location Map">
     </iframe>
 </section>
 

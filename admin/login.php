@@ -63,7 +63,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login — Shree Sai Reiki</title>
+    <title>Admin Login — Reiki Bliss</title>
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -257,8 +257,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <div class="login-card">
         <div class="login-logo-box">
-            <img src="../assets/images/logo.png" alt="Shree Sai Reiki Center">
-            <span class="login-portal-tag">SHREE SAI REIKI</span>
+            <img src="../assets/images/logo.png" alt="Reiki Bliss">
+            <span class="login-portal-tag">REIKI BLISS</span>
             <h1 class="login-title">Admin Login</h1>
         </div>
 

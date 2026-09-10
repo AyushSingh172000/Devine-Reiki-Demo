@@ -1,6 +1,6 @@
 /**
- * Shree Sai Reiki Healing Center — Admin Panel Core Interactions
- * File: admin/assets/js/admin.js
+ * Reiki Bliss — Admin Panel Core Interactions
+ * Dark purple + gold themed administrative control suite/js/admin.js
  */
 
 document.addEventListener('DOMContentLoaded', () => {

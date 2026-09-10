@@ -66,7 +66,7 @@ $allTeam = !empty($teamMembers) ? $teamMembers : [$founder1, $founder2];
 
 // Dynamic About Page Content from $siteSettings & $siteStats
 $aboutHeading = $siteSettings['about_heading'] ?? 'Healing with Heart & Purpose';
-$aboutDescription = $siteSettings['about_description'] ?? 'Shree Sai Reiki Healing Center was born from a single conviction — that every person deserves access to authentic energy healing. We have been guiding seekers on their healing journey since 2014.';
+$aboutDescription = $siteSettings['about_description'] ?? 'Reiki Bliss was born from a single conviction — that every person deserves access to authentic energy healing. We have been guiding seekers on their healing journey since 2014.';
 $foundingYear = $siteSettings['founding_year'] ?? '2014';
 
 $healedCount = !empty($siteStats['lives_healed']['stat_value']) ? $siteStats['lives_healed']['stat_value'] . '+' : '30K+';

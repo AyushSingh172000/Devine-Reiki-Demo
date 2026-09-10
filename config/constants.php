@@ -65,10 +65,10 @@ try {
 
 // Define Site Constants from $siteSettings
 define('BOOKING_URL', $siteSettings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1RI6bVu-iU0Oi4_H09OlL-bQglgmpskaOrSO0nCevRuaKlWfCVYv1XsrEzLz-g7HUkgeiO0C2c');
-define('SITE_NAME', $siteSettings['site_name'] ?? 'Shree Sai Reiki Healing Center');
+define('SITE_NAME', $siteSettings['site_name'] ?? 'Reiki Bliss');
 define('SITE_TAGLINE', $siteSettings['site_tagline'] ?? 'Heal. Balance. Transform.');
 define('SITE_PHONE', $siteSettings['phone'] ?? '+91 9726581787');
-define('SITE_EMAIL', $siteSettings['email'] ?? 'shreesaireikihealingcentre@gmail.com');
+define('SITE_EMAIL', $siteSettings['email'] ?? 'info@reikibliss.com');
 define('SITE_ADDRESS', $siteSettings['address'] ?? '4th Floor, Keshav Arcade, Golden Park Society, Anand Mahal Road, Adajan, Surat – 395009');
 define('SITE_WHATSAPP', $siteSettings['whatsapp'] ?? '919726581787');
 define('FACEBOOK_URL', $siteSettings['facebook_url'] ?? 'https://www.facebook.com/profile.php?id=100063697185284');

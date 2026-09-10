@@ -449,15 +449,15 @@ function openOrderDetailModal(order) {
     const typeLabel = (order.order_type === 'birth-chart') ? 'Birth Chart' : 'Customized';
     
     if (phoneClean) {
-        const waMsg = encodeURIComponent(`Namaste ${order.name}, thank you for your order of a ${typeLabel} Reiki Bracelet with Shree Sai Reiki! We are preparing your energetic customization. Could we confirm a few details with you?`);
+        const waMsg = encodeURIComponent(`Namaste ${order.name}, thank you for your order of a ${typeLabel} Reiki Bracelet with Reiki Bliss! We are preparing your energetic customization. Could we confirm a few details with you?`);
         document.getElementById('modalOrderWhatsAppBtn').href = `https://wa.me/${phoneClean.replace('+', '')}?text=${waMsg}`;
         document.getElementById('modalOrderWhatsAppBtn').style.display = 'inline-flex';
     } else {
         document.getElementById('modalOrderWhatsAppBtn').style.display = 'none';
     }
 
-    const emailSub = encodeURIComponent(`Shree Sai Reiki: Update on your ${typeLabel} Bracelet Order`);
-    const emailBody = encodeURIComponent(`Dear ${order.name},\n\nThank you for ordering your ${typeLabel} Bracelet from Shree Sai Reiki & Healing Center.\n\nWe are reviewing your energetic preferences to craft your energized gemstone piece.\n\nWarm regards,\nShree Sai Reiki Healers`);
+    const emailSub = encodeURIComponent(`Reiki Bliss: Update on your ${typeLabel} Bracelet Order`);
+    const emailBody = encodeURIComponent(`Dear ${order.name},\n\nThank you for ordering your ${typeLabel} Bracelet from Reiki Bliss Healing Center.\n\nWe are reviewing your energetic preferences to craft your energized gemstone piece.\n\nWarm regards,\nReiki Bliss Healers`);
     document.getElementById('modalOrderEmailBtn').href = `mailto:${order.email}?subject=${emailSub}&body=${emailBody}`;
 
     // Delete in modal

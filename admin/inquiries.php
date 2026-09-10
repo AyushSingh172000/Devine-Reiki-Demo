@@ -431,8 +431,8 @@ function openInquiryModal(inq) {
     document.getElementById('modalEmailLink').href = 'mailto:' + inq.email;
     document.getElementById('modalEmailLink').textContent = inq.email;
 
-    const emailSubject = encodeURIComponent('Re: Your Inquiry with Shree Sai Reiki & Healing Center');
-    const emailBody = encodeURIComponent(`Dear ${inq.name},\n\nThank you for reaching out to Shree Sai Reiki. Regarding your message:\n"${inq.message}"\n\n`);
+    const emailSubject = encodeURIComponent('Re: Your Inquiry with Reiki Bliss');
+    const emailBody = encodeURIComponent(`Dear ${inq.name},\n\nThank you for reaching out to Reiki Bliss. Regarding your message:\n"${inq.message}"\n\n`);
     document.getElementById('modalEmailBtn').href = `mailto:${inq.email}?subject=${emailSubject}&body=${emailBody}`;
 
     // Phone & WhatsApp links
@@ -441,7 +441,7 @@ function openInquiryModal(inq) {
         document.getElementById('modalPhoneLink').href = 'tel:' + rawPhone;
         document.getElementById('modalPhoneLink').textContent = inq.phone;
         
-        const waText = encodeURIComponent(`Hello ${inq.name}, thank you for contacting Shree Sai Reiki Center regarding: "${inq.message.substring(0, 80)}...". How may we assist you?`);
+        const waText = encodeURIComponent(`Hello ${inq.name}, thank you for contacting Reiki Bliss regarding: "${inq.message.substring(0, 80)}...". How may we assist you?`);
         document.getElementById('modalWhatsAppBtn').href = `https://wa.me/${rawPhone.replace('+', '')}?text=${waText}`;
         document.getElementById('modalWhatsAppBtn').style.display = 'inline-flex';
     } else {

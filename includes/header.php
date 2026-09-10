@@ -56,8 +56,8 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     {
       "@context": "https://schema.org",
       "@type": "HealthAndBeautyBusiness",
-      "name": "Shree Sai Reiki & Yog Centre",
-      "alternateName": "Divine Reiki & Energy Healing Center",
+      "name": "Reiki Bliss",
+      "alternateName": "Reiki Bliss Healing Center",
       "url": "<?php echo htmlspecialchars($currentUrl); ?>",
       "logo": "<?php echo BASE_URL; ?>assets/images/favicon.svg",
       "image": "<?php echo BASE_URL; ?>assets/images/hero-bg.jpg",

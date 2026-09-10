@@ -1,6 +1,30 @@
 <?php
 // Homepage - Divine Reiki & Energy Healing Center
 require_once __DIR__ . '/config/constants.php';
+
+// Check for subpaths appended after index.php (e.g. index.php/admin or index.php/anything-else)
+$pathInfo = '';
+if (!empty($_SERVER['PATH_INFO'])) {
+    $pathInfo = trim($_SERVER['PATH_INFO'], '/');
+} elseif (!empty($_SERVER['REQUEST_URI'])) {
+    $parsedPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (preg_match('#/index\.php(?:/(.*))?$#i', $parsedPath, $matches)) {
+        $pathInfo = isset($matches[1]) ? trim($matches[1], '/') : '';
+    }
+}
+
+if (!empty($pathInfo)) {
+    if (strtolower($pathInfo) === 'admin' || strtolower($pathInfo) === 'admin/login') {
+        header('Location: ' . BASE_URL . 'admin/login.php', true, 302);
+        exit;
+    } else {
+        // Any other subpath after index.php -> show 404 error page
+        http_response_code(404);
+        require __DIR__ . '/404.php';
+        exit;
+    }
+}
+
 if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/config/db.php';
 }

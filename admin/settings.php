@@ -294,7 +294,7 @@ require_once 'includes/admin-header.php';
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Site Name</label>
-                        <input type="text" name="site_name" class="form-control" value="<?= htmlspecialchars($settings['site_name'] ?? 'Shree Sai Reiki & Healing Center') ?>">
+                        <input type="text" name="site_name" class="form-control" value="<?= htmlspecialchars($settings['site_name'] ?? 'Reiki Bliss') ?>">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Site Tagline / Slogan</label>

@@ -5,8 +5,9 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [R=301,L]
 
-# Custom Error Page
-ErrorDocument 404 404.php
+# Redirect index.php/admin to admin login screen
+RewriteCond %{REQUEST_URI} ^/(.+?)/index\.php/admin/?$ [NC]
+RewriteRule ^index\.php/admin/?$ /%1/admin/login.php [R=302,L]
 
 # Redirect to HTTPS (if supported by host environment)
 # RewriteCond %{HTTPS} off
@@ -39,6 +40,11 @@ RewriteRule ^gallery/?$ gallery.php [QSA,L]
 RewriteRule ^contact/?$ contact.php [QSA,L]
 RewriteRule ^order-bracelet/?$ order-bracelet.php [QSA,L]
 RewriteRule ^custom-bracelet/?$ order-bracelet.php [QSA,L]
+
+# Catch-all: If file or directory does not exist, serve custom 404 page
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.*$ 404.php [L]
 
 # Browser Caching Headers
 <IfModule mod_expires.c>
