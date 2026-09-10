@@ -31,15 +31,18 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?> — Admin | Reiki Bliss</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.ico">
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Admin CSS -->
     <link rel="stylesheet" href="assets/css/admin.css">
-    <!-- Lucide Icons (CDN with local fallback) -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script>if (!window.lucide) { document.write('<script src="assets/js/lucide.min.js"><\/script>'); }</script>
+    <!-- Lucide Icons -->
+    <script src="assets/js/lucide.min.js"></script>
 </head>
 <body class="admin-body">
 <!-- Particle Background Animation Canvas -->

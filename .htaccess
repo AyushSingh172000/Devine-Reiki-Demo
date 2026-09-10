@@ -9,9 +9,12 @@ RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [R=301,L]
 RewriteCond %{REQUEST_URI} ^/(.+?)/index\.php/admin/?$ [NC]
 RewriteRule ^index\.php/admin/?$ /%1/admin/login.php [R=302,L]
 
-# Redirect to HTTPS (if supported by host environment)
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Force HTTPS on live hosting (auto-skipped on localhost development)
+RewriteCond %{HTTP_HOST} !^localhost [NC]
+RewriteCond %{HTTP_HOST} !^127\.0\.0\.1 [NC]
+RewriteCond %{HTTP:X-Forwarded-Proto} =http [OR]
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Hide file extensions and clean URLs
 RewriteCond %{REQUEST_FILENAME} !-d

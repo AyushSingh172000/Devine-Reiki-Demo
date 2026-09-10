@@ -64,18 +64,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login — Reiki Bliss</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.ico">
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/admin.css">
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script>
-        if (typeof lucide === 'undefined') {
-            document.write('<script src="assets/js/lucide.min.js"><\/script>');
-        }
-    </script>
+    <script src="assets/js/lucide.min.js"></script>
     <style>
         .login-wrapper {
             min-height: 100vh;
