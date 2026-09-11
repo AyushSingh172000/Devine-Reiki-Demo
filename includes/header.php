@@ -133,9 +133,6 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <?php if ($currentPage == 'gallery.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/gallery.css">
     <?php endif; ?>
-    <?php if ($currentPage == 'blog.php' || $currentPage == 'blog-detail.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/blog.css">
-    <?php endif; ?>
     <?php if ($currentPage == 'contact.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/contact.css">
     <?php endif; ?>

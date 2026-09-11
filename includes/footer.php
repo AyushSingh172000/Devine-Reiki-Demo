@@ -71,7 +71,6 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
                     <li><a href="<?php echo BASE_URL; ?>courses.php">Reiki Courses</a></li>
                     <li><a href="<?php echo BASE_URL; ?>services.php">Healing Services</a></li>
                     <li><a href="<?php echo BASE_URL; ?>gallery.php">Sanctuary Gallery</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>blog.php">Spiritual Blog</a></li>
                     <li><a href="<?php echo BASE_URL; ?>contact.php">Contact Us</a></li>
                 </ul>
             </div>

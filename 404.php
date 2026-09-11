@@ -41,7 +41,6 @@ include __DIR__ . '/includes/header.php';
                 <li><a href="<?php echo BASE_URL; ?>shop.php" style="color: var(--primary-purple); text-decoration: none;">💎 Crystal Shop</a></li>
                 <li><a href="<?php echo BASE_URL; ?>courses.php" style="color: var(--primary-purple); text-decoration: none;">🎓 Reiki Courses</a></li>
                 <li><a href="<?php echo BASE_URL; ?>gallery.php" style="color: var(--primary-purple); text-decoration: none;">🖼️ Sanctuary Gallery</a></li>
-                <li><a href="<?php echo BASE_URL; ?>blog.php" style="color: var(--primary-purple); text-decoration: none;">📝 Spiritual Blog</a></li>
             </ul>
         </div>
     </div>

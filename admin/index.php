@@ -24,7 +24,7 @@ try {
     $unreadInquiries = (int)$pdo->query("SELECT COUNT(*) FROM contact_inquiries WHERE is_read = 0")->fetchColumn();
 
     // 2. Stats Row 2
-    $totalBlogPosts = (int)$pdo->query("SELECT COUNT(*) FROM blog_posts")->fetchColumn();
+    $totalTestimonials = (int)$pdo->query("SELECT COUNT(*) FROM testimonials")->fetchColumn();
     $pendingOrders = (int)$pdo->query("SELECT COUNT(*) FROM bracelet_orders WHERE status = 'pending'")->fetchColumn();
     $totalGallery = (int)$pdo->query("SELECT COUNT(*) FROM gallery_images")->fetchColumn();
 
@@ -91,38 +91,38 @@ require_once 'includes/admin-header.php';
 
 <!-- 2. SECOND ROW (Grid of 3 Stat Cards) -->
 <div class="grid-3 mb-4">
-    <!-- Total Blog Posts -->
-    <div class="stat-card">
+    <!-- Total Reviews -->
+    <a href="testimonials.php" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
-            <span class="stat-number"><?= number_format($totalBlogPosts) ?></span>
-            <span class="stat-label">Blog Posts</span>
+            <span class="stat-number"><?= number_format($totalTestimonials) ?></span>
+            <span class="stat-label">Client Reviews</span>
         </div>
-        <div class="stat-icon purple">
-            <i data-lucide="newspaper"></i>
+        <div class="stat-icon purple" title="Total Client Reviews">
+            <i data-lucide="message-circle"></i>
         </div>
-    </div>
+    </a>
 
     <!-- Pending Bracelet Orders -->
-    <div class="stat-card">
+    <a href="orders.php?status=pending" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
             <span class="stat-number"><?= number_format($pendingOrders) ?></span>
             <span class="stat-label">Pending Orders</span>
         </div>
-        <div class="stat-icon gold">
+        <div class="stat-icon gold" title="Pending Orders">
             <i data-lucide="package-check"></i>
         </div>
-    </div>
+    </a>
 
     <!-- Total Gallery Images -->
-    <div class="stat-card">
+    <a href="gallery.php" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
             <span class="stat-number"><?= number_format($totalGallery) ?></span>
             <span class="stat-label">Gallery Images</span>
         </div>
-        <div class="stat-icon gold">
+        <div class="stat-icon gold" title="Gallery Images">
             <i data-lucide="image"></i>
         </div>
-    </div>
+    </a>
 </div>
 
 <!-- 3. QUICK ACTIONS ROW -->
@@ -152,11 +152,11 @@ require_once 'includes/admin-header.php';
             </div>
         </a>
 
-        <a href="blog.php?action=add" class="quick-action-card">
-            <div class="action-icon"><i data-lucide="file-text"></i></div>
+        <a href="testimonials.php" class="quick-action-card">
+            <div class="action-icon"><i data-lucide="message-circle"></i></div>
             <div>
-                <div>Add Blog Post</div>
-                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Publish healing article</small>
+                <div>Client Reviews</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Moderate &amp; view</small>
             </div>
         </a>
     </div>

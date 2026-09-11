@@ -67,11 +67,6 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
 
       <div class="sidebar-section-divider"><i data-lucide="layers"></i> CONTENT</div>
       <li>
-        <a href="blog.php" class="<?= $currentPage === 'blog.php' ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="file-text"></i></span> Blog Posts
-        </a>
-      </li>
-      <li>
         <a href="gallery.php" class="<?= $currentPage === 'gallery.php' ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="images"></i></span> Gallery
         </a>
