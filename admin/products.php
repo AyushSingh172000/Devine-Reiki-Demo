@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
 
     $badgeText = trim($_POST['badge_text'] ?? 'Reiki Charged');
     $inStock = isset($_POST['in_stock']) ? 1 : 0;
-    $sortOrder = (int)($_POST['sort_order'] ?? 0);
+    $sortOrder = isset($_POST['sort_order']) ? (int)$_POST['sort_order'] : (int)($editItem['sort_order'] ?? 0);
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $currentImage = $_POST['current_image'] ?? '';
 
@@ -248,7 +248,7 @@ require_once 'includes/admin-header.php';
         <a href="products.php" class="btn btn-outline btn-sm flex items-center gap-1">
             <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Products
         </a>
-        <h2 style="font-size: 1.15rem; font-weight: 600; color: #ffffff;">
+        <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary);">
             <?= $action === 'edit' ? 'Edit Product' : 'Add New Product' ?>
         </h2>
     </div>
@@ -324,7 +324,7 @@ require_once 'includes/admin-header.php';
                 </div>
             </div>
 
-            <div class="form-row" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="form-row form-row-prices" style="grid-template-columns: repeat(3, 1fr);">
                 <!-- Price -->
                 <div class="form-group">
                     <label for="productPrice" class="form-label">Selling Price (₹) <span class="text-danger">*</span></label>
@@ -520,7 +520,8 @@ require_once 'includes/admin-header.php';
                 </div>
             </div>
 
-            <div class="form-group" style="max-width: 200px;">
+            <!-- Sort Order Field (Commented out)
+            <div class="form-group" style="max-width: 260px;">
                 <label for="prodSortOrder" class="form-label">Sort Order</label>
                 <input 
                     type="number" 
@@ -530,7 +531,9 @@ require_once 'includes/admin-header.php';
                     placeholder="0" 
                     value="<?= htmlspecialchars($_POST['sort_order'] ?? ($editItem['sort_order'] ?? '0')) ?>"
                 >
+                <div class="form-hint">Controls position on the website. Lower numbers (1, 2, 3...) appear first.</div>
             </div>
+            -->
 
             <!-- Form Actions -->
             <div class="flex gap-2 mt-3" style="border-top: 1px solid var(--card-border); padding-top: 20px;">
@@ -666,11 +669,221 @@ try {
 }
 ?>
 
+<!-- Scoped Products Styling -->
+<style>
+.products-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+}
+.products-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+}
+.products-table thead th {
+    font-size: 0.74rem;
+    padding: 12px 14px;
+    letter-spacing: 0.5px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.products-table tbody td {
+    padding: 12px 14px;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9;
+}
+.products-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+.products-table tbody tr:hover {
+    background: #fafbfc;
+}
+.products-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Product Cell (Thumbnail + Title + Details) */
+.prod-cell-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 220px;
+}
+.prod-thumb-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    flex-shrink: 0;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.prod-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.prod-info-box {
+    flex: 1;
+    min-width: 0;
+}
+.prod-title-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+.prod-meta-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* Category Badge */
+.badge-category {
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--purple-accent);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    font-weight: 600;
+    font-size: 0.74rem;
+    padding: 3px 9px;
+    border-radius: 6px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* Consolidated Pricing Cell */
+.prod-pricing-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.prod-current-price {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--gold-dark);
+    line-height: 1.2;
+}
+.prod-sub-price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.prod-orig-price {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+.prod-discount-badge {
+    font-size: 0.67rem;
+    font-weight: 700;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    padding: 1px 5px;
+    border-radius: 4px;
+    line-height: 1.2;
+}
+
+/* Consolidated Status Stack */
+.prod-status-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+}
+.badge-subtle-pill {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.3;
+}
+.badge-active-subtle {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+.badge-inactive-subtle {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+.badge-instock-subtle {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+}
+.badge-outstock-subtle {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+    font-weight: 600;
+}
+.dot-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-green {
+    background: #16a34a;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+}
+.dot-red {
+    background: #dc2626;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+/* Responsive Rules */
+@media (max-width: 680px) {
+    .search-bar.flex-between {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px;
+    }
+    .search-input-wrapper {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    .filter-select {
+        width: 100% !important;
+    }
+    .btn-gold {
+        width: 100% !important;
+        justify-content: center;
+    }
+    .form-row-prices {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+
 <!-- Search Bar & Filters -->
-<div class="search-bar flex-between mb-3">
-    <div class="flex gap-2" style="flex: 1; flex-wrap: wrap;">
+<div class="search-bar flex-between mb-3" style="align-items: center; gap: 14px; flex-wrap: wrap;">
+    <div class="flex gap-2" style="flex: 1; flex-wrap: wrap; align-items: center;">
         <!-- Search Input Form -->
-        <form action="products.php" method="GET" class="search-input-wrapper" style="max-width: 380px;">
+        <form action="products.php" method="GET" class="search-input-wrapper" style="min-width: 250px; max-width: 360px;">
             <i data-lucide="search" class="search-icon" style="width: 16px; height: 16px;"></i>
             <input 
                 type="text" 
@@ -693,7 +906,7 @@ try {
                 <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
             <?php endif; ?>
             <select name="category" class="filter-select" onchange="this.form.submit()">
-                <option value="All" <?= $categoryFilter === 'All' ? 'selected' : '' ?>>All Categories</option>
+                <option value="All" <?= $categoryFilter === 'All' ? 'selected' : '' ?>>All Categories (<?= count($productsList) ?>)</option>
                 <?php foreach ($categories as $cat): ?>
                     <option value="<?= $cat ?>" <?= $categoryFilter === $cat ? 'selected' : '' ?>>
                         <?= $cat ?>
@@ -708,13 +921,13 @@ try {
     </a>
 </div>
 
-<div class="admin-card">
+<div class="admin-card" style="padding: 16px 20px;">
     <?php if (empty($productsList)): ?>
         <div style="text-align: center; padding: 40px 20px;">
             <div style="margin-bottom: 12px;">
                 <i data-lucide="shopping-bag" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
             </div>
-            <h3 style="font-size: 1.1rem; color: #ffffff; margin-bottom: 6px;">No products found</h3>
+            <h3 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 6px;">No products found</h3>
             <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 18px;">
                 <?= (!empty($search) || $categoryFilter !== 'All') ? 'No products match your current filters.' : 'You have not added any products to the shop catalog yet.' ?>
             </p>
@@ -723,19 +936,15 @@ try {
             </a>
         </div>
     <?php else: ?>
-        <div class="table-responsive">
-            <table class="admin-table">
+        <div class="products-table-wrapper">
+            <table class="admin-table products-table">
                 <thead>
                     <tr>
-                        <th style="width: 70px;">Image</th>
-                        <th>Title</th>
-                        <th>Price (₹)</th>
-                        <th>Original</th>
-                        <th>Discount</th>
-                        <th>Category</th>
-                        <th>Stock</th>
-                        <th>Status</th>
-                        <th style="text-align: right; width: 140px;">Actions</th>
+                        <th style="min-width: 220px;">Product</th>
+                        <th style="width: 110px; white-space: nowrap;">Category</th>
+                        <th style="width: 125px; white-space: nowrap;">Price</th>
+                        <th style="width: 115px; white-space: nowrap;">Status & Stock</th>
+                        <th style="text-align: right; width: 115px; padding-right: 14px; white-space: nowrap;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -751,68 +960,86 @@ try {
                             $discount = (int)($prod['discount_percent'] ?? 0);
                         ?>
                         <tr>
+                            <!-- 1. Product (Thumbnail + Title + Details) -->
                             <td>
-                                <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($prod['title']) ?>" class="thumbnail-50" onerror="this.src='../assets/images/logo.png'">
+                                <div class="prod-cell-main">
+                                    <div class="prod-thumb-box">
+                                        <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($prod['title']) ?>" class="prod-thumb-img" onerror="this.src='../assets/images/logo.png'">
+                                    </div>
+                                    <div class="prod-info-box">
+                                        <div class="prod-title-text">
+                                            <?= htmlspecialchars($prod['title']) ?>
+                                        </div>
+                                        <div class="prod-meta-tags">
+                                            <?php if (!empty($prod['badge_text'])): ?>
+                                                <span class="badge badge-gold" style="font-size: 0.68rem; padding: 1px 6px;">
+                                                    <?= htmlspecialchars($prod['badge_text']) ?>
+                                                </span>
+                                            <?php endif; ?>
+                                            <span class="text-muted" style="font-size: 0.74rem; font-family: monospace;"><?= htmlspecialchars($prod['slug']) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
-                            <td>
-                                <strong style="color: #ffffff;"><?= htmlspecialchars($prod['title']) ?></strong>
-                                <?php if (!empty($prod['badge_text'])): ?>
-                                    <span class="badge badge-gold" style="font-size: 0.68rem; margin-left: 6px; padding: 2px 6px;">
-                                        <?= htmlspecialchars($prod['badge_text']) ?>
-                                    </span>
-                                <?php endif; ?>
-                                <div class="text-muted" style="font-size: 0.78rem;"><?= htmlspecialchars($prod['slug']) ?></div>
-                            </td>
-                            <td>
-                                <strong class="text-gold">₹<?= number_format($price, 2) ?></strong>
-                            </td>
-                            <td>
-                                <?php if ($origPrice > 0): ?>
-                                    <span class="text-muted" style="text-decoration: line-through; font-size: 0.85rem;">
-                                        ₹<?= number_format($origPrice, 2) ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="text-muted">—</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php if ($discount > 0): ?>
-                                    <span class="badge badge-success" style="font-weight: 700;">
-                                        <?= $discount ?>% OFF
-                                    </span>
-                                <?php else: ?>
-                                    <span class="text-muted">—</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <span class="badge badge-outline" style="border: 1px solid var(--card-border); color: #c4b8ff;">
+
+                            <!-- 2. Category -->
+                            <td style="white-space: nowrap;">
+                                <span class="badge-category">
                                     <?= htmlspecialchars($prod['category'] ?? 'Bracelets') ?>
                                 </span>
                             </td>
-                            <td>
-                                <?php if ($inStock): ?>
-                                    <span class="badge badge-success">In Stock</span>
-                                <?php else: ?>
-                                    <span class="badge badge-danger">Out of Stock</span>
-                                <?php endif; ?>
+
+                            <!-- 3. Consolidated Price (Selling + Original + Discount) -->
+                            <td style="white-space: nowrap;">
+                                <div class="prod-pricing-cell">
+                                    <span class="prod-current-price">₹<?= number_format($price, 2) ?></span>
+                                    <?php if ($origPrice > 0): ?>
+                                        <div class="prod-sub-price">
+                                            <span class="prod-orig-price">₹<?= number_format($origPrice, 2) ?></span>
+                                            <?php if ($discount > 0): ?>
+                                                <span class="prod-discount-badge"><?= $discount ?>% OFF</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php elseif ($discount > 0): ?>
+                                        <div class="prod-sub-price">
+                                            <span class="prod-discount-badge"><?= $discount ?>% OFF</span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                             </td>
-                            <td>
-                                <?php if ($isActive): ?>
-                                    <span class="badge badge-success">Active</span>
-                                <?php else: ?>
-                                    <span class="badge badge-danger">Inactive</span>
-                                <?php endif; ?>
+
+                            <!-- 4. Consolidated Status & Stock -->
+                            <td style="white-space: nowrap;">
+                                <div class="prod-status-stack">
+                                    <?php if ($isActive): ?>
+                                        <span class="badge-subtle-pill badge-active-subtle">
+                                            <span class="dot-indicator dot-green"></span> Active
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge-subtle-pill badge-inactive-subtle">
+                                            <span class="dot-indicator dot-red"></span> Inactive
+                                        </span>
+                                    <?php endif; ?>
+
+                                    <?php if ($inStock): ?>
+                                        <span class="badge-subtle-pill badge-instock-subtle">In Stock</span>
+                                    <?php else: ?>
+                                        <span class="badge-subtle-pill badge-outstock-subtle">Out of Stock</span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
-                            <td style="text-align: right;">
+
+                            <!-- 5. Actions -->
+                            <td style="text-align: right; padding-right: 14px; white-space: nowrap;">
                                 <div class="flex gap-1" style="justify-content: flex-end;">
                                     <a href="products.php?action=edit&id=<?= $prod['id'] ?>" class="btn btn-purple btn-sm flex items-center gap-1" title="Edit Product">
-                                        <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
+                                        <i data-lucide="pencil" style="width: 13px; height: 13px;"></i> Edit
                                     </a>
-                                    <form action="products.php" method="POST" class="delete-form" style="display: inline;">
+                                    <form action="products.php" method="POST" class="delete-form" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= $prod['id'] ?>">
                                         <button type="submit" class="btn btn-danger btn-sm flex items-center gap-1" title="Delete Product">
-                                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+                                            <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i> Delete
                                         </button>
                                     </form>
                                 </div>

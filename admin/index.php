@@ -155,7 +155,7 @@ require_once 'includes/admin-header.php';
         <a href="testimonials.php" class="quick-action-card">
             <div class="action-icon"><i data-lucide="message-circle"></i></div>
             <div>
-                <div>Client Reviews</div>
+                <div>Testimonials</div>
                 <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Moderate &amp; view</small>
             </div>
         </a>

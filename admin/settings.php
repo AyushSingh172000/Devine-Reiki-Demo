@@ -267,7 +267,7 @@ require_once 'includes/admin-header.php';
 
 <div style="max-width: 960px; margin: 0 auto;">
     <div class="flex-between mb-3">
-        <h2 style="font-size: 1.25rem; font-weight: 700; color: #ffffff;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
             Global Site Configuration
         </h2>
         <span class="text-muted" style="font-size: 0.85rem;">All updates apply site-wide instantly</span>

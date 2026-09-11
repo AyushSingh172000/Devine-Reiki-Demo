@@ -162,7 +162,7 @@ require_once 'includes/admin-header.php';
             <div style="margin-bottom: 12px;">
                 <i data-lucide="package" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
             </div>
-            <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 6px;">No bracelet orders found</h3>
+            <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 6px;">No bracelet orders found</h3>
             <p class="text-muted" style="font-size: 0.88rem;">
                 <?= (!empty($search) || $typeFilter !== 'All' || $statusFilter !== 'All') ? 'No orders match your selected filters.' : 'There are currently no custom bracelet requests.' ?>
             </p>
@@ -172,12 +172,12 @@ require_once 'includes/admin-header.php';
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Customer Name</th>
-                        <th>Order Type</th>
-                        <th>Phone</th>
-                        <th>WhatsApp</th>
-                        <th>Status</th>
-                        <th>Received Date</th>
+                        <th style="min-width: 190px;">Customer Name</th>
+                        <th style="width: 130px;">Order Type</th>
+                        <th style="width: 125px;">Phone</th>
+                        <th style="width: 125px;">WhatsApp</th>
+                        <th style="width: 110px;">Status</th>
+                        <th style="width: 160px;">Received Date</th>
                         <th style="text-align: right; width: 120px;">Actions</th>
                     </tr>
                 </thead>
@@ -192,7 +192,7 @@ require_once 'includes/admin-header.php';
                         ?>
                         <tr>
                             <td>
-                                <strong style="color: #ffffff; cursor: pointer;" onclick='openOrderDetailModal(<?= json_encode($order) ?>)'>
+                                <strong style="color: var(--text-primary); cursor: pointer;" onclick='openOrderDetailModal(<?= json_encode($order) ?>)'>
                                     <?= htmlspecialchars($order['name']) ?>
                                 </strong>
                                 <div class="text-muted" style="font-size: 0.78rem;">
@@ -201,7 +201,7 @@ require_once 'includes/admin-header.php';
                             </td>
                             <td>
                                 <?php if ($orderType === 'birth-chart'): ?>
-                                    <span class="badge" style="background: rgba(124,107,196,0.2); color: #c4b8ff; border: 1px solid rgba(124,107,196,0.4);">
+                                    <span class="badge" style="background: rgba(99,102,241,0.08); color: var(--purple-accent); border: 1px solid rgba(99,102,241,0.2);">
                                         Birth Chart
                                     </span>
                                 <?php else: ?>
@@ -279,7 +279,7 @@ require_once 'includes/admin-header.php';
         <div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                 <div>
-                    <h2 id="modalOrderCustomer" style="font-size: 1.4rem; color: #ffffff; margin-bottom: 4px;"></h2>
+                    <h2 id="modalOrderCustomer" style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 4px;"></h2>
                     <span id="modalOrderDate" class="text-muted" style="font-size: 0.82rem;"></span>
                 </div>
                 <div class="flex gap-1">
@@ -325,7 +325,7 @@ require_once 'includes/admin-header.php';
                 <h4 style="font-size: 0.85rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
                     Custom Healing Intention
                 </h4>
-                <div id="modalOrderIntention" style="color: #ffffff; font-size: 0.95rem; font-weight: 500;"></div>
+                <div id="modalOrderIntention" style="color: var(--text-primary); font-size: 0.95rem; font-weight: 500;"></div>
             </div>
 
             <!-- Additional Client Message -->
@@ -333,7 +333,7 @@ require_once 'includes/admin-header.php';
                 <label class="form-label" style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase;">
                     Additional Client Notes &amp; Requests
                 </label>
-                <div id="modalOrderMessage" style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap;"></div>
+                <div id="modalOrderMessage" style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap;"></div>
             </div>
 
             <!-- Status Update Controller -->
@@ -395,7 +395,7 @@ function openOrderDetailModal(order) {
     const typeBadge = document.getElementById('modalOrderTypeBadge');
     if (order.order_type === 'birth-chart') {
         typeBadge.className = 'badge';
-        typeBadge.style.cssText = 'background: rgba(124,107,196,0.2); color: #c4b8ff; border: 1px solid rgba(124,107,196,0.4);';
+        typeBadge.style.cssText = 'background: rgba(99,102,241,0.08); color: var(--purple-accent); border: 1px solid rgba(99,102,241,0.2);';
         typeBadge.textContent = 'Birth Chart';
     } else {
         typeBadge.className = 'badge badge-gold';

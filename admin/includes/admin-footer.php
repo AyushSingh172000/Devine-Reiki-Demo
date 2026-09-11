@@ -13,7 +13,7 @@ if (!defined('ADMIN_ACCESS')) {
     <div style="margin-bottom: 12px; color: #f87171;">
       <i data-lucide="alert-triangle" style="width: 48px; height: 48px; stroke-width: 1.5;"></i>
     </div>
-    <h3 class="admin-modal-title" style="margin-bottom: 10px; font-size: 1.3rem; color: #ffffff;">Confirm Deletion</h3>
+    <h3 class="admin-modal-title" style="margin-bottom: 10px; font-size: 1.3rem; color: var(--text-primary);">Confirm Deletion</h3>
     <p id="confirmDeleteMessage" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 22px;">
       Are you sure you want to permanently delete this item? This action cannot be undone.
     </p>

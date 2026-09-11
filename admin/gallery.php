@@ -134,7 +134,7 @@ require_once 'includes/admin-header.php';
         <a href="gallery.php" class="btn btn-outline btn-sm flex items-center gap-1">
             <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Gallery
         </a>
-        <h2 style="font-size: 1.15rem; font-weight: 600; color: #ffffff;">
+        <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary);">
             Batch Upload Gallery Images
         </h2>
     </div>
@@ -148,7 +148,7 @@ require_once 'includes/admin-header.php';
                 <div class="upload-icon mb-2">
                     <i data-lucide="cloud-upload" style="width: 44px; height: 44px; color: var(--gold);"></i>
                 </div>
-                <h3 style="font-size: 1.1rem; color: #ffffff; margin-bottom: 6px;">Drop images here or click to browse</h3>
+                <h3 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 6px;">Drop images here or click to browse</h3>
                 <p class="text-muted" style="font-size: 0.85rem;">Select multiple photos at once. Supported formats: JPG, PNG, WEBP (Max 5MB each)</p>
             </div>
 
@@ -304,7 +304,7 @@ try {
         <div style="margin-bottom: 14px;">
             <i data-lucide="image" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
         </div>
-        <h3 style="font-size: 1.2rem; color: #ffffff; margin-bottom: 6px;">No gallery photos found</h3>
+        <h3 style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 6px;">No gallery photos found</h3>
         <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 20px;">
             <?= $categoryFilter !== 'All' ? 'No photos match the selected category.' : 'Your gallery is empty. Upload high-resolution photos of healing sessions, crystal layouts, and student workshops.' ?>
         </p>

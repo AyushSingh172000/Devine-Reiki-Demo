@@ -130,7 +130,7 @@ require_once 'includes/admin-header.php';
         <a href="testimonials.php" class="btn btn-outline btn-sm flex items-center gap-1">
             <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Testimonials
         </a>
-        <h2 style="font-size: 1.15rem; font-weight: 600; color: #ffffff;">
+        <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary);">
             <?= $action === 'edit' ? 'Edit Testimonial' : 'Add Client Testimonial' ?>
         </h2>
     </div>
@@ -361,7 +361,7 @@ try {
             <div style="margin-bottom: 12px;">
                 <i data-lucide="message-square-quote" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
             </div>
-            <h3 style="font-size: 1.1rem; color: #ffffff; margin-bottom: 6px;">No testimonials found</h3>
+            <h3 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 6px;">No testimonials found</h3>
             <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 18px;">
                 <?= !empty($search) ? 'No reviews matched your search.' : 'You have not added any client testimonials yet.' ?>
             </p>
@@ -375,10 +375,10 @@ try {
                 <thead>
                     <tr>
                         <th style="width: 60px;">Client</th>
-                        <th>Name & Location</th>
+                        <th style="width: 180px;">Name & Location</th>
                         <th style="width: 130px;">Rating</th>
                         <th>Review Quote</th>
-                        <th>Status</th>
+                        <th style="width: 100px;">Status</th>
                         <th style="text-align: right; width: 140px;">Actions</th>
                     </tr>
                 </thead>
@@ -401,13 +401,13 @@ try {
                                 <?php if ($hasImg): ?>
                                     <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($t['client_name']) ?>" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--gold);">
                                 <?php else: ?>
-                                    <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--purple-accent), var(--card-bg)); border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gold); font-size: 1rem;">
+                                    <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #fefce8, #f5f3ff); border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gold); font-size: 1.05rem;">
                                         <?= strtoupper(substr($t['client_name'], 0, 1)) ?>
                                     </div>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <strong style="color: #ffffff;"><?= htmlspecialchars($t['client_name']) ?></strong>
+                                <strong><?= htmlspecialchars($t['client_name']) ?></strong>
                                 <div class="text-muted" style="font-size: 0.8rem;"><?= htmlspecialchars($t['location'] ?: 'Verified Healee') ?></div>
                             </td>
                             <td>
@@ -415,7 +415,7 @@ try {
                                     <?= $starsHtml ?>
                                 </span>
                             </td>
-                            <td style="font-size: 0.88rem; color: #e2e8f0;">
+                            <td style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; font-style: italic;">
                                 &ldquo;<?= htmlspecialchars($contentExcerpt) ?>&rdquo;
                             </td>
                             <td>

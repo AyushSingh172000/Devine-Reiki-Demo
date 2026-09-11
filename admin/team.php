@@ -146,7 +146,7 @@ require_once 'includes/admin-header.php';
         <a href="team.php" class="btn btn-outline btn-sm flex items-center gap-1">
             <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Team Members
         </a>
-        <h2 style="font-size: 1.15rem; font-weight: 600; color: #ffffff;">
+        <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary);">
             <?= $action === 'edit' ? 'Edit Team Member' : 'Add Team Member' ?>
         </h2>
     </div>
@@ -466,7 +466,7 @@ try {
         <div style="margin-bottom: 14px;">
             <i data-lucide="users" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
         </div>
-        <h3 style="font-size: 1.2rem; color: #ffffff; margin-bottom: 6px;">No team members found</h3>
+        <h3 style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 6px;">No team members found</h3>
         <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 20px;">
             <?= !empty($search) ? 'No team members matched your search.' : 'You have not added any practitioners or healing masters yet.' ?>
         </p>
@@ -502,7 +502,7 @@ try {
                 <?php endif; ?>
 
                 <!-- Name & Title -->
-                <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 4px;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
                     <?= htmlspecialchars($member['name']) ?>
                 </h3>
 
@@ -512,7 +512,7 @@ try {
 
                 <!-- Role Badge -->
                 <div class="mb-2">
-                    <span class="badge" style="background: rgba(124, 107, 196, 0.15); border: 1px solid rgba(124, 107, 196, 0.3); color: #c4b8ff; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.8px;">
+                    <span class="badge" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--purple-accent); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.8px;">
                         <?= htmlspecialchars($member['role'] ?: 'healer') ?>
                     </span>
                     <?php if ($isActive): ?>

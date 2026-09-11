@@ -163,7 +163,7 @@ require_once 'includes/admin-header.php';
         <a href="courses.php" class="btn btn-outline btn-sm flex items-center gap-1">
             <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Back to Courses
         </a>
-        <h2 style="font-size: 1.15rem; font-weight: 600; color: #ffffff;">
+        <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-primary);">
             <?= $action === 'edit' ? 'Edit Course' : 'Create New Course' ?>
         </h2>
     </div>
@@ -440,7 +440,7 @@ try {
             <div style="margin-bottom: 12px;">
                 <i data-lucide="graduation-cap" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
             </div>
-            <h3 style="font-size: 1.1rem; color: #ffffff; margin-bottom: 6px;">No courses found</h3>
+            <h3 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 6px;">No courses found</h3>
             <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 18px;">
                 <?= !empty($search) ? 'No courses matched your search query.' : 'You have not added any healing courses yet.' ?>
             </p>
@@ -453,10 +453,10 @@ try {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th style="width: 70px;">Image</th>
-                        <th>Title</th>
-                        <th>Price Text</th>
-                        <th>Status</th>
+                        <th style="width: 65px; text-align: center;">Image</th>
+                        <th style="min-width: 220px;">Title</th>
+                        <th style="width: 150px;">Price Text</th>
+                        <th style="width: 100px;">Status</th>
                         <th style="width: 80px; text-align: center;">Order</th>
                         <th style="text-align: right; width: 140px;">Actions</th>
                     </tr>
@@ -470,11 +470,11 @@ try {
                             $isActive = !empty($crs['is_active']);
                         ?>
                         <tr>
-                            <td>
+                            <td style="text-align: center;">
                                 <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($crs['title']) ?>" class="thumbnail-50" onerror="this.src='../assets/images/logo.png'">
                             </td>
                             <td>
-                                <strong style="color: #ffffff;"><?= htmlspecialchars($crs['title']) ?></strong>
+                                <strong style="color: var(--text-primary);"><?= htmlspecialchars($crs['title']) ?></strong>
                                 <div class="text-muted" style="font-size: 0.78rem;"><?= htmlspecialchars($crs['slug']) ?></div>
                             </td>
                             <td>
