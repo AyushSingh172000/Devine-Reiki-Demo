@@ -51,30 +51,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // A. Logo Upload
             if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-                $logoRes = uploadImage($_FILES['logo'], '../assets/images/', 2097152); // 2MB
+                $logoRes = uploadImage($_FILES['logo'], '../assets/images/', 3145728); // 3MB
                 if ($logoRes['success']) {
-                    // Also copy directly to assets/images/logo.png for standard references
-                    $targetLogo = dirname(__DIR__) . '/assets/images/logo.png';
-                    @copy($logoRes['full_path'], $targetLogo);
+                    // Also copy directly to assets/images/logo.png and reikilogo1.png for standard references
+                    $targetLogo1 = dirname(__DIR__) . '/assets/images/logo.png';
+                    $targetLogo2 = dirname(__DIR__) . '/assets/images/reikilogo1.png';
+                    @copy($logoRes['full_path'], $targetLogo1);
+                    @copy($logoRes['full_path'], $targetLogo2);
                     setSetting($pdo, 'logo_path', $logoRes['path']);
                 } else {
                     $_SESSION['flash_error'] = "Logo upload error: " . $logoRes['error'];
                 }
             }
 
-            // B. Favicon Upload (.ico, .png, .svg - max 512KB)
+            // B. Favicon Upload (.ico, .png, .svg, .webp - max 1MB)
             if (isset($_FILES['favicon']) && $_FILES['favicon']['error'] === UPLOAD_ERR_OK) {
                 $favFile = $_FILES['favicon'];
                 $ext = strtolower(pathinfo($favFile['name'], PATHINFO_EXTENSION));
-                $allowedFav = ['ico', 'png', 'svg'];
+                $allowedFav = ['ico', 'png', 'svg', 'webp'];
                 
-                if (in_array($ext, $allowedFav) && $favFile['size'] <= 524288) {
-                    $favDest = dirname(__DIR__) . '/assets/images/favicon.' . $ext;
+                if (in_array($ext, $allowedFav) && $favFile['size'] <= 1048576) {
+                    $favFilename = 'favicon_' . time() . '.' . $ext;
+                    $favDest = dirname(__DIR__) . '/assets/images/' . $favFilename;
                     if (move_uploaded_file($favFile['tmp_name'], $favDest)) {
-                        setSetting($pdo, 'favicon_path', 'assets/images/favicon.' . $ext);
+                        // Also update standard circular favicon and favicon.ico
+                        $stdCircle = dirname(__DIR__) . '/assets/images/favicon-circle.png';
+                        $stdIco = dirname(__DIR__) . '/assets/images/favicon.ico';
+                        @copy($favDest, $stdCircle);
+                        if ($ext === 'ico' || $ext === 'png') {
+                            @copy($favDest, $stdIco);
+                        }
+                        setSetting($pdo, 'favicon_path', 'assets/images/' . $favFilename);
                     }
                 } else {
-                    $_SESSION['flash_error'] = "Invalid favicon format or file size exceeded 512KB.";
+                    $_SESSION['flash_error'] = "Invalid favicon format or file size exceeded 1MB. Allowed: .ico, .png, .svg, .webp";
                 }
             }
 
@@ -95,12 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (!isset($_SESSION['flash_error'])) {
-                $_SESSION['flash_success'] = "Branding assets updated successfully!";
+                $_SESSION['flash_success'] = "Branding assets (Logo & Favicon) updated successfully! Changes are now live.";
             }
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Branding update error: " . $e->getMessage();
         }
-        header("Location: settings.php#tab-branding");
+        header("Location: settings.php?tab=branding");
         exit;
     }
 
@@ -373,83 +383,120 @@ require_once 'includes/admin-header.php';
          ===================================================================== -->
     <div class="tab-content" id="tab-branding">
         <div class="admin-card">
-            <h3 class="admin-card-title mb-3" style="color: var(--gold);">Brand Imagery &amp; Social Assets</h3>
+            <div class="flex-between mb-3" style="border-bottom: 1px solid var(--card-border); padding-bottom: 14px;">
+                <div>
+                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.15rem; font-weight: 700;">Logo &amp; Favicon Management</h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">Update brand imagery displayed across the public website, browser tabs, and admin panel.</p>
+                </div>
+                <span class="badge badge-gold">Active Branding</span>
+            </div>
+
             <form action="settings.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="tab" value="branding">
 
+                <?php 
+                    $currentLogoPath = !empty($settings['logo_path']) ? '../' . ltrim($settings['logo_path'], '/') : '../assets/images/reikilogo1.png';
+                    $currentFavPath = !empty($settings['favicon_path']) ? '../' . ltrim($settings['favicon_path'], '/') : '../assets/images/favicon-circle.png';
+                    $cacheVer = time();
+                ?>
+
                 <!-- 1. Site Logo -->
                 <div class="form-group mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 24px;">
-                    <label class="form-label" style="font-size: 1rem; color: #ffffff; font-weight: 600;">Site Main Logo</label>
-                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Displayed in main website navigation, admin sidebar, and footer.</p>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Main Website &amp; Admin Logo</label>
+                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Appears in the website navigation bar, admin sidebar, and footer.</p>
                     
                     <div class="flex items-center gap-3" style="flex-wrap: wrap;">
-                        <div style="background: rgba(18, 16, 31, 0.8); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 20px; display: inline-flex; align-items: center; justify-content: center; min-width: 140px; min-height: 70px;">
-                            <img src="../assets/images/logo.png" alt="Current Logo" style="max-height: 50px; max-width: 160px; object-fit: contain;">
+                        <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 24px; display: inline-flex; align-items: center; justify-content: center; min-width: 180px; min-height: 80px; box-shadow: var(--card-shadow);">
+                            <img id="logoLivePreview" src="<?= htmlspecialchars($currentLogoPath) ?>?v=<?= $cacheVer ?>" alt="Current Logo" style="max-height: 52px; max-width: 170px; object-fit: contain;">
                         </div>
-                        <div>
-                            <input type="file" name="logo" class="form-control" accept="image/png,image/jpeg,image/webp,image/svg+xml">
-                            <span class="form-hint">PNG or SVG with transparent background recommended (Max 2MB).</span>
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="file" id="logoFileInput" name="logo" class="form-control mb-1" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+                            <span class="form-hint">Recommended: Transparent PNG, SVG or WebP with dimensions ~200×60px (Max 3MB).</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Favicon -->
+                <!-- 2. Favicon (Browser Tab Icon) -->
                 <div class="form-group mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 24px;">
-                    <label class="form-label" style="font-size: 1rem; color: #ffffff; font-weight: 600;">Favicon (Browser Tab Icon)</label>
-                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Small icon shown in browser tabs and bookmarks bar (~32x32px).</p>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Favicon (Browser Tab Icon)</label>
+                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Small icon shown in browser tabs, bookmarks, and mobile shortcuts for both the website and admin panel.</p>
                     
-                    <div class="flex items-center gap-3" style="flex-wrap: wrap;">
-                        <div style="background: rgba(18, 16, 31, 0.8); border: 1px solid var(--card-border); border-radius: 8px; width: 50px; height: 50px; display: inline-flex; align-items: center; justify-content: center;">
-                            <?php 
-                                $favPath = $settings['favicon_path'] ?? 'assets/images/favicon-circle.png';
-                            ?>
-                            <img src="../<?= htmlspecialchars($favPath) ?>" alt="Favicon Preview" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='../assets/images/logo.png'">
+                    <!-- Realistic Browser Tab Mockup -->
+                    <div style="background: #f1f5f9; border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-bottom: 14px;">
+                        <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px;">Live Browser Tab Simulation</div>
+                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #ffffff; padding: 7px 14px; border-radius: 8px 8px 0 0; border: 1px solid var(--card-border); border-bottom: none; box-shadow: 0 -1px 3px rgba(0,0,0,0.04); max-width: 280px;">
+                            <img id="favLivePreview" src="<?= htmlspecialchars($currentFavPath) ?>?v=<?= $cacheVer ?>" alt="Favicon Preview" style="width: 18px; height: 18px; object-fit: contain; border-radius: 50%;">
+                            <span style="font-size: 0.82rem; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($settings['site_name'] ?? 'Reiki Bliss') ?> | Heal. Balance...</span>
+                            <span style="color: #94a3b8; font-size: 0.72rem; margin-left: auto;">✕</span>
                         </div>
-                        <div>
-                            <input type="file" name="favicon" class="form-control" accept=".ico,image/png,image/svg+xml">
-                            <span class="form-hint">Accepted formats: .ico, .png, .svg (Max 512KB).</span>
+                    </div>
+
+                    <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+                        <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 10px; width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--card-shadow);">
+                            <img id="favIconBoxPreview" src="<?= htmlspecialchars($currentFavPath) ?>?v=<?= $cacheVer ?>" alt="Favicon" style="width: 36px; height: 36px; object-fit: contain; border-radius: 50%;">
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="file" id="favFileInput" name="favicon" class="form-control mb-1" accept=".ico,image/png,image/svg+xml,image/webp">
+                            <span class="form-hint">Accepted formats: .ico, .png, .svg, .webp (Recommended 32×32 or 64×64 circular PNG, Max 1MB).</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3. Apple Touch Icon -->
                 <div class="form-group mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 24px;">
-                    <label class="form-label" style="font-size: 1rem; color: #ffffff; font-weight: 600;">Apple Touch Icon</label>
-                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Icon shown when users bookmark or save your website to their mobile home screen (180x180px PNG).</p>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Apple Touch Icon</label>
+                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Icon shown when users bookmark or save your website to their iOS or Android mobile home screen.</p>
                     
                     <div class="flex items-center gap-3" style="flex-wrap: wrap;">
-                        <div style="background: rgba(18, 16, 31, 0.8); border: 1px solid var(--card-border); border-radius: 12px; width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;">
-                            <img src="../assets/images/favicon-circle.png" alt="Apple Touch Icon" style="width: 44px; height: 44px; object-fit: contain;">
+                        <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 12px; width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--card-shadow);">
+                            <img src="<?= htmlspecialchars($currentFavPath) ?>?v=<?= $cacheVer ?>" alt="Apple Touch Icon" style="width: 44px; height: 44px; object-fit: contain; border-radius: 8px;">
                         </div>
-                        <div>
-                            <input type="file" name="apple_touch_icon" class="form-control" accept="image/png">
-                            <span class="form-hint">Square 180x180 PNG recommended.</span>
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="file" name="apple_touch_icon" class="form-control mb-1" accept="image/png">
+                            <span class="form-hint">Square 180×180 PNG recommended.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 4. OpenGraph Social Share Card -->
                 <div class="form-group mb-4">
-                    <label class="form-label" style="font-size: 1rem; color: #ffffff; font-weight: 600;">OpenGraph Social Share Image (OG Image)</label>
-                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Preview image shown when links to your site are shared on WhatsApp, Facebook, or Twitter (1200x630px recommended).</p>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">OpenGraph Social Share Image (OG Image)</label>
+                    <p class="text-muted mb-3" style="font-size: 0.84rem;">Banner image displayed automatically whenever your website link is shared on <strong>WhatsApp, Facebook, Twitter (X), LinkedIn, or iMessage</strong>.</p>
                     
-                    <div class="flex items-center gap-3" style="flex-wrap: wrap;">
-                        <?php 
-                            $ogPath = $settings['og_image_path'] ?? 'assets/images/hero-bg.jpg';
-                        ?>
-                        <div style="background: rgba(18, 16, 31, 0.8); border: 1px solid var(--card-border); border-radius: 8px; width: 140px; height: 75px; overflow: hidden;">
-                            <img src="../<?= htmlspecialchars($ogPath) ?>" alt="OG Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php 
+                        $rawOg = !empty($settings['og_image_path']) ? ltrim($settings['og_image_path'], '/') : 'assets/images/og-image.png';
+                        if (!file_exists(dirname(__DIR__) . '/' . $rawOg)) {
+                            $rawOg = file_exists(dirname(__DIR__) . '/assets/images/og-image.png') ? 'assets/images/og-image.png' : 'assets/images/hero-bg.jpg';
+                        }
+                        $ogPath = '../' . $rawOg;
+                    ?>
+
+                    <!-- Realistic WhatsApp / Social Link Preview Card -->
+                    <div style="background: #f1f5f9; border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; margin-bottom: 14px; max-width: 480px;">
+                        <div style="font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px;">
+                            <i data-lucide="share-2" style="width: 14px; height: 14px; vertical-align: -2px;"></i> WhatsApp / Social Share Link Preview
                         </div>
-                        <div>
-                            <input type="file" name="og_image" class="form-control" accept="image/jpeg,image/png,image/webp">
-                            <span class="form-hint">Dimensions: 1200 x 630 pixels (Max 3MB).</span>
+                        <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; box-shadow: var(--card-shadow);">
+                            <div style="width: 100%; height: 160px; background: #e2e8f0; overflow: hidden;">
+                                <img id="ogLivePreview" src="<?= htmlspecialchars($ogPath) ?>?v=<?= $cacheVer ?>" alt="OG Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/hero-bg.jpg'">
+                            </div>
+                            <div style="padding: 10px 14px; background: #ffffff;">
+                                <div style="font-size: 0.76rem; color: #64748b; text-transform: uppercase; font-weight: 600;">reikibliss.com</div>
+                                <div style="font-size: 0.92rem; font-weight: 700; color: #0f172a; margin: 2px 0;"><?= htmlspecialchars($settings['site_name'] ?? 'Reiki Bliss') ?> | Authentic Usui Reiki &amp; Energy Healing</div>
+                                <div style="font-size: 0.8rem; color: #64748b; line-height: 1.4;">Discover authentic Usui Reiki healing sessions, certified courses, and crystal healing therapies.</div>
+                            </div>
                         </div>
+                    </div>
+
+                    <div style="max-width: 480px;">
+                        <input type="file" id="ogFileInput" name="og_image" class="form-control mb-1" accept="image/jpeg,image/png,image/webp">
+                        <span class="form-hint">Recommended banner dimensions: 1200 × 630 pixels (JPG, PNG or WebP, Max 3MB).</span>
                     </div>
                 </div>
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-gold">
-                        Save Branding
+                        <i data-lucide="check" style="width: 16px; height: 16px;"></i> Save Branding Changes
                     </button>
                 </div>
             </form>
@@ -685,13 +732,61 @@ tabButtons.forEach(btn => {
     });
 });
 
-// Load Active Tab from URL Hash
+// Load Active Tab from URL Query Param or URL Hash
 window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
     const hash = window.location.hash.replace('#tab-', '');
-    if (hash && document.getElementById('tab-' + hash)) {
-        activateTab(hash);
+    const activeTab = tabParam || hash;
+    if (activeTab && document.getElementById('tab-' + activeTab)) {
+        activateTab(activeTab);
     }
 });
+
+// Instant Client-Side Image Previews for Branding Assets
+const logoFileInput = document.getElementById('logoFileInput');
+const logoLivePreview = document.getElementById('logoLivePreview');
+if (logoFileInput && logoLivePreview) {
+    logoFileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logoLivePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
+
+const favFileInput = document.getElementById('favFileInput');
+const favLivePreview = document.getElementById('favLivePreview');
+const favIconBoxPreview = document.getElementById('favIconBoxPreview');
+if (favFileInput) {
+    favFileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (favLivePreview) favLivePreview.src = e.target.result;
+                if (favIconBoxPreview) favIconBoxPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
+
+const ogFileInput = document.getElementById('ogFileInput');
+const ogLivePreview = document.getElementById('ogLivePreview');
+if (ogFileInput && ogLivePreview) {
+    ogFileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                ogLivePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
 
 // Password Strength Meter
 const newPass = document.getElementById('newPass');

@@ -15,6 +15,23 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     exit;
 }
 
+// Fetch branding settings dynamically
+$siteSettings = [];
+try {
+    $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $siteSettings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (PDOException $e) {}
+
+$rawFavicon = !empty($siteSettings['favicon_path']) ? ltrim($siteSettings['favicon_path'], '/') : 'assets/images/favicon-circle.png';
+$adminFavicon = '../' . $rawFavicon;
+$faviconVersion = file_exists(__DIR__ . '/../' . $rawFavicon) ? filemtime(__DIR__ . '/../' . $rawFavicon) : time();
+
+$rawLogo = !empty($siteSettings['logo_path']) ? ltrim($siteSettings['logo_path'], '/') : 'assets/images/reikilogo1.png';
+$adminLogo = '../' . $rawLogo;
+$logoVersion = file_exists(__DIR__ . '/../' . $rawLogo) ? filemtime(__DIR__ . '/../' . $rawLogo) : time();
+
 $error = '';
 $message = '';
 
@@ -65,9 +82,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login — Reiki Bliss</title>
     <meta name="robots" content="noindex, nofollow">
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../assets/images/favicon.ico">
-    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.ico">
+    <!-- Favicon (Matched with Website) -->
+    <link rel="icon" type="image/png" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
+    <link rel="apple-touch-icon" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,72 +100,33 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             align-items: center;
             justify-content: center;
             padding: 24px;
-            background-color: var(--admin-bg);
+            background-color: #f8fafc;
             background-image: 
-                radial-gradient(circle at 20% 20%, rgba(124, 107, 196, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 80% 80%, rgba(201, 168, 76, 0.08) 0%, transparent 45%),
-                linear-gradient(135deg, #0d0b1a 0%, #1a1035 100%);
+                radial-gradient(circle at 15% 15%, rgba(179, 139, 45, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
+                linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
             position: relative;
             overflow: hidden;
-        }
-
-        /* Floating subtle decorative particles */
-        .login-particle {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0.4;
-            animation: particleFloat 12s infinite ease-in-out alternate;
-        }
-        .particle-1 {
-            width: 120px;
-            height: 120px;
-            top: 10%;
-            left: 8%;
-            background: radial-gradient(circle, rgba(124, 107, 196, 0.25) 0%, transparent 70%);
-        }
-        .particle-2 {
-            width: 180px;
-            height: 180px;
-            bottom: 12%;
-            right: 8%;
-            background: radial-gradient(circle, rgba(201, 168, 76, 0.2) 0%, transparent 70%);
-            animation-duration: 16s;
-        }
-        .particle-3 {
-            width: 80px;
-            height: 80px;
-            top: 75%;
-            left: 20%;
-            background: radial-gradient(circle, rgba(124, 107, 196, 0.2) 0%, transparent 70%);
-            animation-duration: 9s;
-        }
-
-        @keyframes particleFloat {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-24px) scale(1.08); }
         }
 
         .login-card {
             width: 100%;
             max-width: 440px;
-            background: rgba(30, 21, 69, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 16px;
             padding: 40px 36px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55),
-                        0 0 30px rgba(124, 107, 196, 0.08);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08),
+                        0 2px 6px rgba(15, 23, 42, 0.04);
             position: relative;
             z-index: 10;
-            animation: loginCardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: loginCardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes loginCardFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(20px) scale(0.98);
+                transform: translateY(16px) scale(0.98);
             }
             to {
                 opacity: 1;
@@ -157,7 +136,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         .login-logo-box {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .login-logo-box img {
@@ -165,7 +144,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             width: auto;
             display: block;
             margin: 0 auto 10px;
-            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
         }
 
         .login-portal-tag {
@@ -177,17 +155,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         }
 
         .login-title {
-            font-size: 1.65rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            color: #ffffff;
-            margin: 6px 0 6px;
-            letter-spacing: 0.3px;
+            color: #0f172a;
+            margin: 6px 0 4px;
+            letter-spacing: -0.3px;
         }
 
         .login-subtitle {
             font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 26px;
+            color: #64748b;
+            margin-bottom: 24px;
             text-align: center;
         }
 
@@ -224,14 +202,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             font-weight: 600;
             border-radius: 8px;
             margin-top: 10px;
-            box-shadow: 0 4px 18px rgba(201, 168, 76, 0.3);
+            box-shadow: 0 4px 14px rgba(179, 139, 45, 0.3);
         }
 
         .login-footer-nav {
             text-align: center;
-            margin-top: 28px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(42, 33, 85, 0.7);
+            margin-top: 26px;
+            padding-top: 18px;
+            border-top: 1px solid #e2e8f0;
             font-size: 0.84rem;
         }
 
@@ -249,14 +227,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <body class="admin-body">
 
 <div class="login-wrapper">
-    <!-- Subtle floating background particles -->
-    <div class="login-particle particle-1"></div>
-    <div class="login-particle particle-2"></div>
-    <div class="login-particle particle-3"></div>
-
     <div class="login-card">
         <div class="login-logo-box">
-            <img src="../assets/images/logo.png" alt="Reiki Bliss">
+            <img src="<?= htmlspecialchars($adminLogo) ?>?v=<?= $logoVersion ?>" alt="Reiki Bliss">
             <span class="login-portal-tag">REIKI BLISS</span>
             <h1 class="login-title">Admin Login</h1>
         </div>

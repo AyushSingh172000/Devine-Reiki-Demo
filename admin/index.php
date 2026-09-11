@@ -159,6 +159,14 @@ require_once 'includes/admin-header.php';
                 <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Moderate &amp; view</small>
             </div>
         </a>
+
+        <a href="branding.php" class="quick-action-card">
+            <div class="action-icon"><i data-lucide="image"></i></div>
+            <div>
+                <div>Logo &amp; Favicon</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Update site branding</small>
+            </div>
+        </a>
     </div>
 </div>
 
@@ -205,10 +213,10 @@ require_once 'includes/admin-header.php';
                                     <strong><?= htmlspecialchars($inq['name'] ?? 'Guest') ?></strong>
                                 </td>
                                 <td class="text-muted" style="font-size: 0.85rem;">
-                                    <?= htmlspecialchars($inq['email'] ?? '—') ?>
+                                    <span class="text-truncate-email" title="<?= htmlspecialchars($inq['email'] ?? '') ?>"><?= htmlspecialchars($inq['email'] ?? '—') ?></span>
                                 </td>
                                 <td style="font-size: 0.84rem;">
-                                    <?= htmlspecialchars($truncatedMsg) ?>
+                                    <span class="text-truncate-msg" title="<?= htmlspecialchars($inq['message'] ?? '') ?>"><?= htmlspecialchars($truncatedMsg) ?></span>
                                 </td>
                                 <td class="text-muted" style="font-size: 0.8rem; white-space: nowrap;">
                                     <?= $dateFormatted ?>
@@ -268,7 +276,7 @@ require_once 'includes/admin-header.php';
                                 </td>
                                 <td>
                                     <?php if ($orderType === 'birth-chart'): ?>
-                                        <span class="badge badge-purple" style="background: rgba(124,107,196,0.18); color: #c4b8ff; border: 1px solid rgba(124,107,196,0.3);">
+                                        <span class="badge badge-purple">
                                             Birth Chart
                                         </span>
                                     <?php else: ?>
@@ -277,7 +285,7 @@ require_once 'includes/admin-header.php';
                                         </span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-muted" style="font-size: 0.85rem;">
+                                <td class="text-muted" style="font-size: 0.85rem; white-space: nowrap;">
                                     <?= htmlspecialchars($order['phone'] ?? '—') ?>
                                 </td>
                                 <td>

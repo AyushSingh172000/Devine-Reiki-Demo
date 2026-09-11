@@ -22,6 +22,25 @@ try {
     $unreadCount = 0;
 }
 
+// Fetch site branding settings dynamically
+$siteSettings = [];
+try {
+    $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings");
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $siteSettings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching site_settings: " . $e->getMessage());
+}
+
+$rawFavicon = !empty($siteSettings['favicon_path']) ? ltrim($siteSettings['favicon_path'], '/') : 'assets/images/favicon-circle.png';
+$adminFavicon = '../' . $rawFavicon;
+$faviconVersion = file_exists(__DIR__ . '/../../' . $rawFavicon) ? filemtime(__DIR__ . '/../../' . $rawFavicon) : time();
+
+$rawLogo = !empty($siteSettings['logo_path']) ? ltrim($siteSettings['logo_path'], '/') : 'assets/images/reikilogo1.png';
+$adminLogo = '../' . $rawLogo;
+$logoVersion = file_exists(__DIR__ . '/../../' . $rawLogo) ? filemtime(__DIR__ . '/../../' . $rawLogo) : time();
+
 $adminUser = $_SESSION['admin_user'] ?? ($_SESSION['admin_username'] ?? 'Admin');
 $adminInitial = strtoupper(substr($adminUser, 0, 1));
 ?>
@@ -32,9 +51,10 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?> — Admin | Reiki Bliss</title>
     <meta name="robots" content="noindex, nofollow">
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../assets/images/favicon.ico">
-    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.ico">
+    <!-- Favicon (Matched with Public Website) -->
+    <link rel="icon" type="image/png" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
+    <link rel="apple-touch-icon" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +74,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-logo">
       <a href="index.php">
-        <img src="../assets/images/logo.png" alt="Logo">
+        <img src="<?= htmlspecialchars($adminLogo) ?>?v=<?= $logoVersion ?>" alt="Reiki Bliss">
       </a>
       <span class="sidebar-label">Admin Panel</span>
     </div>
@@ -116,8 +136,13 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
 
       <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> SETTINGS</div>
       <li>
-        <a href="settings.php" class="<?= $currentPage === 'settings.php' ? 'active' : '' ?>">
+        <a href="settings.php" class="<?= ($currentPage === 'settings.php' && (!isset($_GET['tab']) || $_GET['tab'] !== 'branding')) ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="settings"></i></span> Site Settings
+        </a>
+      </li>
+      <li>
+        <a href="branding.php" class="<?= ($currentPage === 'branding.php' || ($currentPage === 'settings.php' && isset($_GET['tab']) && $_GET['tab'] === 'branding')) ? 'active' : '' ?>">
+          <span class="nav-icon"><i data-lucide="image"></i></span> Logo &amp; Favicon
         </a>
       </li>
       <li>
@@ -145,10 +170,10 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
           <span class="user-name"><?= htmlspecialchars($adminUser) ?></span>
         </div>
         <a href="../index.php" target="_blank" class="btn btn-outline btn-sm" title="View Public Website">
-          <i data-lucide="external-link"></i> View Site
+          <i data-lucide="external-link"></i> <span class="btn-text">View Site</span>
         </a>
-        <a href="logout.php" class="btn btn-outline btn-sm">
-          <i data-lucide="log-out"></i> Logout
+        <a href="logout.php" class="btn btn-outline btn-sm" title="Logout">
+          <i data-lucide="log-out"></i> <span class="btn-text">Logout</span>
         </a>
       </div>
     </header>

@@ -84,18 +84,18 @@ function removePreview(btn) {
     const CONFIG = {
         particleCount: 60,         // Number of floating particles
         colors: [
-            'rgba(201, 168, 76, ',  // Gold
-            'rgba(124, 107, 196, ', // Purple
-            'rgba(255, 255, 255, ', // White
-            'rgba(167, 139, 250, ', // Light purple
+            'rgba(179, 139, 45, ',  // Refined Gold
+            'rgba(148, 163, 184, ', // Soft Slate
+            'rgba(201, 168, 76, ',  // Warm Gold
+            'rgba(99, 102, 241, ',  // Soft Indigo
         ],
         minSize: 1.5,
-        maxSize: 4,
-        minSpeed: 0.15,
-        maxSpeed: 0.5,
-        connectionDistance: 120,    // Distance to draw lines between particles
-        connectionOpacity: 0.08,   // Very subtle connecting lines
-        glowParticles: true,       // Add glow effect to some particles
+        maxSize: 3.5,
+        minSpeed: 0.1,
+        maxSpeed: 0.35,
+        connectionDistance: 110,    // Distance to draw lines between particles
+        connectionOpacity: 0.05,   // Very subtle connecting lines
+        glowParticles: false,      // Clean on light background
         mouseInteraction: false,   // Keep false — admin panel shouldn't be distracting
     };
     
@@ -111,9 +111,9 @@ function removePreview(btn) {
             this.speedX = (Math.random() - 0.5) * CONFIG.maxSpeed;
             this.speedY = (Math.random() - 0.5) * CONFIG.maxSpeed;
             this.color = CONFIG.colors[Math.floor(Math.random() * CONFIG.colors.length)];
-            this.opacity = 0.3 + Math.random() * 0.5;
+            this.opacity = 0.2 + Math.random() * 0.35;
             this.targetOpacity = this.opacity;
-            this.glow = CONFIG.glowParticles && Math.random() > 0.7;
+            this.glow = false;
             this.pulseSpeed = 0.005 + Math.random() * 0.01;
             this.pulsePhase = Math.random() * Math.PI * 2;
         }
@@ -125,7 +125,7 @@ function removePreview(btn) {
             
             // Pulse opacity
             this.pulsePhase += this.pulseSpeed;
-            this.opacity = this.targetOpacity + Math.sin(this.pulsePhase) * 0.15;
+            this.opacity = this.targetOpacity + Math.sin(this.pulsePhase) * 0.1;
             
             // Wrap around edges with buffer
             if (this.x < -20) this.x = width + 20;
@@ -139,20 +139,6 @@ function removePreview(btn) {
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fillStyle = this.color + this.opacity + ')';
             ctx.fill();
-            
-            // Add glow effect to selected particles
-            if (this.glow) {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-                const gradient = ctx.createRadialGradient(
-                    this.x, this.y, this.size * 0.5,
-                    this.x, this.y, this.size * 3
-                );
-                gradient.addColorStop(0, this.color + (this.opacity * 0.3) + ')');
-                gradient.addColorStop(1, this.color + '0)');
-                ctx.fillStyle = gradient;
-                ctx.fill();
-            }
         }
     }
     
@@ -168,7 +154,7 @@ function removePreview(btn) {
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = 'rgba(124, 107, 196, ' + opacity + ')';
+                    ctx.strokeStyle = 'rgba(179, 139, 45, ' + opacity + ')';
                     ctx.lineWidth = 0.5;
                     ctx.stroke();
                 }
