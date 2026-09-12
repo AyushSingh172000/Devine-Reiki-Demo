@@ -9,37 +9,75 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 $pageTitle = "About Us | Reiki Bliss";
 $pageDescription = "Learn about the founding story of Reiki Bliss in Adajan, Surat, guided by Dr. Chirag Gajjar & Binal Gajjar, and meet our team of dedicated energy practitioners.";
 
+// Helper function to resolve team image URL properly
+if (!function_exists('getTeamImgUrl')) {
+    function getTeamImgUrl($imgPath, $fallback = 'assets/images/team/ananya-sharma.jpg') {
+        if (empty($imgPath)) {
+            return BASE_URL . ltrim($fallback, '/');
+        }
+        if (strpos($imgPath, 'http://') === 0 || strpos($imgPath, 'https://') === 0) {
+            return $imgPath;
+        }
+        return BASE_URL . ltrim($imgPath, '/');
+    }
+}
+
 // Fetch Team Members from MySQL
 try {
-    $teamStmt = $pdo->query("SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order ASC");
+    $teamStmt = $pdo->query("SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order ASC, id DESC");
     $teamMembers = $teamStmt ? $teamStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 } catch (PDOException $e) {
     error_log("Database error in about.php: " . $e->getMessage());
     $teamMembers = [];
 }
 
-// Filter main founders if present, or provide structured fallbacks
+// Keep a master copy for the full carousel
+$allTeamOriginal = $teamMembers;
+
+// Filter main founders dynamically from database
 $founder1 = null;
 $founder2 = null;
-$practitioners = [];
 
-foreach ($teamMembers as $member) {
-    if (strpos($member['name'], 'Chirag') !== false || strpos($member['role'], 'Grand Master') !== false) {
-        if (!$founder1) {
+// 1. Identify Founder 1 (Match specifically for Anupama / Chirag, or lead Grandmaster / Founder)
+foreach ($teamMembers as $idx => $member) {
+    $nameLower = strtolower($member['name']);
+    if (strpos($nameLower, 'anupama') !== false || strpos($nameLower, 'chirag') !== false) {
+        $founder1 = $member;
+        unset($teamMembers[$idx]);
+        break;
+    }
+}
+if (!$founder1) {
+    foreach ($teamMembers as $idx => $member) {
+        $roleLower = strtolower($member['role'] . ' ' . ($member['title'] ?? ''));
+        if (strpos($roleLower, 'grandmaster') !== false || strpos($roleLower, 'grand master') !== false || strpos($roleLower, 'founder') !== false) {
             $founder1 = $member;
-            continue;
+            unset($teamMembers[$idx]);
+            break;
         }
     }
-    if (strpos($member['name'], 'Binal') !== false || strpos($member['role'], 'Crystal') !== false) {
-        if (!$founder2) {
-            $founder2 = $member;
-            continue;
-        }
-    }
-    $practitioners[] = $member;
 }
 
-// Fallback founder data if DB search is empty
+// 2. Identify Founder 2 (Match for Binal or Crystal Master / Co-Founder)
+foreach ($teamMembers as $idx => $member) {
+    $nameLower = strtolower($member['name']);
+    $roleLower = strtolower($member['role'] . ' ' . ($member['title'] ?? ''));
+    if (strpos($nameLower, 'binal') !== false || strpos($roleLower, 'crystal') !== false || strpos($roleLower, 'co-founder') !== false) {
+        $founder2 = $member;
+        unset($teamMembers[$idx]);
+        break;
+    }
+}
+
+// Fallbacks from remaining active members if needed
+if (!$founder1 && !empty($teamMembers)) {
+    $founder1 = array_shift($teamMembers);
+}
+if (!$founder2 && !empty($teamMembers)) {
+    $founder2 = array_shift($teamMembers);
+}
+
+// Static fallback data ONLY if database is completely empty
 if (!$founder1) {
     $founder1 = [
         'name' => 'Anupama Agrawal',
@@ -47,7 +85,7 @@ if (!$founder1) {
         'title' => 'Reiki Grandmaster & Spiritual Healer',
         'bio' => 'Anupama Agrawal is a renowned Reiki Grandmaster with extensive experience in energy medicine, aura transformation, chakra alignment, and holistic spiritual wellness. She has guided thousands of individuals worldwide to unlock their natural healing capacity.',
         'specialties' => json_encode(["Usui Reiki Grandmaster", "Aura Transformation", "Energy Medicine", "Spiritual Counseling"]),
-        'image' => 'assets/images/team/dr-chirag-gajjar.jpg'
+        'image' => 'assets/images/team/ananya-sharma.jpg'
     ];
 }
 if (!$founder2) {
@@ -61,8 +99,8 @@ if (!$founder2) {
     ];
 }
 
-// Ensure practitioners includes all team members for full team carousel
-$allTeam = !empty($teamMembers) ? $teamMembers : [$founder1, $founder2];
+// All team members for full carousel
+$allTeam = !empty($allTeamOriginal) ? $allTeamOriginal : [$founder1, $founder2];
 
 // Dynamic About Page Content from $siteSettings & $siteStats
 $aboutHeading = $siteSettings['about_heading'] ?? 'Healing with Heart & Purpose';
@@ -120,10 +158,10 @@ include __DIR__ . '/includes/header.php';
         </div>
 
         <div class="founders-grid">
-            <!-- Founder Card 1: Dr. Chirag Gajjar -->
+            <!-- Founder Card 1: Lead Grandmaster / Founder -->
             <div class="founder-card animate-on-scroll">
                 <div class="founder-img-box">
-                    <img src="<?php echo htmlspecialchars($founder1['image'] ?: 'assets/images/team/dr-chirag-gajjar.jpg'); ?>" alt="<?php echo htmlspecialchars($founder1['name']); ?>" loading="lazy">
+                    <img src="<?php echo htmlspecialchars(getTeamImgUrl($founder1['image'], 'assets/images/team/ananya-sharma.jpg')); ?>" alt="<?php echo htmlspecialchars($founder1['name']); ?>" loading="lazy">
                 </div>
                 <div class="founder-content-box">
                     <span class="founder-role-title"><?php echo htmlspecialchars($founder1['role']); ?></span>
@@ -147,10 +185,10 @@ include __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Founder Card 2: Binal Gajjar (Reverse Layout) -->
+            <!-- Founder Card 2: Co-Founder / Crystal Master (Reverse Layout) -->
             <div class="founder-card reverse animate-on-scroll">
                 <div class="founder-img-box">
-                    <img src="<?php echo htmlspecialchars($founder2['image'] ?: 'assets/images/team/binal-gajjar.jpg'); ?>" alt="<?php echo htmlspecialchars($founder2['name']); ?>" loading="lazy">
+                    <img src="<?php echo htmlspecialchars(getTeamImgUrl($founder2['image'], 'assets/images/team/binal-gajjar.jpg')); ?>" alt="<?php echo htmlspecialchars($founder2['name']); ?>" loading="lazy">
                 </div>
                 <div class="founder-content-box">
                     <span class="founder-role-title"><?php echo htmlspecialchars($founder2['role']); ?></span>
@@ -194,7 +232,7 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($allTeam as $member): ?>
                     <div class="team-member-card">
                         <div class="team-img-box">
-                            <img src="<?php echo htmlspecialchars($member['image'] ?: 'assets/images/team/ananya-sharma.jpg'); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" loading="lazy">
+                            <img src="<?php echo htmlspecialchars(getTeamImgUrl($member['image'], 'assets/images/team/ananya-sharma.jpg')); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" loading="lazy">
                             <span class="badge badge-gold team-badge-tag">Reiki Master</span>
                         </div>
                         <div class="team-info-body">
