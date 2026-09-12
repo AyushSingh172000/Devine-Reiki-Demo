@@ -327,18 +327,97 @@ require_once 'includes/admin-header.php';
 </div>
 
 <script>
-// Live Circular Image Preview
+// Automatically optimize large images on client side to prevent Nginx 413 (Entity Too Large) errors
+function optimizeImageInput(fileInput, onReady) {
+    if (!fileInput.files || !fileInput.files[0]) return;
+    const file = fileInput.files[0];
+    if (!file.type || !file.type.startsWith('image/')) {
+        if (onReady) onReady(file, null);
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const maxDim = 1200;
+            let w = img.width;
+            let h = img.height;
+
+            // Only compress if larger than 1200px or larger than 700KB
+            if (w > maxDim || h > maxDim || file.size > 700 * 1024) {
+                if (w > h) {
+                    if (w > maxDim) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    }
+                } else {
+                    if (h > maxDim) {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+
+                canvas.toBlob(function(blob) {
+                    if (blob && blob.size < file.size) {
+                        const optFile = new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        try {
+                            const dt = new DataTransfer();
+                            dt.items.add(optFile);
+                            fileInput.files = dt.files;
+                        } catch (err) {
+                            console.warn('DataTransfer not supported:', err);
+                        }
+                        if (onReady) onReady(optFile, URL.createObjectURL(blob));
+                    } else {
+                        if (onReady) onReady(file, e.target.result);
+                    }
+                }, 'image/jpeg', 0.85);
+            } else {
+                if (onReady) onReady(file, e.target.result);
+            }
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// Live Circular Image Preview with Auto-Compression
 const teamImgInput = document.getElementById('teamImgInput');
 const circularPreviewImg = document.getElementById('circularPreviewImg');
 
 if (teamImgInput && circularPreviewImg) {
     teamImgInput.addEventListener('change', function() {
         if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                circularPreviewImg.src = e.target.result;
-            };
-            reader.readAsDataURL(this.files[0]);
+            optimizeImageInput(this, function(file, previewUrl) {
+                if (previewUrl) {
+                    circularPreviewImg.src = previewUrl;
+                }
+            });
+        }
+    });
+}
+
+// Safety check on team form submission to prevent Nginx 413 error
+const teamForm = document.querySelector('form[enctype="multipart/form-data"]');
+if (teamForm) {
+    teamForm.addEventListener('submit', function(e) {
+        if (teamImgInput && teamImgInput.files && teamImgInput.files[0]) {
+            const f = teamImgInput.files[0];
+            if (f.size > 2 * 1024 * 1024) {
+                e.preventDefault();
+                alert('The selected image is ' + (f.size / (1024 * 1024)).toFixed(1) + 'MB, which exceeds the server request limit. Please choose an image under 2MB.');
+                return false;
+            }
         }
     });
 }
