@@ -800,11 +800,14 @@ select.form-control option {
   background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 10000;
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .modal-overlay.active,
@@ -2116,7 +2119,6 @@ select.form-control option {
 .admin-content {
   position: relative;
   z-index: 2;
-  animation: fadeIn 0.3s ease;
 }
 
 /* Sidebar Active Item Indicator */

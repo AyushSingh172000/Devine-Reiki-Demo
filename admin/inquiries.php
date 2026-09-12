@@ -144,6 +144,11 @@ try {
     $error = "Error loading inquiries: " . $e->getMessage();
 }
 
+$inquiriesMap = [];
+foreach ($inquiriesList as $inqItem) {
+    $inquiriesMap[$inqItem['id']] = $inqItem;
+}
+
 $pageTitle = 'Contact Inquiries';
 require_once 'includes/admin-header.php';
 ?>
@@ -152,23 +157,34 @@ require_once 'includes/admin-header.php';
 <style>
 .table-responsive {
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
     border-radius: 12px;
+}
+@media (max-width: 900px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+.inquiry-table {
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 .inquiry-table thead th {
     font-size: 0.74rem;
     padding: 10px 10px;
     letter-spacing: 0.5px;
     background: #f8fafc;
+    white-space: nowrap;
 }
 .inquiry-table tbody td {
     vertical-align: middle !important;
     padding: 10px 10px;
 }
 .inquiry-msg-preview {
-    max-width: 280px;
-    font-size: 0.85rem;
+    max-width: 260px;
+    font-size: 0.84rem;
     color: var(--text-secondary);
     line-height: 1.4;
     display: -webkit-box;
@@ -177,6 +193,7 @@ require_once 'includes/admin-header.php';
     overflow: hidden;
     cursor: pointer;
     transition: color 0.15s ease;
+    word-break: break-word;
 }
 .inquiry-msg-preview:hover {
     color: var(--gold-dark);
@@ -226,30 +243,55 @@ require_once 'includes/admin-header.php';
 
 /* Luxury View Detail Modal */
 .modal-overlay {
-    padding: 16px !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 99999 !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px 16px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+}
+.modal-overlay.active {
+    display: flex !important;
 }
 .inquiry-modal-dialog {
     max-width: 600px;
     width: 100%;
-    margin: auto;
+    margin: auto !important;
     background: #ffffff;
     border-radius: 18px;
     border: 1px solid rgba(212, 175, 55, 0.25);
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.1);
-    padding: 20px 24px;
-    max-height: min(90vh, 740px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    padding: 18px 22px !important;
+    box-sizing: border-box !important;
+    max-height: calc(100vh - 48px) !important;
+    max-height: calc(100dvh - 48px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    position: relative !important;
+    transform: none !important;
 }
 .inquiry-modal-dialog .modal-header {
-    flex-shrink: 0;
+    flex-shrink: 0 !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #f1f5f9;
+}
+.inquiry-modal-footer {
+    flex-shrink: 0 !important;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
 }
 .inquiry-modal-dialog .modal-close {
     width: 32px;
@@ -573,13 +615,12 @@ require_once 'includes/admin-header.php';
                             <th style="width: 32px; text-align: center;">
                                 <input type="checkbox" id="selectAllCheckbox" title="Select All">
                             </th>
-                            <th style="width: 135px;">Client Name</th>
-                            <th style="width: 145px;">Email</th>
+                            <th style="min-width: 155px;">Client</th>
                             <th style="width: 105px;">Phone</th>
-                            <th style="min-width: 170px;">Message Preview</th>
+                            <th style="min-width: 160px;">Message Preview</th>
                             <th style="width: 75px; text-align: center;">Status</th>
-                            <th style="width: 100px;">Received Date</th>
-                            <th style="text-align: right; width: 115px; padding-right: 10px; white-space: nowrap;">Actions</th>
+                            <th style="width: 95px;">Received Date</th>
+                            <th style="text-align: right; width: 110px; padding-right: 10px; white-space: nowrap;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -593,19 +634,19 @@ require_once 'includes/admin-header.php';
                                     <input type="checkbox" name="inquiry_ids[]" value="<?= $inq['id'] ?>" class="inq-checkbox">
                                 </td>
                                 <td>
-                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                    <div style="display: flex; align-items: center; gap: 5px;">
                                         <?php if ($isUnread): ?>
-                                            <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ef4444; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(239,68,68,0.2);"></span>
+                                            <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ef4444; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(239,68,68,0.2);" title="Unread inquiry"></span>
                                         <?php endif; ?>
-                                        <strong style="color: var(--text-primary); font-size: 0.9rem; cursor: pointer;" onclick='openInquiryModal(<?= json_encode($inq) ?>)'>
+                                        <strong style="color: var(--text-primary); font-size: 0.88rem; cursor: pointer;" onclick="openInquiryModal(<?= (int)$inq['id'] ?>)">
                                             <?= htmlspecialchars($inq['name']) ?>
                                         </strong>
                                     </div>
-                                </td>
-                                <td>
-                                    <a href="mailto:<?= htmlspecialchars($inq['email']) ?>" class="text-muted" style="text-decoration: none; font-size: 0.84rem;" title="Send Email">
-                                        <?= htmlspecialchars($inq['email']) ?>
-                                    </a>
+                                    <div style="margin-top: 2px;">
+                                        <a href="mailto:<?= htmlspecialchars($inq['email']) ?>" class="text-muted" style="text-decoration: none; font-size: 0.78rem; display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="<?= htmlspecialchars($inq['email']) ?>">
+                                            <?= htmlspecialchars($inq['email']) ?>
+                                        </a>
+                                    </div>
                                 </td>
                                 <td class="text-muted" style="font-size: 0.84rem; white-space: nowrap;">
                                     <?php if (!empty($inq['phone'])): ?>
@@ -617,7 +658,7 @@ require_once 'includes/admin-header.php';
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <div class="inquiry-msg-preview" onclick='openInquiryModal(<?= json_encode($inq) ?>)' title="Click to view full message">
+                                    <div class="inquiry-msg-preview" onclick="openInquiryModal(<?= (int)$inq['id'] ?>)" title="Click to view full message">
                                         <?= htmlspecialchars($msgSnippet) ?>
                                     </div>
                                 </td>
@@ -643,7 +684,7 @@ require_once 'includes/admin-header.php';
                                             type="button" 
                                             class="btn btn-purple btn-sm flex items-center gap-1" 
                                             title="View Full Message & Reply"
-                                            onclick='openInquiryModal(<?= json_encode($inq) ?>)'
+                                            onclick="openInquiryModal(<?= (int)$inq['id'] ?>)"
                                         >
                                             <i data-lucide="eye" style="width: 13px; height: 13px;"></i> View
                                         </button>
@@ -658,12 +699,12 @@ require_once 'includes/admin-header.php';
                                             <i data-lucide="<?= $isUnread ? 'check' : 'mail' ?>" style="width: 13px; height: 13px;"></i>
                                         </button>
 
-                                        <!-- Delete Button -->
+                                        <!-- Delete Button (triggers dedicated delete-form via HTML5 form attribute) -->
                                         <button 
-                                            type="button" 
+                                            type="submit" 
+                                            form="deleteInqForm_<?= $inq['id'] ?>"
                                             class="btn btn-danger btn-icon btn-sm flex items-center justify-center" 
                                             title="Delete Inquiry"
-                                            onclick="deleteInquirySingle(<?= $inq['id'] ?>)"
                                         >
                                             <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
                                         </button>
@@ -678,7 +719,15 @@ require_once 'includes/admin-header.php';
     </div>
 </form>
 
-<!-- Hidden Form for Single Actions -->
+<!-- Dedicated Delete Forms with class="delete-form" for Global Modal & Reliable Submission -->
+<?php foreach ($inquiriesList as $delInq): ?>
+    <form id="deleteInqForm_<?= $delInq['id'] ?>" action="inquiries.php" method="POST" class="delete-form" style="display: none;" data-item-name="<?= htmlspecialchars($delInq['name']) ?>'s Inquiry">
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="id" value="<?= (int)$delInq['id'] ?>">
+    </form>
+<?php endforeach; ?>
+
+<!-- Hidden Form for Single Actions (Toggle Read / Programmatic fallback) -->
 <form id="singleActionForm" action="inquiries.php" method="POST" style="display: none;">
     <input type="hidden" name="action" id="singleActionType">
     <input type="hidden" name="id" id="singleActionId">
@@ -824,17 +873,30 @@ function toggleInquiryStatus(id) {
     document.getElementById('singleActionForm').submit();
 }
 
-// Delete Single
+// Inquiries Data Map (safe from quote and syntax errors)
+const inquiriesData = <?= json_encode($inquiriesMap, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+let currentModalInqId = null;
+
+// Delete Single (Triggers .delete-form submit for global luxury confirmation modal)
 function deleteInquirySingle(id) {
-    if (confirm('Are you sure you want to delete this inquiry?')) {
-        document.getElementById('singleActionType').value = 'delete';
-        document.getElementById('singleActionId').value = id;
-        document.getElementById('singleActionForm').submit();
+    const targetForm = document.getElementById('deleteInqForm_' + id);
+    if (targetForm) {
+        targetForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    } else {
+        if (confirm('Are you sure you want to delete this inquiry?')) {
+            document.getElementById('singleActionType').value = 'delete';
+            document.getElementById('singleActionId').value = id;
+            document.getElementById('singleActionForm').submit();
+        }
     }
 }
 
 // Open Detail Modal
-function openInquiryModal(inq) {
+function openInquiryModal(inqOrId) {
+    const inq = (typeof inqOrId === 'object' && inqOrId !== null) ? inqOrId : inquiriesData[inqOrId];
+    if (!inq) return;
+    currentModalInqId = inq.id;
+
     // Monogram Initial
     const nameStr = (inq.name || 'Client').trim();
     document.getElementById('modalAvatarInitial').textContent = nameStr.charAt(0).toUpperCase();
@@ -905,12 +967,23 @@ function openInquiryModal(inq) {
             .catch(() => {});
     }
 
-    document.getElementById('inquiryDetailModal').classList.add('active');
+    const modal = document.getElementById('inquiryDetailModal');
+    if (modal) {
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
     if (window.lucide) lucide.createIcons();
 }
 
 function closeInquiryModal() {
-    document.getElementById('inquiryDetailModal').classList.remove('active');
+    const modal = document.getElementById('inquiryDetailModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 // Close on backdrop click
@@ -975,7 +1048,7 @@ inqCheckboxes.forEach(cb => {
         }
     ?>
     <?php if ($viewItem): ?>
-        openInquiryModal(<?= json_encode($viewItem) ?>);
+        openInquiryModal(<?= (int)$viewItem['id'] ?>);
     <?php endif; ?>
 <?php endif; ?>
 </script>

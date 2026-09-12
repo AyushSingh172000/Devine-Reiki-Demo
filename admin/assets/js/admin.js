@@ -540,7 +540,7 @@ function initConfirmDelete() {
     const msg = document.getElementById('confirmDeleteMessage');
     if (msg) {
       if (itemName) {
-        msg.innerHTML = `Are you sure you want to delete <strong style="color:#ffffff;">"${escapeHtml(itemName)}"</strong>? This action cannot be undone.`;
+        msg.innerHTML = `Are you sure you want to delete <strong style="color: var(--gold, #b38b2d); font-weight: 700;">"${escapeHtml(itemName)}"</strong>? This action cannot be undone.`;
       } else {
         msg.textContent = 'Are you sure you want to permanently delete this item? This action cannot be undone.';
       }
