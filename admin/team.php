@@ -208,7 +208,7 @@ require_once 'includes/admin-header.php';
 
             <!-- Bio with HTML Toolbar -->
             <div class="form-group">
-                <label for="memberBio" class="form-label">Biography (HTML Supported)</label>
+                <label for="memberBio" class="form-label">Biography</label>
                 <div class="editor-toolbar">
                     <button type="button" onclick="insertTag('memberBio', '<b>', '</b>')" title="Bold"><i data-lucide="bold" style="width: 14px; height: 14px;"></i></button>
                     <button type="button" onclick="insertTag('memberBio', '<i>', '</i>')" title="Italic"><i data-lucide="italic" style="width: 14px; height: 14px;"></i></button>

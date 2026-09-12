@@ -214,7 +214,7 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
 <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/text-healing-animation.js"></script>
 <script src="<?php echo BASE_URL; ?>assets/js/counter.js"></script>
-<script src="<?php echo BASE_URL; ?>assets/js/carousel.js"></script>
+<script src="<?php echo BASE_URL; ?>assets/js/carousel.js?v=<?php echo file_exists(dirname(__DIR__) . '/assets/js/carousel.js') ? filemtime(dirname(__DIR__) . '/assets/js/carousel.js') : '2.0'; ?>"></script>
 
 <?php if (isset($currentPage) && $currentPage == 'gallery.php'): ?>
 

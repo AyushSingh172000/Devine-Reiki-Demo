@@ -226,35 +226,39 @@ include __DIR__ . '/includes/header.php';
             <p>Our certified masters and energy therapists bring deep wisdom, compassion, and specialized healing techniques to every session.</p>
         </div>
 
-        <!-- Infinite Auto-Scrolling Team Carousel -->
-        <div class="infinite-carousel team-carousel-wrapper">
-            <div class="infinite-carousel-track">
-                <?php foreach ($allTeam as $member): ?>
-                    <div class="team-member-card">
-                        <div class="team-img-box">
-                            <img src="<?php echo htmlspecialchars(getTeamImgUrl($member['image'], 'assets/images/team/ananya-sharma.jpg')); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" loading="lazy">
-                            <span class="badge badge-gold team-badge-tag">Reiki Master</span>
-                        </div>
-                        <div class="team-info-body">
-                            <h3 class="team-name-title"><?php echo htmlspecialchars($member['name']); ?></h3>
-                            <span class="team-role-subtitle"><?php echo htmlspecialchars($member['role']); ?></span>
-                            <p class="team-bio-short"><?php echo htmlspecialchars(substr($member['bio'], 0, 110)) . '...'; ?></p>
-                            <div class="specialty-tags-list">
-                                <?php 
-                                $mSpecs = is_string($member['specialties']) ? json_decode($member['specialties'], true) : $member['specialties'];
-                                if (is_array($mSpecs)):
-                                    foreach (array_slice($mSpecs, 0, 2) as $t):
-                                ?>
-                                    <span class="specialty-tag-badge" style="font-size: 0.75rem; padding: 4px 10px;"><?php echo htmlspecialchars($t); ?></span>
-                                <?php 
-                                    endforeach;
-                                endif;
-                                ?>
+        <!-- Dynamic Team Carousel with Manual Drag and Nav Controls (Exact Database Members Only) -->
+        <div class="team-carousel-outer">
+            <button type="button" class="team-carousel-nav-btn prev-btn" id="teamCarouselPrev" aria-label="Scroll Team Cards Left">‹</button>
+            <div class="team-carousel-wrapper" id="teamCarouselWrapper">
+                <div class="team-carousel-track" id="teamCarouselTrack">
+                    <?php foreach ($allTeam as $member): ?>
+                        <div class="team-member-card">
+                            <div class="team-img-box">
+                                <img src="<?php echo htmlspecialchars(getTeamImgUrl($member['image'], 'assets/images/team/ananya-sharma.jpg')); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" loading="lazy">
+                                <span class="badge badge-gold team-badge-tag">Reiki Master</span>
+                            </div>
+                            <div class="team-info-body">
+                                <h3 class="team-name-title"><?php echo htmlspecialchars($member['name']); ?></h3>
+                                <span class="team-role-subtitle"><?php echo htmlspecialchars($member['role']); ?></span>
+                                <p class="team-bio-short"><?php echo htmlspecialchars(substr($member['bio'], 0, 110)) . '...'; ?></p>
+                                <div class="specialty-tags-list">
+                                    <?php 
+                                    $mSpecs = is_string($member['specialties']) ? json_decode($member['specialties'], true) : $member['specialties'];
+                                    if (is_array($mSpecs)):
+                                        foreach (array_slice($mSpecs, 0, 2) as $t):
+                                    ?>
+                                        <span class="specialty-tag-badge" style="font-size: 0.75rem; padding: 4px 10px;"><?php echo htmlspecialchars($t); ?></span>
+                                    <?php 
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
+            <button type="button" class="team-carousel-nav-btn next-btn" id="teamCarouselNext" aria-label="Scroll Team Cards Right">›</button>
         </div>
     </div>
 </section>

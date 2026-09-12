@@ -119,7 +119,7 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/home.css">
     <?php endif; ?>
     <?php if ($currentPage == 'about.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/about.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/about.css?v=<?php echo file_exists(dirname(__DIR__) . '/assets/css/about.css') ? filemtime(dirname(__DIR__) . '/assets/css/about.css') : '2.0'; ?>">
     <?php endif; ?>
     <?php if ($currentPage == 'services.php' || $currentPage == 'service-detail.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/services.css">

@@ -207,8 +207,96 @@
   background-color: var(--white);
 }
 
-.team-carousel-wrapper {
+.team-carousel-outer {
+  position: relative;
   margin-top: 48px;
+  width: 100%;
+}
+
+.team-carousel-wrapper {
+  margin-top: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none; /* Firefox: hide horizontal scrollbar */
+  -ms-overflow-style: none; /* IE/Edge: hide horizontal scrollbar */
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding: 10px 0 20px;
+}
+
+/* Chrome, Safari, Edge, Opera: hide horizontal scrollbar */
+.team-carousel-wrapper::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.team-carousel-wrapper.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.team-carousel-wrapper .team-img-box img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+.team-carousel-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  padding: 0 4px;
+}
+
+/* Floating Navigation Buttons for Team Carousel */
+.team-carousel-nav-btn {
+  position: absolute;
+  top: calc(50% - 10px);
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid var(--accent-gold);
+  color: var(--primary-purple);
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(45, 27, 105, 0.12);
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.team-carousel-nav-btn:hover {
+  background: var(--accent-gold);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(201, 168, 76, 0.4);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.team-carousel-nav-btn.prev-btn {
+  left: -22px;
+}
+
+.team-carousel-nav-btn.next-btn {
+  right: -22px;
+}
+
+@media (max-width: 991px) {
+  .team-carousel-nav-btn.prev-btn {
+    left: 4px;
+  }
+  .team-carousel-nav-btn.next-btn {
+    right: 4px;
+  }
 }
 
 .team-member-card {
