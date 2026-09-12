@@ -29,6 +29,19 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/config/db.php';
 }
 
+// Helper to resolve media URLs across uploads, assets, and external links
+if (!function_exists('getCarouselImgUrl')) {
+    function getCarouselImgUrl($imgPath, $fallback = '') {
+        if (empty($imgPath)) {
+            return !empty($fallback) ? (strpos($fallback, 'http') === 0 ? $fallback : BASE_URL . ltrim($fallback, '/')) : '';
+        }
+        if (strpos($imgPath, 'http://') === 0 || strpos($imgPath, 'https://') === 0) {
+            return $imgPath;
+        }
+        return BASE_URL . ltrim($imgPath, '/');
+    }
+}
+
 // Page Metadata
 $pageTitle = "Reiki Bliss | Heal. Balance. Transform.";
 $pageDescription = "Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets guided by Reiki Grandmaster Anupama Agrawal at Reiki Bliss.";
@@ -52,16 +65,169 @@ try {
     $coursesStmt = $pdo->query("SELECT * FROM courses WHERE is_active = 1 ORDER BY sort_order ASC");
     $courses = $coursesStmt ? $coursesStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
-    // 4. Products (active, sorted, limit 10)
-    $productsStmt = $pdo->query("SELECT * FROM products WHERE is_active = 1 ORDER BY sort_order ASC LIMIT 10");
+    // 4. Products (active, sorted, limit 12)
+    $productsStmt = $pdo->query("SELECT * FROM products WHERE is_active = 1 ORDER BY sort_order ASC LIMIT 12");
     $products = $productsStmt ? $productsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
     // 5. Testimonials (active)
     $testimonialsStmt = $pdo->query("SELECT * FROM testimonials WHERE is_active = 1 ORDER BY created_at DESC");
     $testimonials = $testimonialsStmt ? $testimonialsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
+    // 6. Team Members (active)
+    $teamMembersStmt = $pdo->query("SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order ASC, id DESC");
+    $teamMembers = $teamMembersStmt ? $teamMembersStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+    // 7. Gallery Images (active, crystal & bracelet categories)
+    $galleryBraceletsStmt = $pdo->query("SELECT image_path, caption FROM gallery_images WHERE is_active = 1 AND (category LIKE '%Crystal%' OR category LIKE '%Bracelet%' OR category = 'Crystals') ORDER BY sort_order ASC");
+    $galleryBracelets = $galleryBraceletsStmt ? $galleryBraceletsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
 } catch (PDOException $e) {
     error_log("Database error in index.php: " . $e->getMessage());
+    $services = $services ?? [];
+    $courses = $courses ?? [];
+    $products = $products ?? [];
+    $testimonials = $testimonials ?? [];
+    $teamMembers = $teamMembers ?? [];
+    $galleryBracelets = $galleryBracelets ?? [];
+}
+
+// -------------------------------------------------------------------------
+// Build Dynamic Crystal Bracelet Carousel List (from Products & Gallery)
+// -------------------------------------------------------------------------
+$braceletCarouselImages = [];
+
+if (!empty($products)) {
+    foreach ($products as $prod) {
+        if (!empty($prod['image'])) {
+            $braceletCarouselImages[] = [
+                'src' => $prod['image'],
+                'alt' => $prod['title'] ?? 'Crystal Bracelet'
+            ];
+        }
+        if (!empty($prod['additional_images'])) {
+            $extraList = is_string($prod['additional_images']) ? json_decode($prod['additional_images'], true) : $prod['additional_images'];
+            if (is_array($extraList)) {
+                foreach ($extraList as $extraImg) {
+                    if (!empty($extraImg)) {
+                        $braceletCarouselImages[] = [
+                            'src' => $extraImg,
+                            'alt' => ($prod['title'] ?? 'Crystal Bracelet') . ' Detail'
+                        ];
+                    }
+                }
+            }
+        }
+    }
+}
+
+if (!empty($galleryBracelets)) {
+    foreach ($galleryBracelets as $gItem) {
+        if (!empty($gItem['image_path'])) {
+            $braceletCarouselImages[] = [
+                'src' => $gItem['image_path'],
+                'alt' => $gItem['caption'] ?: 'Crystal Gemstone'
+            ];
+        }
+    }
+}
+
+$braceletFallbacks = [
+    ['src' => 'assets/images/products/amethyst-bracelet.jpg', 'alt' => 'Reiki Amethyst Bracelet'],
+    ['src' => 'assets/images/products/7-chakra-bracelet.jpg', 'alt' => '7 Chakra Bracelet'],
+    ['src' => 'assets/images/products/rose-quartz-bracelet.jpg', 'alt' => 'Rose Quartz Love Bracelet'],
+    ['src' => 'assets/images/products/black-tourmaline-bracelet.jpg', 'alt' => 'Black Tourmaline Bracelet'],
+    ['src' => 'assets/images/products/amethyst-1.jpg', 'alt' => 'Natural Amethyst Beads'],
+    ['src' => 'assets/images/products/chakra-1.jpg', 'alt' => 'Chakra Alignment Gemstones'],
+    ['src' => 'assets/images/products/rosequartz-1.jpg', 'alt' => 'Rose Quartz Energy'],
+    ['src' => 'assets/images/products/tourmaline-1.jpg', 'alt' => 'Protection Crystal Beads']
+];
+
+if (empty($braceletCarouselImages)) {
+    $braceletCarouselImages = $braceletFallbacks;
+} else {
+    // Deduplicate by image src
+    $seen = [];
+    $deduped = [];
+    foreach ($braceletCarouselImages as $bImg) {
+        if (!isset($seen[$bImg['src']])) {
+            $seen[$bImg['src']] = true;
+            $deduped[] = $bImg;
+        }
+    }
+    $braceletCarouselImages = $deduped;
+
+    // Ensure at least 6 items for smooth infinite auto-scrolling marquee
+    if (count($braceletCarouselImages) < 6) {
+        $orig = $braceletCarouselImages;
+        while (count($braceletCarouselImages) < 6) {
+            foreach ($orig as $itm) {
+                $braceletCarouselImages[] = $itm;
+                if (count($braceletCarouselImages) >= 6) break;
+            }
+        }
+    }
+}
+
+// -------------------------------------------------------------------------
+// Build Dynamic Healer & Testimonial Carousel List (from Team & Testimonials)
+// -------------------------------------------------------------------------
+$healerClientCarouselImages = [];
+
+if (!empty($teamMembers)) {
+    foreach ($teamMembers as $tm) {
+        if (!empty($tm['image'])) {
+            $healerClientCarouselImages[] = [
+                'src' => $tm['image'],
+                'alt' => $tm['name'] ?? 'Reiki Master'
+            ];
+        }
+    }
+}
+
+if (!empty($testimonials)) {
+    foreach ($testimonials as $t) {
+        if (!empty($t['image'])) {
+            $healerClientCarouselImages[] = [
+                'src' => $t['image'],
+                'alt' => $t['client_name'] ?? 'Client Story'
+            ];
+        }
+    }
+}
+
+$healerClientFallbacks = [
+    ['src' => 'assets/images/testimonials/sunita.jpg', 'alt' => 'Client Sunita'],
+    ['src' => 'assets/images/testimonials/rahul.jpg', 'alt' => 'Student Rahul'],
+    ['src' => 'assets/images/testimonials/kavita.jpg', 'alt' => 'Client Kavita'],
+    ['src' => 'assets/images/team/ananya-sharma.jpg', 'alt' => 'Master Ananya'],
+    ['src' => 'assets/images/team/rajesh-varma.jpg', 'alt' => 'Master Rajesh'],
+    ['src' => 'assets/images/team/priya-nair.jpg', 'alt' => 'Master Priya']
+];
+
+if (empty($healerClientCarouselImages)) {
+    $healerClientCarouselImages = $healerClientFallbacks;
+} else {
+    // Deduplicate by image src
+    $seen = [];
+    $deduped = [];
+    foreach ($healerClientCarouselImages as $hcImg) {
+        if (!isset($seen[$hcImg['src']])) {
+            $seen[$hcImg['src']] = true;
+            $deduped[] = $hcImg;
+        }
+    }
+    $healerClientCarouselImages = $deduped;
+
+    // Ensure at least 6 items for smooth infinite auto-scrolling marquee
+    if (count($healerClientCarouselImages) < 6) {
+        $orig = $healerClientCarouselImages;
+        while (count($healerClientCarouselImages) < 6) {
+            foreach ($orig as $itm) {
+                $healerClientCarouselImages[] = $itm;
+                if (count($healerClientCarouselImages) >= 6) break;
+            }
+        }
+    }
 }
 
 // Dynamic Hero and Stats from $siteSettings and $siteStats
@@ -143,17 +309,14 @@ include __DIR__ . '/includes/header.php';
      3. CRYSTAL BRACELETS SECTION
      ========================================================================== -->
 <section class="bracelets-section" id="bracelets">
-    <!-- Infinite Auto-Scrolling Bracelet Photos Carousel -->
+    <!-- Infinite Auto-Scrolling Bracelet Photos Carousel (Dynamic from Products & Gallery) -->
     <div class="infinite-carousel carousel-photos-row">
         <div class="infinite-carousel-track">
-            <div class="bracelet-photo-item"><img src="assets/images/products/amethyst-bracelet.jpg" alt="Reiki Amethyst Bracelet" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/7-chakra-bracelet.jpg" alt="7 Chakra Bracelet" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/rose-quartz-bracelet.jpg" alt="Rose Quartz Love Bracelet" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/black-tourmaline-bracelet.jpg" alt="Black Tourmaline Bracelet" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/amethyst-1.jpg" alt="Natural Amethyst Beads" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/chakra-1.jpg" alt="Chakra Alignment Gemstones" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/rosequartz-1.jpg" alt="Rose Quartz Energy" loading="lazy"></div>
-            <div class="bracelet-photo-item"><img src="assets/images/products/tourmaline-1.jpg" alt="Protection Crystal Beads" loading="lazy"></div>
+            <?php foreach ($braceletCarouselImages as $bItem): ?>
+                <div class="bracelet-photo-item">
+                    <img src="<?php echo htmlspecialchars(getCarouselImgUrl($bItem['src'])); ?>" alt="<?php echo htmlspecialchars($bItem['alt']); ?>" loading="lazy">
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
@@ -261,12 +424,11 @@ include __DIR__ . '/includes/header.php';
 <section class="testimonials-photos-section" style="padding: 40px 0; background-color: var(--light-cream);">
     <div class="infinite-carousel testimonials-photos-row">
         <div class="infinite-carousel-track">
-            <div class="testimonial-photo-item"><img src="assets/images/testimonials/sunita.jpg" alt="Client Sunita" loading="lazy"></div>
-            <div class="testimonial-photo-item"><img src="assets/images/testimonials/rahul.jpg" alt="Student Rahul" loading="lazy"></div>
-            <div class="testimonial-photo-item"><img src="assets/images/testimonials/kavita.jpg" alt="Client Kavita" loading="lazy"></div>
-            <div class="testimonial-photo-item"><img src="assets/images/team/ananya-sharma.jpg" alt="Master Ananya" loading="lazy"></div>
-            <div class="testimonial-photo-item"><img src="assets/images/team/rajesh-varma.jpg" alt="Master Rajesh" loading="lazy"></div>
-            <div class="testimonial-photo-item"><img src="assets/images/team/priya-nair.jpg" alt="Master Priya" loading="lazy"></div>
+            <?php foreach ($healerClientCarouselImages as $hcItem): ?>
+                <div class="testimonial-photo-item">
+                    <img src="<?php echo htmlspecialchars(getCarouselImgUrl($hcItem['src'])); ?>" alt="<?php echo htmlspecialchars($hcItem['alt']); ?>" loading="lazy">
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
