@@ -286,7 +286,7 @@ require_once 'includes/admin-header.php';
 
             <div class="form-row">
                 <!-- Sort Order -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="memberSortOrder" class="form-label">Sort Order</label>
                     <input 
                         type="number" 
@@ -296,7 +296,7 @@ require_once 'includes/admin-header.php';
                         placeholder="0" 
                         value="<?= htmlspecialchars($_POST['sort_order'] ?? ($editItem['sort_order'] ?? '0')) ?>"
                     >
-                </div>
+                </div> -->
 
                 <!-- Is Active -->
                 <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
