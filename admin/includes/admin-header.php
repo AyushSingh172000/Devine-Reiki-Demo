@@ -136,15 +136,17 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
 
       <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> SETTINGS</div>
       <li>
-        <a href="settings.php" class="<?= ($currentPage === 'settings.php' && (!isset($_GET['tab']) || $_GET['tab'] !== 'branding')) ? 'active' : '' ?>">
+        <a href="settings.php" class="<?= $currentPage === 'settings.php' ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="settings"></i></span> Site Settings
         </a>
       </li>
+      <?php /* Hidden: Logo & Favicon can be managed directly inside Site Settings -> Branding & Assets tab
       <li>
         <a href="branding.php" class="<?= ($currentPage === 'branding.php' || ($currentPage === 'settings.php' && isset($_GET['tab']) && $_GET['tab'] === 'branding')) ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="image"></i></span> Logo &amp; Favicon
         </a>
       </li>
+      */ ?>
       <li>
         <a href="logout.php" class="<?= $currentPage === 'logout.php' ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="log-out"></i></span> Logout
