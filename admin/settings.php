@@ -482,6 +482,7 @@ require_once 'includes/admin-header.php';
                     </div>
                 </div>
 
+                <?php /*
                 <!-- 4. OpenGraph Social Share Card -->
                 <div class="form-group mb-4">
                     <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">OpenGraph Social Share Image (WhatsApp / Facebook Preview)</label>
@@ -513,21 +514,6 @@ require_once 'includes/admin-header.php';
 
                     <!-- Realistic WhatsApp / Social Link Preview Card -->
                     <div style="background: #eef2f6; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; max-width: 520px;">
-                        <!-- <div class="flex-between mb-2">
-                            <span style="font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">
-                                <i data-lucide="share-2" style="width: 14px; height: 14px; vertical-align: -2px;"></i> WhatsApp Link Preview Simulation
-                            </span>
-                            <?php if ($ogIsWhatsAppOk): ?>
-                                <span style="font-size: 0.72rem; font-weight: 600; color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="check-circle-2" style="width: 12px; height: 12px;"></i> WhatsApp Ready (<?= $ogFileSizeKb ?> KB)
-                                </span>
-                            <?php else: ?>
-                                <span style="font-size: 0.72rem; font-weight: 600; color: #991b1b; background: #fee2e2; padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                                    <i data-lucide="alert-triangle" style="width: 12px; height: 12px;"></i> Exceeds 300 KB (<?= $ogFileSizeKb ?> KB)
-                                </span>
-                            <?php endif; ?>
-                        </div> -->
-
                         <!-- WhatsApp Message Bubble Mockup -->
                         <div style="background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
                             <div style="width: 100%; height: 170px; background: #f8fafc; overflow: hidden; position: relative;">
@@ -544,19 +530,6 @@ require_once 'includes/admin-header.php';
                                 <div style="font-size: 0.8rem; color: #475569; line-height: 1.35;">Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets.</div>
                             </div>
                         </div>
-
-                        <!-- WhatsApp Troubleshooting Guide Box -->
-                        <!-- <div style="margin-top: 14px; padding: 12px 14px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 0.8rem; color: #475569;">
-                            <strong style="color: #0f172a; display: block; margin-bottom: 6px;">
-                                <i data-lucide="help-circle" style="width: 14px; height: 14px; vertical-align: -2px; color: var(--gold);"></i> Why WhatsApp might not show the preview:
-                            </strong>
-                            <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
-                                <li><strong>Wait 1–2 seconds:</strong> When you paste the link into WhatsApp, wait until the preview thumbnail appears above the chat box before pressing send.</li>
-                                <li><strong>WhatsApp file size limit:</strong> WhatsApp strictly ignores images larger than <strong>300 KB</strong>. Always use JPG or PNG under 300 KB.</li>
-                                <li><strong>Localhost does not work:</strong> WhatsApp servers cannot access <code>http://localhost/</code>. Previews only work for public links like <code>https://reikibliss.vijatshi.ai/</code>.</li>
-                                <li><strong>WhatsApp Caching:</strong> Once WhatsApp crawls a link, it caches it for days. If you updated the image, test with a query string like <code>https://<?= htmlspecialchars($hostName) ?>/?v=<?= time() ?></code> to force WhatsApp to fetch the fresh image immediately.</li>
-                            </ul>
-                        </div> -->
                     </div>
 
                     <div style="max-width: 520px;">
@@ -564,6 +537,7 @@ require_once 'includes/admin-header.php';
                         <span class="form-hint">Recommended banner dimensions: <strong>1200 × 630 pixels</strong> (or 600 × 600 square), JPG or PNG, <strong>strictly under 300 KB</strong> for WhatsApp compatibility.</span>
                     </div>
                 </div>
+                */ ?>
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-gold">
@@ -845,6 +819,7 @@ if (favFileInput) {
     });
 }
 
+/*
 const ogFileInput = document.getElementById('ogFileInput');
 const ogLivePreview = document.getElementById('ogLivePreview');
 if (ogFileInput && ogLivePreview) {
@@ -858,6 +833,7 @@ if (ogFileInput && ogLivePreview) {
         }
     });
 }
+*/
 
 // Password Strength Meter
 const newPass = document.getElementById('newPass');
