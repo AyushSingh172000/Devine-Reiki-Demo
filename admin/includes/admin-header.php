@@ -189,3 +189,8 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
           <i data-lucide="alert-triangle"></i> <?= htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?>
         </div>
       <?php endif; ?>
+      <?php if (isset($_SESSION['flash_warning'])): ?>
+        <div class="alert" style="background-color: #fefce8; border: 1px solid #fef08a; color: #854d0e; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+          <i data-lucide="alert-circle" style="color: #eab308; width: 18px; height: 18px; flex-shrink: 0;"></i> <?= htmlspecialchars($_SESSION['flash_warning']); unset($_SESSION['flash_warning']); ?>
+        </div>
+      <?php endif; ?>

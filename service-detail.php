@@ -47,6 +47,7 @@ try {
 // Page Metadata
 $pageTitle = htmlspecialchars($service['title']) . " | Divine Reiki & Energy Healing Center";
 $pageDescription = htmlspecialchars($service['short_description']);
+$pageOgImage = !empty($service['image']) ? $service['image'] : null;
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';

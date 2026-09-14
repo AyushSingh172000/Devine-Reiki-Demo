@@ -164,3 +164,88 @@ function handleAdminImageUpload($fileKey, $targetSubfolder = '') {
         throw new Exception($res['error']);
     }
 }
+
+/**
+ * Optimizes an OpenGraph social share image for WhatsApp / Social specifications:
+ * - Downscales large resolutions (e.g. 7000px wallpapers) to standard 1200x630
+ * - Compresses file size to strictly under 250 KB (WhatsApp limit is 300 KB)
+ *
+ * @param string $sourcePath Path to image file
+ * @param string|null $destinationPath Target output path (overwrites source if null)
+ * @return bool True if optimized successfully, false otherwise
+ */
+function optimizeOgSocialImage($sourcePath, $destinationPath = null) {
+    if (!file_exists($sourcePath)) {
+        return false;
+    }
+    if ($destinationPath === null) {
+        $destinationPath = $sourcePath;
+    }
+
+    if (!extension_loaded('gd')) {
+        return false;
+    }
+
+    $imageInfo = @getimagesize($sourcePath);
+    if (!$imageInfo) {
+        return false;
+    }
+
+    $srcW = $imageInfo[0];
+    $srcH = $imageInfo[1];
+    $mime = $imageInfo['mime'];
+
+    // Load source image
+    $srcImg = null;
+    if ($mime === 'image/jpeg' || $mime === 'image/pjpeg') {
+        $srcImg = @imagecreatefromjpeg($sourcePath);
+    } elseif ($mime === 'image/png') {
+        $srcImg = @imagecreatefrompng($sourcePath);
+    } elseif ($mime === 'image/webp' && function_exists('imagecreatefromwebp')) {
+        $srcImg = @imagecreatefromwebp($sourcePath);
+    }
+
+    if (!$srcImg) {
+        return false;
+    }
+
+    // Downscale if width > 1200 or height > 630 maintaining aspect ratio
+    $maxW = 1200;
+    $maxH = 630;
+
+    $scale = min($maxW / $srcW, $maxH / $srcH, 1.0);
+    $newW = max(1, (int)round($srcW * $scale));
+    $newH = max(1, (int)round($srcH * $scale));
+
+    $dstImg = imagecreatetruecolor($newW, $newH);
+
+    // Maintain transparency if PNG
+    if ($mime === 'image/png') {
+        imagealphablending($dstImg, false);
+        imagesavealpha($dstImg, true);
+        $trans = imagecolorallocatealpha($dstImg, 255, 255, 255, 127);
+        imagefilledrectangle($dstImg, 0, 0, $newW, $newH, $trans);
+    }
+
+    imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $newW, $newH, $srcW, $srcH);
+
+    // Save with compression: WhatsApp strictly requires under 300 KB
+    if ($mime === 'image/jpeg' || $mime === 'image/pjpeg') {
+        imagejpeg($dstImg, $destinationPath, 82);
+    } else {
+        imagepng($dstImg, $destinationPath, 8);
+        if (filesize($destinationPath) > 280000) {
+            // If PNG is over 280KB, convert to optimized JPEG with white background
+            $jpgCanvas = imagecreatetruecolor($newW, $newH);
+            $white = imagecolorallocate($jpgCanvas, 255, 255, 255);
+            imagefilledrectangle($jpgCanvas, 0, 0, $newW, $newH, $white);
+            imagecopy($jpgCanvas, $dstImg, 0, 0, 0, 0, $newW, $newH);
+            imagejpeg($jpgCanvas, $destinationPath, 82);
+            imagedestroy($jpgCanvas);
+        }
+    }
+
+    imagedestroy($dstImg);
+    imagedestroy($srcImg);
+    return true;
+}

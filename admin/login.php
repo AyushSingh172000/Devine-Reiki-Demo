@@ -33,6 +33,14 @@ $rawLogo = !empty($siteSettings['logo_path']) ? ltrim($siteSettings['logo_path']
 $adminLogo = '../' . $rawLogo;
 $logoVersion = file_exists(__DIR__ . '/../' . $rawLogo) ? filemtime(__DIR__ . '/../' . $rawLogo) : time();
 
+// Social / WhatsApp Open Graph Image for Admin Portal
+$rawAdminOg = !empty($siteSettings['og_image_path']) ? ltrim($siteSettings['og_image_path'], '/') : (!empty($siteSettings['logo_path']) ? ltrim($siteSettings['logo_path'], '/') : 'assets/images/logo.png');
+$adminOgImageUrl = BASE_URL . $rawAdminOg;
+$adminOgImageSecureUrl = preg_replace('/^http:\/\//i', 'https://', $adminOgImageUrl);
+$adminOgVer = file_exists(__DIR__ . '/../' . $rawAdminOg) ? filemtime(__DIR__ . '/../' . $rawAdminOg) : time();
+$adminOgImageUrlVersioned = $adminOgImageUrl . '?v=' . $adminOgVer;
+$adminOgImageSecureUrlVersioned = $adminOgImageSecureUrl . '?v=' . $adminOgVer;
+
 $error = '';
 $message = '';
 $isLocked = false;
@@ -136,6 +144,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login — Reiki Bliss</title>
     <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph / WhatsApp / Social Share Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Reiki Bliss">
+    <meta property="og:title" content="Reiki Bliss — Admin Portal">
+    <meta property="og:description" content="Sign in to access your administrative dashboard and controls.">
+    <meta property="og:image" content="<?= htmlspecialchars($adminOgImageUrlVersioned) ?>">
+    <meta property="og:image:secure_url" content="<?= htmlspecialchars($adminOgImageSecureUrlVersioned) ?>">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="424">
+    <meta property="og:image:height" content="424">
+    <link rel="image_src" href="<?= htmlspecialchars($adminOgImageUrlVersioned) ?>">
+
     <!-- Favicon (Matched with Website) -->
     <link rel="icon" type="image/png" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">
     <link rel="shortcut icon" type="image/png" href="<?= htmlspecialchars($adminFavicon) ?>?v=<?= $faviconVersion ?>">

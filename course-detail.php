@@ -47,6 +47,7 @@ try {
 // Page Metadata
 $pageTitle = htmlspecialchars($course['title']) . " | Divine Reiki Certification";
 $pageDescription = htmlspecialchars($course['short_description']);
+$pageOgImage = !empty($course['image']) ? $course['image'] : null;
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';

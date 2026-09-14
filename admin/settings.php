@@ -96,16 +96,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            // D. OpenGraph (OG) Social Card Image (1200x630 recommended)
+            // D. OpenGraph (OG) Social Card Image (Auto-optimized for WhatsApp & Social Networks)
             if (isset($_FILES['og_image']) && $_FILES['og_image']['error'] === UPLOAD_ERR_OK) {
-                $ogRes = uploadImage($_FILES['og_image'], '../uploads/branding/', 3145728);
+                $ogRes = uploadImage($_FILES['og_image'], '../uploads/branding/', 8388608);
                 if ($ogRes['success']) {
+                    $uploadedFile = dirname(__DIR__) . '/' . ltrim($ogRes['path'], '/');
+                    if (file_exists($uploadedFile)) {
+                        // Automatically downscale (max 1200x630) and compress under 300KB for WhatsApp
+                        if (function_exists('optimizeOgSocialImage')) {
+                            optimizeOgSocialImage($uploadedFile);
+                        }
+
+                        $ext = strtolower(pathinfo($uploadedFile, PATHINFO_EXTENSION));
+                        if (in_array($ext, ['jpg', 'jpeg'])) {
+                            @copy($uploadedFile, dirname(__DIR__) . '/assets/images/og-image.jpg');
+                        } elseif ($ext === 'png') {
+                            @copy($uploadedFile, dirname(__DIR__) . '/assets/images/og-image.png');
+                        }
+
+                        $fileSizeBytes = filesize($uploadedFile);
+                        if ($fileSizeBytes > 307200) { // 300 KB
+                            $sizeKb = round($fileSizeBytes / 1024);
+                            $_SESSION['flash_warning'] = "OG Image saved, but note: The image is {$sizeKb} KB. WhatsApp link preview requires images to be strictly under 300 KB. Please compress the image under 300 KB if WhatsApp doesn't display the preview.";
+                        }
+                    }
                     setSetting($pdo, 'og_image_path', $ogRes['path']);
                 }
             }
 
             if (!isset($_SESSION['flash_error'])) {
-                $_SESSION['flash_success'] = "Branding assets (Logo & Favicon) updated successfully! Changes are now live.";
+                if (!isset($_SESSION['flash_warning'])) {
+                    $_SESSION['flash_success'] = "Branding assets (Logo, Favicon & Social OG Image) updated successfully! Changes are now live.";
+                } else {
+                    $_SESSION['flash_success'] = "Branding assets updated successfully!";
+                }
             }
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Branding update error: " . $e->getMessage();
@@ -460,37 +484,84 @@ require_once 'includes/admin-header.php';
 
                 <!-- 4. OpenGraph Social Share Card -->
                 <div class="form-group mb-4">
-                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">OpenGraph Social Share Image (OG Image)</label>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">OpenGraph Social Share Image (WhatsApp / Facebook Preview)</label>
                     <p class="text-muted mb-3" style="font-size: 0.84rem;">Banner image displayed automatically whenever your website link is shared on <strong>WhatsApp, Facebook, Twitter (X), LinkedIn, or iMessage</strong>.</p>
                     
                     <?php 
-                        $rawOg = !empty($settings['og_image_path']) ? ltrim($settings['og_image_path'], '/') : 'assets/images/og-image.png';
-                        if (!file_exists(dirname(__DIR__) . '/' . $rawOg)) {
-                            $rawOg = file_exists(dirname(__DIR__) . '/assets/images/og-image.png') ? 'assets/images/og-image.png' : 'assets/images/hero-bg.jpg';
+                        $rawOg = !empty($settings['og_image_path']) ? ltrim($settings['og_image_path'], '/') : 'assets/images/og-image.jpg';
+                        $docRoot = dirname(__DIR__);
+                        if (!file_exists($docRoot . '/' . $rawOg)) {
+                            $rawOg = file_exists($docRoot . '/assets/images/og-image.jpg') ? 'assets/images/og-image.jpg' : 'assets/images/logo.png';
                         }
                         $ogPath = '../' . $rawOg;
+                        $realOgFile = $docRoot . '/' . $rawOg;
+                        
+                        $ogFileSizeKb = 0;
+                        $ogDimensions = '';
+                        $ogIsWhatsAppOk = true;
+                        if (file_exists($realOgFile)) {
+                            $ogSizeBytes = filesize($realOgFile);
+                            $ogFileSizeKb = round($ogSizeBytes / 1024, 1);
+                            $ogIsWhatsAppOk = ($ogSizeBytes <= 307200); // 300 KB limit
+                            $dims = @getimagesize($realOgFile);
+                            if ($dims) {
+                                $ogDimensions = "{$dims[0]} × {$dims[1]} px";
+                            }
+                        }
+                        $hostName = $_SERVER['HTTP_HOST'] ?? 'reikibliss.vijatshi.ai';
                     ?>
 
                     <!-- Realistic WhatsApp / Social Link Preview Card -->
-                    <div style="background: #f1f5f9; border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; margin-bottom: 14px; max-width: 480px;">
-                        <div style="font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px;">
-                            <i data-lucide="share-2" style="width: 14px; height: 14px; vertical-align: -2px;"></i> WhatsApp / Social Share Link Preview
-                        </div>
-                        <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; box-shadow: var(--card-shadow);">
-                            <div style="width: 100%; height: 160px; background: #e2e8f0; overflow: hidden;">
-                                <img id="ogLivePreview" src="<?= htmlspecialchars($ogPath) ?>?v=<?= $cacheVer ?>" alt="OG Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/hero-bg.jpg'">
+                    <div style="background: #eef2f6; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; max-width: 520px;">
+                        <!-- <div class="flex-between mb-2">
+                            <span style="font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">
+                                <i data-lucide="share-2" style="width: 14px; height: 14px; vertical-align: -2px;"></i> WhatsApp Link Preview Simulation
+                            </span>
+                            <?php if ($ogIsWhatsAppOk): ?>
+                                <span style="font-size: 0.72rem; font-weight: 600; color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="check-circle-2" style="width: 12px; height: 12px;"></i> WhatsApp Ready (<?= $ogFileSizeKb ?> KB)
+                                </span>
+                            <?php else: ?>
+                                <span style="font-size: 0.72rem; font-weight: 600; color: #991b1b; background: #fee2e2; padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="alert-triangle" style="width: 12px; height: 12px;"></i> Exceeds 300 KB (<?= $ogFileSizeKb ?> KB)
+                                </span>
+                            <?php endif; ?>
+                        </div> -->
+
+                        <!-- WhatsApp Message Bubble Mockup -->
+                        <div style="background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="width: 100%; height: 170px; background: #f8fafc; overflow: hidden; position: relative;">
+                                <img id="ogLivePreview" src="<?= htmlspecialchars($ogPath) ?>?v=<?= $cacheVer ?>" alt="OG Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/logo.png'">
+                                <?php if (!empty($ogDimensions)): ?>
+                                    <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;">
+                                        <?= $ogDimensions ?>
+                                    </span>
+                                <?php endif; ?>
                             </div>
-                            <div style="padding: 10px 14px; background: #ffffff;">
-                                <div style="font-size: 0.76rem; color: #64748b; text-transform: uppercase; font-weight: 600;">reikibliss.com</div>
-                                <div style="font-size: 0.92rem; font-weight: 700; color: #0f172a; margin: 2px 0;"><?= htmlspecialchars($settings['site_name'] ?? 'Reiki Bliss') ?> | Authentic Usui Reiki &amp; Energy Healing</div>
-                                <div style="font-size: 0.8rem; color: #64748b; line-height: 1.4;">Discover authentic Usui Reiki healing sessions, certified courses, and crystal healing therapies.</div>
+                            <div style="padding: 10px 14px; background: #f0fdf4; border-top: 1px solid #e2e8f0;">
+                                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"><?= htmlspecialchars($hostName) ?></div>
+                                <div style="font-size: 0.92rem; font-weight: 700; color: #0f172a; margin: 3px 0 2px;"><?= htmlspecialchars($settings['site_name'] ?? 'Reiki Bliss') ?> | Heal. Balance. Transform.</div>
+                                <div style="font-size: 0.8rem; color: #475569; line-height: 1.35;">Experience authentic Usui Reiki healing, certified courses, and Reiki-charged crystal bracelets.</div>
                             </div>
                         </div>
+
+                        <!-- WhatsApp Troubleshooting Guide Box -->
+                        <!-- <div style="margin-top: 14px; padding: 12px 14px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 0.8rem; color: #475569;">
+                            <strong style="color: #0f172a; display: block; margin-bottom: 6px;">
+                                <i data-lucide="help-circle" style="width: 14px; height: 14px; vertical-align: -2px; color: var(--gold);"></i> Why WhatsApp might not show the preview:
+                            </strong>
+                            <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
+                                <li><strong>Wait 1–2 seconds:</strong> When you paste the link into WhatsApp, wait until the preview thumbnail appears above the chat box before pressing send.</li>
+                                <li><strong>WhatsApp file size limit:</strong> WhatsApp strictly ignores images larger than <strong>300 KB</strong>. Always use JPG or PNG under 300 KB.</li>
+                                <li><strong>Localhost does not work:</strong> WhatsApp servers cannot access <code>http://localhost/</code>. Previews only work for public links like <code>https://reikibliss.vijatshi.ai/</code>.</li>
+                                <li><strong>WhatsApp Caching:</strong> Once WhatsApp crawls a link, it caches it for days. If you updated the image, test with a query string like <code>https://<?= htmlspecialchars($hostName) ?>/?v=<?= time() ?></code> to force WhatsApp to fetch the fresh image immediately.</li>
+                            </ul>
+                        </div> -->
                     </div>
 
-                    <div style="max-width: 480px;">
+                    <div style="max-width: 520px;">
                         <input type="file" id="ogFileInput" name="og_image" class="form-control mb-1" accept="image/jpeg,image/png,image/webp">
-                        <span class="form-hint">Recommended banner dimensions: 1200 × 630 pixels (JPG, PNG or WebP, Max 3MB).</span>
+                        <span class="form-hint">Recommended banner dimensions: <strong>1200 × 630 pixels</strong> (or 600 × 600 square), JPG or PNG, <strong>strictly under 300 KB</strong> for WhatsApp compatibility.</span>
                     </div>
                 </div>
 

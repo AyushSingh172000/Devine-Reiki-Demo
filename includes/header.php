@@ -11,7 +11,10 @@ $pageDescription = $pageDescription ?? 'Discover authentic Usui Reiki healing se
 $currentPage = basename($_SERVER['PHP_SELF'] ?? '');
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $uri = $_SERVER['REQUEST_URI'] ?? '/reikibliss/';
-$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://{$host}{$uri}";
+$isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$scheme = $isHttps ? 'https' : 'http';
+$currentUrl = "{$scheme}://{$host}{$uri}";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +27,60 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <?php
     $faviconUrl = !empty($siteSettings['favicon_path']) ? BASE_URL . ltrim($siteSettings['favicon_path'], '/') : BASE_URL . 'assets/images/favicon-circle.png';
     $logoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSettings['logo_path'], '/') : BASE_URL . 'assets/images/reikilogo1.png';
-    $ogImageUrl = !empty($siteSettings['og_image_path']) ? BASE_URL . ltrim($siteSettings['og_image_path'], '/') : BASE_URL . 'assets/images/hero-bg.jpg';
+    
+    // Resolve Open Graph Social Image (Priority: Page Override -> Settings OG Image -> og-image.jpg -> Logo)
+    $docRoot = dirname(__DIR__);
+    if (!empty($pageOgImage)) {
+        $rawOgImage = $pageOgImage;
+    } elseif (!empty($siteSettings['og_image_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['og_image_path'], '/'))) {
+        $rawOgImage = $siteSettings['og_image_path'];
+    } elseif (file_exists($docRoot . '/assets/images/og-image.jpg')) {
+        $rawOgImage = 'assets/images/og-image.jpg';
+    } elseif (file_exists($docRoot . '/assets/images/og-image.png')) {
+        $rawOgImage = 'assets/images/og-image.png';
+    } elseif (!empty($siteSettings['logo_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['logo_path'], '/'))) {
+        $rawOgImage = $siteSettings['logo_path'];
+    } else {
+        $rawOgImage = 'assets/images/logo.png';
+    }
+
+    if (strpos($rawOgImage, 'http://') === 0 || strpos($rawOgImage, 'https://') === 0) {
+        $ogImageUrl = $rawOgImage;
+    } else {
+        $ogImageUrl = BASE_URL . ltrim($rawOgImage, '/');
+    }
+
+    // Secure HTTPS image URL for WhatsApp / Facebook
+    $ogImageSecureUrl = preg_replace('/^http:\/\//i', 'https://', $ogImageUrl);
+
+    // Compute dimensions, MIME type and cache-busting version
+    $localOgPath = $docRoot . '/' . ltrim(parse_url($rawOgImage, PHP_URL_PATH) ?? $rawOgImage, '/');
+    $ogWidth = 1200;
+    $ogHeight = 630;
+    $ogMime = 'image/jpeg';
+    $ogVer = time();
+
+    if (file_exists($localOgPath)) {
+        $ogVer = filemtime($localOgPath);
+        $imgDetails = @getimagesize($localOgPath);
+        if ($imgDetails && !empty($imgDetails[0]) && !empty($imgDetails[1])) {
+            $ogWidth = $imgDetails[0];
+            $ogHeight = $imgDetails[1];
+            $ogMime = $imgDetails['mime'] ?? 'image/jpeg';
+        }
+    } else {
+        $ext = strtolower(pathinfo(parse_url($ogImageUrl, PHP_URL_PATH), PATHINFO_EXTENSION));
+        if ($ext === 'png') {
+            $ogMime = 'image/png';
+        } elseif ($ext === 'webp') {
+            $ogMime = 'image/webp';
+        }
+    }
+
+    // Append version hash so WhatsApp / Facebook crawlers never serve stale cached image on update
+    $ogImageUrlVersioned = $ogImageUrl . (strpos($ogImageUrl, '?') !== false ? '&' : '?') . 'v=' . $ogVer;
+    $ogImageSecureUrlVersioned = $ogImageSecureUrl . (strpos($ogImageSecureUrl, '?') !== false ? '&' : '?') . 'v=' . $ogVer;
+
     $bookingHref = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
     ?>
 
@@ -33,19 +89,33 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
     <link rel="shortcut icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
     <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($faviconUrl); ?>">
 
-    <!-- Open Graph / Social Media Meta Tags -->
+    <!-- Open Graph / WhatsApp / Facebook Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="<?php echo htmlspecialchars(SITE_NAME); ?>">
     <meta property="og:url" content="<?php echo htmlspecialchars($currentUrl); ?>">
     <meta property="og:title" content="<?php echo htmlspecialchars($pageTitle); ?>">
     <meta property="og:description" content="<?php echo htmlspecialchars($pageDescription); ?>">
-    <meta property="og:image" content="<?php echo htmlspecialchars($ogImageUrl); ?>">
+    <meta property="og:image" content="<?php echo htmlspecialchars($ogImageUrlVersioned); ?>">
+    <meta property="og:image:secure_url" content="<?php echo htmlspecialchars($ogImageSecureUrlVersioned); ?>">
+    <meta property="og:image:type" content="<?php echo htmlspecialchars($ogMime); ?>">
+    <meta property="og:image:width" content="<?php echo (int)$ogWidth; ?>">
+    <meta property="og:image:height" content="<?php echo (int)$ogHeight; ?>">
+    <meta property="og:image:alt" content="<?php echo htmlspecialchars($pageTitle); ?>">
+    <meta property="og:locale" content="en_US">
 
-    <!-- Twitter Card Meta Tags -->
+    <!-- Schema.org item tags for messaging crawlers (WhatsApp, Telegram, Slack) -->
+    <meta itemprop="name" content="<?php echo htmlspecialchars($pageTitle); ?>">
+    <meta itemprop="description" content="<?php echo htmlspecialchars($pageDescription); ?>">
+    <meta itemprop="image" content="<?php echo htmlspecialchars($ogImageUrlVersioned); ?>">
+
+    <!-- Twitter (X) Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="twitter:description" content="<?php echo htmlspecialchars($pageDescription); ?>">
-    <meta name="twitter:image" content="<?php echo htmlspecialchars($ogImageUrl); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($ogImageUrlVersioned); ?>">
+
+    <!-- WhatsApp Legacy Mobile Thumbnail Fallback -->
+    <link rel="image_src" href="<?php echo htmlspecialchars($ogImageUrlVersioned); ?>">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="<?php echo htmlspecialchars($currentUrl); ?>">

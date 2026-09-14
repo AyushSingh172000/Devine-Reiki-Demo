@@ -56,6 +56,7 @@ $waOrderUrl = "https://wa.me/919971655705?text=" . urlencode($waText);
 // Page Metadata
 $pageTitle = htmlspecialchars($product['title']) . " | Reiki Charged Crystal Shop";
 $pageDescription = htmlspecialchars($product['short_description']);
+$pageOgImage = $mainImage;
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
