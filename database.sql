@@ -172,6 +172,18 @@ CREATE TABLE `site_settings` (
   `setting_value` TEXT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 13. login_attempts (Rate limiting & brute force defense)
+DROP TABLE IF EXISTS `login_attempts`;
+CREATE TABLE `login_attempts` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `ip_address` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `attempted_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `is_successful` TINYINT(1) DEFAULT 0,
+  INDEX `idx_ip_attempt` (`ip_address`, `attempted_at`),
+  INDEX `idx_user_attempt` (`username`, `attempted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- =========================================================================
 -- SEED DATA INSERTIONS
 -- =========================================================================

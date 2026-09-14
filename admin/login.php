@@ -8,6 +8,7 @@ require_once __DIR__ . '/../config/constants.php';
 if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/../config/db.php';
 }
+require_once __DIR__ . '/auth-rate-limiter.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
@@ -34,6 +35,27 @@ $logoVersion = file_exists(__DIR__ . '/../' . $rawLogo) ? filemtime(__DIR__ . '/
 
 $error = '';
 $message = '';
+$isLocked = false;
+$lockoutRetryAfter = 0;
+$remainingAttempts = 5;
+
+// Client IP & Initial Rate Limiter State
+$clientIp = getClientIpAddress();
+pruneOldLoginAttempts($pdo);
+
+// Check if the client IP is currently locked
+$initialIpCheck = checkLoginRateLimit($pdo, $clientIp, '');
+if ($initialIpCheck['is_locked']) {
+    $isLocked = true;
+    $lockoutRetryAfter = $initialIpCheck['retry_after'];
+    $remainingAttempts = 0;
+    http_response_code(429);
+    header('Retry-After: ' . $lockoutRetryAfter);
+    $lockMinutes = ceil($lockoutRetryAfter / 60);
+    $error = "Too many failed login attempts. Your access is temporarily locked. Please try again in {$lockMinutes} minute(s).";
+} else {
+    $remainingAttempts = $initialIpCheck['remaining_attempts'];
+}
 
 if (isset($_GET['logout'])) {
     $message = 'You have logged out successfully.';
@@ -44,7 +66,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($username) || empty($password)) {
+    // Check rate limit for IP and username before executing authentication
+    $prePostCheck = checkLoginRateLimit($pdo, $clientIp, $username);
+    if ($prePostCheck['is_locked']) {
+        $isLocked = true;
+        $lockoutRetryAfter = $prePostCheck['retry_after'];
+        $remainingAttempts = 0;
+        http_response_code(429);
+        header('Retry-After: ' . $lockoutRetryAfter);
+        $lockMinutes = ceil($lockoutRetryAfter / 60);
+        $error = "Too many failed login attempts. Your access is temporarily locked. Please try again in {$lockMinutes} minute(s).";
+    } elseif (empty($username) || empty($password)) {
         $error = 'Please enter both your username and password.';
     } else {
         try {
@@ -53,6 +85,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($admin && password_verify($password, $admin['password'])) {
+                // Successful login: record and clear failed attempts
+                recordLoginAttempt($pdo, $clientIp, $username, true);
+                clearFailedLoginAttempts($pdo, $clientIp, $username);
+
                 // Regenerate session ID to prevent session fixation
                 session_regenerate_id(true);
 
@@ -66,7 +102,25 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 header('Location: index.php');
                 exit;
             } else {
-                $error = 'Invalid username or password.';
+                // Failed login attempt: record in rate limiter
+                recordLoginAttempt($pdo, $clientIp, $username, false);
+
+                // Re-evaluate rate limit immediately after recording failure
+                $postCheck = checkLoginRateLimit($pdo, $clientIp, $username);
+                if ($postCheck['is_locked']) {
+                    $isLocked = true;
+                    $lockoutRetryAfter = $postCheck['retry_after'];
+                    $remainingAttempts = 0;
+                    http_response_code(429);
+                    header('Retry-After: ' . $lockoutRetryAfter);
+                    $lockMinutes = ceil($lockoutRetryAfter / 60);
+                    $error = "Too many failed login attempts. Your access has been locked for {$lockMinutes} minute(s).";
+                } else {
+                    $rem = $postCheck['remaining_attempts'];
+                    $remainingAttempts = $rem;
+                    $attemptWord = $rem === 1 ? '1 attempt remaining' : "{$rem} attempts remaining";
+                    $error = "Invalid username or password. ({$attemptWord})";
+                }
             }
         } catch (PDOException $e) {
             error_log("Login authentication error: " . $e->getMessage());
@@ -222,6 +276,42 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         .login-footer-nav a:hover {
             color: var(--gold);
         }
+
+        /* Rate Limiting & Lockout UI */
+        .rate-limit-card {
+            background-color: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            color: #9f1239;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .rate-limit-card .timer-badge {
+            display: inline-block;
+            background: #e11d48;
+            color: #ffffff;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            padding: 3px 9px;
+            border-radius: 6px;
+            letter-spacing: 0.8px;
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        .btn-signin:disabled,
+        .form-control:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            background-color: #f8fafc;
+        }
     </style>
 </head>
 <body class="admin-body">
@@ -236,19 +326,32 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <p class="login-subtitle">Sign in to access your administrative dashboard and controls</p>
 
-        <?php if (!empty($error)): ?>
+        <?php if ($isLocked && $lockoutRetryAfter > 0): ?>
+            <div class="rate-limit-card" id="lockoutNotice" data-retry-after="<?= (int)$lockoutRetryAfter ?>">
+                <i data-lucide="shield-alert" style="width: 22px; height: 22px; color: #e11d48; flex-shrink: 0; margin-top: 2px;"></i>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 2px;">Access Temporarily Suspended</div>
+                    <div>Maximum login attempts exceeded. Please wait:</div>
+                    <div class="timer-badge" id="lockoutTimerDisplay">
+                        <?= sprintf('%02d:%02d', floor($lockoutRetryAfter / 60), $lockoutRetryAfter % 60) ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($error) && !$isLocked): ?>
             <div class="alert alert-error flex items-center gap-2">
-                <i data-lucide="alert-triangle" style="width: 16px; height: 16px;"></i> <?= htmlspecialchars($error) ?>
+                <i data-lucide="alert-triangle" style="width: 16px; height: 16px; flex-shrink: 0;"></i> <?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
 
         <?php if (!empty($message)): ?>
             <div class="alert alert-success flex items-center gap-2">
-                <i data-lucide="check-circle-2" style="width: 16px; height: 16px;"></i> <?= htmlspecialchars($message) ?>
+                <i data-lucide="check-circle-2" style="width: 16px; height: 16px; flex-shrink: 0;"></i> <?= htmlspecialchars($message) ?>
             </div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST" autocomplete="off">
+        <form action="login.php" method="POST" autocomplete="off" id="adminLoginForm">
             <div class="form-group">
                 <label for="usernameInput" class="form-label">Username</label>
                 <input 
@@ -260,6 +363,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     value="<?= isset($username) ? htmlspecialchars($username) : '' ?>"
                     required 
                     autofocus
+                    <?= $isLocked ? 'disabled' : '' ?>
                 >
             </div>
 
@@ -274,15 +378,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                         placeholder="Enter your password" 
                         required
                         style="padding-right: 42px;"
+                        <?= $isLocked ? 'disabled' : '' ?>
                     >
-                    <button type="button" class="password-toggle-btn" id="togglePasswordBtn" aria-label="Toggle password visibility" title="Show/Hide Password">
+                    <button type="button" class="password-toggle-btn" id="togglePasswordBtn" aria-label="Toggle password visibility" title="Show/Hide Password" <?= $isLocked ? 'disabled' : '' ?>>
                         <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
                     </button>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-gold btn-signin w-100">
-                Sign In
+            <button type="submit" class="btn btn-gold btn-signin w-100" <?= $isLocked ? 'disabled' : '' ?>>
+                <?= $isLocked ? 'Access Suspended' : 'Sign In' ?>
             </button>
         </form>
 
@@ -306,6 +411,7 @@ const passwordInput = document.getElementById('passwordInput');
 
 if (toggleBtn && passwordInput) {
     toggleBtn.addEventListener('click', function() {
+        if (passwordInput.disabled) return;
         const currentType = passwordInput.getAttribute('type');
         if (currentType === 'password') {
             passwordInput.setAttribute('type', 'text');
@@ -316,6 +422,44 @@ if (toggleBtn && passwordInput) {
         }
         if (window.lucide) lucide.createIcons();
     });
+}
+
+// Live Countdown Timer for Rate Limiting Lockout
+const lockoutNotice = document.getElementById('lockoutNotice');
+const timerDisplay = document.getElementById('lockoutTimerDisplay');
+const submitBtn = document.querySelector('.btn-signin');
+const usernameInput = document.getElementById('usernameInput');
+
+if (lockoutNotice && timerDisplay) {
+    let secondsLeft = parseInt(lockoutNotice.getAttribute('data-retry-after'), 10) || 0;
+
+    const interval = setInterval(function() {
+        secondsLeft--;
+        if (secondsLeft <= 0) {
+            clearInterval(interval);
+            timerDisplay.textContent = '00:00';
+
+            // Re-enable form fields
+            if (usernameInput) usernameInput.removeAttribute('disabled');
+            if (passwordInput) passwordInput.removeAttribute('disabled');
+            if (toggleBtn) toggleBtn.removeAttribute('disabled');
+            if (submitBtn) {
+                submitBtn.removeAttribute('disabled');
+                submitBtn.textContent = 'Sign In';
+            }
+
+            // Transform banner into unlock notification
+            lockoutNotice.style.backgroundColor = '#f0fdf4';
+            lockoutNotice.style.borderColor = '#bbf7d0';
+            lockoutNotice.style.color = '#166534';
+            lockoutNotice.innerHTML = '<i data-lucide="check-circle-2" style="width: 22px; height: 22px; color: #16a34a; flex-shrink: 0; margin-top: 2px;"></i><div><div style="font-weight: 600;">Lockout Expired</div><div>You may now enter your credentials to sign in.</div></div>';
+            if (window.lucide) lucide.createIcons();
+        } else {
+            const mins = Math.floor(secondsLeft / 60);
+            const secs = secondsLeft % 60;
+            timerDisplay.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+    }, 1000);
 }
 </script>
 
