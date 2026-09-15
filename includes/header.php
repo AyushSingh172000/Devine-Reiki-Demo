@@ -200,9 +200,9 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <?php if ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/products.css">
     <?php endif; ?>
-    <?php if ($currentPage == 'gallery.php'): ?>
+    <?php /* if ($currentPage == 'gallery.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/gallery.css">
-    <?php endif; ?>
+    <?php endif; */ ?>
     <?php if ($currentPage == 'contact.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/contact.css">
     <?php endif; ?>

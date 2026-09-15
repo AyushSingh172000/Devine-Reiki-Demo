@@ -1,6 +1,15 @@
 <?php
 define('ADMIN_ACCESS', true);
 require_once 'auth-check.php';
+
+// Gallery module disabled / commented out - redirect to dashboard if accessed via direct URL
+header("Location: index.php", true, 302);
+exit;
+
+/* =========================================================================
+   GALLERY MODULE (COMMENTED OUT)
+   =========================================================================
+
 require_once 'upload-helper.php';
 
 $action = $_GET['action'] ?? 'list';
@@ -442,6 +451,6 @@ function closeEditGalleryModal() {
 }
 </script>
 
-<?php endif; ?>
-
 <?php require_once 'includes/admin-footer.php'; ?>
+*/
+?>

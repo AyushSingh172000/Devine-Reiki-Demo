@@ -113,6 +113,7 @@ require_once 'includes/admin-header.php';
         </div>
     </a>
 
+    <?php /*
     <!-- Total Gallery Images -->
     <a href="gallery.php" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
@@ -123,6 +124,7 @@ require_once 'includes/admin-header.php';
             <i data-lucide="image"></i>
         </div>
     </a>
+    */ ?>
 </div>
 
 <!-- 3. QUICK ACTIONS ROW -->

@@ -447,6 +447,10 @@ include __DIR__ . '/includes/header.php';
         <div class="testimonials-grid">
             <?php if (!empty($testimonials)): ?>
                 <?php foreach ($testimonials as $t): ?>
+                    <?php 
+                        $ratingNum = max(1, min(5, (int)($t['rating'] ?? 5)));
+                        $starsHtml = str_repeat('★', $ratingNum) . str_repeat('☆', 5 - $ratingNum);
+                    ?>
                     <div class="testimonial-card-box animate-on-scroll">
                         <div class="quote-mark">“</div>
                         <p class="testimonial-text-body"><?php echo htmlspecialchars($t['content']); ?></p>
@@ -462,7 +466,12 @@ include __DIR__ . '/includes/header.php';
                             <?php endif; ?>
                             <div class="author-info-text">
                                 <strong><?php echo htmlspecialchars($t['client_name']); ?></strong>
-                                <span><?php echo htmlspecialchars($t['location']); ?> · ⭐⭐⭐⭐⭐</span>
+                                <span>
+                                    <?php if (!empty($t['location'])): ?>
+                                        <?php echo htmlspecialchars($t['location']); ?> · 
+                                    <?php endif; ?>
+                                    <span style="color: #f59e0b; letter-spacing: 1.5px; font-size: 0.95rem;"><?php echo $starsHtml; ?></span>
+                                </span>
                             </div>
                         </div>
                     </div>

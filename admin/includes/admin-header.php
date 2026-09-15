@@ -86,11 +86,13 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       </li>
 
       <div class="sidebar-section-divider"><i data-lucide="layers"></i> CONTENT</div>
+      <?php /*
       <li>
         <a href="gallery.php" class="<?= $currentPage === 'gallery.php' ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="images"></i></span> Gallery
         </a>
       </li>
+      */ ?>
       <li>
         <a href="team.php" class="<?= $currentPage === 'team.php' ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="users"></i></span> Team Members

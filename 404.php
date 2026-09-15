@@ -40,7 +40,7 @@ include __DIR__ . '/includes/header.php';
             <ul style="list-style: none; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; padding: 0; font-weight: 600;">
                 <li><a href="<?php echo BASE_URL; ?>shop.php" style="color: var(--primary-purple); text-decoration: none;">💎 Crystal Shop</a></li>
                 <li><a href="<?php echo BASE_URL; ?>courses.php" style="color: var(--primary-purple); text-decoration: none;">🎓 Reiki Courses</a></li>
-                <li><a href="<?php echo BASE_URL; ?>gallery.php" style="color: var(--primary-purple); text-decoration: none;">🖼️ Sanctuary Gallery</a></li>
+                <?php /* <li><a href="<?php echo BASE_URL; ?>gallery.php" style="color: var(--primary-purple); text-decoration: none;">🖼️ Sanctuary Gallery</a></li> */ ?>
             </ul>
         </div>
     </div>

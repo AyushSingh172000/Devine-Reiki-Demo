@@ -1,6 +1,13 @@
 <?php
-// Gallery Page - Divine Reiki & Energy Healing Center
+// Gallery Page - Disabled / Commented Out
 require_once __DIR__ . '/config/constants.php';
+header('Location: ' . BASE_URL . 'index.php', true, 302);
+exit;
+
+/* =========================================================================
+   GALLERY PAGE (COMMENTED OUT)
+   =========================================================================
+
 if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/config/db.php';
 }
@@ -101,3 +108,5 @@ include __DIR__ . '/includes/header.php';
 
 <!-- Include Footer Component -->
 <?php include __DIR__ . '/includes/footer.php'; ?>
+*/
+?>
