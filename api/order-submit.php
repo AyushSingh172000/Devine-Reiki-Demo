@@ -77,7 +77,8 @@ if (!empty($message)) {
 }
 $waSummary .= "Please confirm my custom gemstone recommendation.";
 
-$waUrl = "https://wa.me/919971655705?text=" . urlencode($waSummary);
+$cleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defined('SITE_WHATSAPP') ? SITE_WHATSAPP : '919726581787'));
+$waUrl = "https://wa.me/" . $cleanWa . "?text=" . urlencode($waSummary);
 
 // Insert into Database
 try {

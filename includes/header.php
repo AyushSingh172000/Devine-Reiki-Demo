@@ -250,7 +250,7 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
                             <a href="<?php echo BASE_URL; ?>products.php?category=chakra">7 Chakra Collection</a>
                         </li>
                         <li>
-                            <a href="<?php echo BASE_URL; ?>custom-bracelet.php">Custom Birth-Chart Bracelet</a>
+                            <a href="<?php echo BASE_URL; ?>custom-bracelet.php">Custom Crystal Bracelet</a>
                         </li>
                     </ul>
                 </li>
@@ -295,7 +295,7 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
                         <li><a href="<?php echo BASE_URL; ?>products.php?category=bracelets">Reiki Charged Bracelets</a></li>
                         <li><a href="<?php echo BASE_URL; ?>products.php?category=protection">Protection Bracelets</a></li>
                         <li><a href="<?php echo BASE_URL; ?>products.php?category=chakra">7 Chakra Collection</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>custom-bracelet.php">Custom Birth-Chart Bracelet</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>custom-bracelet.php">Custom Crystal Bracelet</a></li>
                     </ul>
                 </li>
                 <li><a href="<?php echo BASE_URL; ?>services.php" class="mobile-nav-link">Services</a></li>

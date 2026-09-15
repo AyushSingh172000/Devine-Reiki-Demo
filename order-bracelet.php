@@ -1,30 +1,16 @@
 <?php
-// Order Customized Crystal Bracelet Page - Divine Reiki Center
+// Order Customized Crystal Bracelet Page - Reiki Bliss
 require_once __DIR__ . '/config/constants.php';
 if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/config/db.php';
 }
 
-// Extract & Validate Type Parameter
-$type = isset($_GET['type']) ? strtolower(trim($_GET['type'])) : 'birth-chart';
-if (!in_array($type, ['birth-chart', 'customized'])) {
-    $type = 'birth-chart';
-}
-
-// Dynamic Titles & Descriptions
-if ($type === 'birth-chart') {
-    $heroBadge = "Astro-Energy Alignment";
-    $heroTitle = "Birth Chart <em>Customized Bracelet</em>";
-    $heroSubtext = "Our Vedic astrology experts analyze your exact planetary positions at birth to craft a personalized gemstone bracelet tailored specifically to your horoscope.";
-    $pageTitle = "Order Birth Chart Customized Bracelet | Divine Reiki Center";
-} else {
-    $heroBadge = "Intention Charged Crystals";
-    $heroTitle = "Intention-Based <em>Custom Bracelet</em>";
-    $heroSubtext = "Select your specific healing intention — whether for anxiety relief, financial abundance, energy protection, or love — and our Reiki Masters will charge your custom gemstone arrangement.";
-    $pageTitle = "Order Intention-Based Custom Bracelet | Divine Reiki Center";
-}
-
-$pageDescription = "Order a 100% natural, Reiki-charged custom crystal bracelet crafted specifically for your birth chart planetary alignment or personal intentions.";
+// Page Metadata
+$pageTitle = "Order Custom Crystal Bracelet | Reiki Bliss";
+$pageDescription = "Order a 100% natural, Reiki-charged custom crystal bracelet crafted specifically with your chosen healing intention and charged by our Reiki Masters.";
+$heroBadge = "Intention Charged Crystals";
+$heroTitle = "Customized <em>Crystal Bracelet</em>";
+$heroSubtext = "Select your specific healing intention — whether for anxiety relief, financial abundance, energy protection, or love — and our Reiki Masters will energetically cleanse, program, and charge your custom gemstone bracelet.";
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
@@ -39,16 +25,6 @@ include __DIR__ . '/includes/header.php';
         <span class="order-hero-badge"><?php echo $heroBadge; ?></span>
         <h1 class="order-hero-title"><?php echo $heroTitle; ?></h1>
         <p class="order-hero-subtext"><?php echo $heroSubtext; ?></p>
-
-        <!-- Toggle Type Pills -->
-        <div class="type-toggle-pills">
-            <a href="?type=birth-chart" class="type-pill-btn <?php echo ($type === 'birth-chart') ? 'active' : ''; ?>">
-                ⭐ Birth Chart Customized
-            </a>
-            <a href="?type=customized" class="type-pill-btn <?php echo ($type === 'customized') ? 'active' : ''; ?>">
-                💎 Intention-Based Customized
-            </a>
-        </div>
     </div>
 </section>
 
@@ -82,9 +58,7 @@ include __DIR__ . '/includes/header.php';
                 <span class="badge badge-gold" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Custom Order Form</span>
                 <h2 class="section-heading" style="font-size: 2.4rem; color: #ffffff; margin-bottom: 10px;">Provide <em>Your Details</em></h2>
                 <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.98rem; max-width: 620px; margin: 0 auto;">
-                    <?php echo ($type === 'birth-chart') 
-                        ? 'Please enter your precise birth details so our astrology team can calculate your natal planetary chart.' 
-                        : 'Please select your primary spiritual intention and describe any specific gemstones or wrist dimensions.'; ?>
+                    Please select your primary spiritual intention and describe any specific gemstones or wrist dimensions.
                 </p>
             </div>
 
@@ -92,7 +66,7 @@ include __DIR__ . '/includes/header.php';
             <div id="order-alert-box" class="form-alert-box" role="alert"></div>
 
             <form id="bracelet-order-form" action="<?php echo BASE_URL; ?>api/order-submit.php" method="POST" novalidate>
-                <input type="hidden" name="order_type" value="<?php echo htmlspecialchars($type); ?>">
+                <input type="hidden" name="order_type" value="customized">
 
                 <div class="form-grid-2col">
                     <!-- Name Input -->
@@ -113,47 +87,28 @@ include __DIR__ . '/includes/header.php';
                         <input type="tel" id="order-phone" name="phone" class="form-input" placeholder="+91 98765 43210" required>
                     </div>
 
-                    <?php if ($type === 'birth-chart'): ?>
-                        <!-- Birth Chart Specific Fields -->
-                        <div class="form-group">
-                            <label for="order-dob" class="form-label">Date of Birth *</label>
-                            <input type="date" id="order-dob" name="date_of_birth" class="form-input" required>
-                        </div>
+                    <!-- Customized Intention Specific Fields -->
+                    <div class="form-group full-width">
+                        <label for="intention-select" class="form-label">Primary Intention / Healing Purpose *</label>
+                        <select id="intention-select" name="intention" class="form-select" required>
+                            <option value="">-- Select Primary Intention --</option>
+                            <option value="Anxiety & Stress Relief">🧘 Anxiety &amp; Stress Relief</option>
+                            <option value="Financial Prosperity & Wealth">💰 Financial Prosperity &amp; Abundance</option>
+                            <option value="Health & Physical Vitality">🌿 Health &amp; Physical Vitality</option>
+                            <option value="Love & Relationship Harmony">💖 Love &amp; Relationship Harmony</option>
+                            <option value="Psychic & Energy Protection">🛡️ Psychic &amp; Energy Protection</option>
+                            <option value="Focus & Career Growth">🚀 Focus, Mind &amp; Career Growth</option>
+                            <option value="Self-Confidence & Courage">🦁 Self-Confidence &amp; Courage</option>
+                            <option value="Spiritual Awakening">✨ Spiritual Awakening &amp; Intuition</option>
+                            <option value="Deep Sleep & Calm">🌙 Deep Sleep &amp; Emotional Calm</option>
+                            <option value="Custom Intention">✍️ Custom Intention (Specify Below)</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="order-tob" class="form-label">Time of Birth (if known)</label>
-                            <input type="time" id="order-tob" name="time_of_birth" class="form-input">
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label for="order-pob" class="form-label">Place of Birth (City, State) *</label>
-                            <input type="text" id="order-pob" name="place_of_birth" class="form-input" placeholder="e.g. Surat, Gujarat" required>
-                        </div>
-
-                    <?php else: ?>
-                        <!-- Customized Intention Specific Fields -->
-                        <div class="form-group full-width">
-                            <label for="intention-select" class="form-label">Primary Intention / Healing Purpose *</label>
-                            <select id="intention-select" name="intention" class="form-select" required>
-                                <option value="">-- Select Primary Intention --</option>
-                                <option value="Anxiety & Stress Relief">🧘 Anxiety &amp; Stress Relief</option>
-                                <option value="Financial Prosperity & Wealth">💰 Financial Prosperity &amp; Abundance</option>
-                                <option value="Health & Physical Vitality">🌿 Health &amp; Physical Vitality</option>
-                                <option value="Love & Relationship Harmony">💖 Love &amp; Relationship Harmony</option>
-                                <option value="Psychic & Energy Protection">🛡️ Psychic &amp; Energy Protection</option>
-                                <option value="Focus & Career Growth">🚀 Focus, Mind &amp; Career Growth</option>
-                                <option value="Self-Confidence & Courage">🦁 Self-Confidence &amp; Courage</option>
-                                <option value="Spiritual Awakening">✨ Spiritual Awakening &amp; Intuition</option>
-                                <option value="Deep Sleep & Calm">🌙 Deep Sleep &amp; Emotional Calm</option>
-                                <option value="Custom Intention">✍️ Custom Intention (Specify Below)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group full-width" id="custom-intention-group" style="display: none;">
-                            <label for="custom-intention" class="form-label">Specify Your Custom Intention *</label>
-                            <input type="text" id="custom-intention" name="custom_intention" class="form-input" placeholder="e.g. Harmonizing exam stress & boosting memory retention">
-                        </div>
-                    <?php endif; ?>
+                    <div class="form-group full-width" id="custom-intention-group" style="display: none;">
+                        <label for="custom-intention" class="form-label">Specify Your Custom Intention *</label>
+                        <input type="text" id="custom-intention" name="custom_intention" class="form-input" placeholder="e.g. Harmonizing exam stress & boosting memory retention">
+                    </div>
 
                     <!-- Message / Additional Notes -->
                     <div class="form-group full-width">
@@ -172,8 +127,6 @@ include __DIR__ . '/includes/header.php';
 
     </div>
 </section>
-
-<!-- Also create custom-bracelet.php alias for order-bracelet.php -->
 
 <!-- Include CTA Section -->
 <?php include __DIR__ . '/includes/cta-section.php'; ?>

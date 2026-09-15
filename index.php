@@ -322,66 +322,6 @@ include __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<!-- ==========================================================================
-     3. CRYSTAL BRACELETS SECTION
-     ========================================================================== -->
-<section class="bracelets-section" id="bracelets">
-    <!-- Infinite Auto-Scrolling Bracelet Photos Carousel (Dynamic from Products & Gallery) -->
-    <div class="infinite-carousel carousel-photos-row">
-        <div class="infinite-carousel-track">
-            <?php foreach ($braceletCarouselImages as $bItem): ?>
-                <div class="bracelet-photo-item">
-                    <img src="<?php echo htmlspecialchars(getCarouselImgUrl($bItem['src'])); ?>" alt="<?php echo htmlspecialchars($bItem['alt']); ?>" loading="lazy">
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="text-center animate-on-scroll" style="margin-bottom: 50px;">
-            <span class="section-label">Custom Crystal Bracelets</span>
-            <h2 class="section-heading"><?php echo htmlspecialchars($braceletsHeading); ?></h2>
-            <p><?php echo htmlspecialchars($braceletsDescription); ?></p>
-        </div>
-
-        <!-- Dual Bracelet Customization Cards -->
-        <div class="bracelets-cards-grid">
-            <!-- Card 1: Birth Chart Bracelet -->
-            <div class="bracelet-card animate-on-scroll">
-                <div>
-                    <div class="bracelet-icon-circle">🔮</div>
-                    <h3 class="bracelet-card-title">Birth Chart Bracelet</h3>
-                    <p>Designed strictly based on your exact Date, Time, and Place of Birth to harmonize planetary frequencies and balance weak chakras in your horoscope.</p>
-                    <ul class="bracelet-features">
-                        <li><span class="feature-check">✓</span> Custom planetary gemstone alignment</li>
-                        <li><span class="feature-check">✓</span> Vedic astrological energy matrix</li>
-                        <li><span class="feature-check">✓</span> 100% Reiki Master charged & cleansed</li>
-                    </ul>
-                </div>
-                <a href="<?php echo BASE_URL; ?>custom-bracelet.php?type=birth-chart" class="btn-primary w-full">
-                    Order Birth Chart Bracelet →
-                </a>
-            </div>
-
-            <!-- Card 2: Customized Bracelet -->
-            <div class="bracelet-card animate-on-scroll">
-                <div>
-                    <div class="bracelet-icon-circle">✨</div>
-                    <h3 class="bracelet-card-title">Customized Bracelet</h3>
-                    <p>Select your desired life intention — whether for financial abundance, heart healing, anxiety relief, or psychic protection — tailored to your energy field.</p>
-                    <ul class="bracelet-features">
-                        <li><span class="feature-check">✓</span> Custom intention programming</li>
-                        <li><span class="feature-check">✓</span> Handpicked high-frequency crystals</li>
-                        <li><span class="feature-check">✓</span> Personal aura & chakra alignment</li>
-                    </ul>
-                </div>
-                <a href="<?php echo BASE_URL; ?>custom-bracelet.php?type=customized" class="btn-gold w-full">
-                    Order Customized Bracelet →
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- ==========================================================================
      4. SERVICES SECTION

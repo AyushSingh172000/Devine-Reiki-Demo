@@ -179,12 +179,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             setSetting($pdo, 'hero_heading', trim($_POST['hero_heading'] ?? ''));
             setSetting($pdo, 'hero_subtext', trim($_POST['hero_subtext'] ?? ''));
-            setSetting($pdo, 'hero_cta1_text', trim($_POST['hero_cta1_text'] ?? ''));
-            setSetting($pdo, 'hero_cta1_url', trim($_POST['hero_cta1_url'] ?? ''));
-            setSetting($pdo, 'hero_cta2_text', trim($_POST['hero_cta2_text'] ?? ''));
-            setSetting($pdo, 'hero_cta2_url', trim($_POST['hero_cta2_url'] ?? ''));
-            setSetting($pdo, 'bracelets_heading', trim($_POST['bracelets_heading'] ?? ''));
-            setSetting($pdo, 'bracelets_description', trim($_POST['bracelets_description'] ?? ''));
 
             $_SESSION['flash_success'] = "Homepage content saved successfully!";
         } catch (Exception $e) {
@@ -653,36 +647,6 @@ require_once 'includes/admin-header.php';
                 <div class="form-group">
                     <label class="form-label">Hero Subtext Paragraph</label>
                     <textarea name="hero_subtext" class="form-control" rows="3"><?= htmlspecialchars($settings['hero_subtext'] ?? 'Awaken your inner vitality with authentic Usui Reiki healing sessions, transformative certification courses, and sacred energized crystal bracelets.') ?></textarea>
-                </div>
-
-                <div class="form-row">
-                    <!-- CTA Button 1 -->
-                    <div class="form-group" style="background: rgba(30, 21, 69, 0.4); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
-                        <label class="form-label" style="color: var(--gold); font-weight: 600;">Call-to-Action 1 (Primary)</label>
-                        <input type="text" name="hero_cta1_text" class="form-control mb-2" placeholder="Button Label e.g. Explore Services" value="<?= htmlspecialchars($settings['hero_cta1_text'] ?? 'Explore Healing Services') ?>">
-                        <input type="text" name="hero_cta1_url" class="form-control" placeholder="Target Link e.g. services.php" value="<?= htmlspecialchars($settings['hero_cta1_url'] ?? 'services.php') ?>">
-                    </div>
-
-                    <!-- CTA Button 2 -->
-                    <div class="form-group" style="background: rgba(30, 21, 69, 0.4); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
-                        <label class="form-label" style="color: var(--gold); font-weight: 600;">Call-to-Action 2 (Secondary)</label>
-                        <input type="text" name="hero_cta2_text" class="form-control mb-2" placeholder="Button Label e.g. Custom Bracelet" value="<?= htmlspecialchars($settings['hero_cta2_text'] ?? 'Order Custom Bracelet') ?>">
-                        <input type="text" name="hero_cta2_url" class="form-control" placeholder="Target Link e.g. order-bracelet.php" value="<?= htmlspecialchars($settings['hero_cta2_url'] ?? 'order-bracelet.php') ?>">
-                    </div>
-                </div>
-
-                <h4 style="font-size: 0.95rem; color: var(--gold); margin: 24px 0 14px; border-top: 1px solid var(--card-border); padding-top: 16px;">
-                    Custom Bracelets Showcase Section
-                </h4>
-
-                <div class="form-group">
-                    <label class="form-label">Bracelets Section Heading</label>
-                    <input type="text" name="bracelets_heading" class="form-control" value="<?= htmlspecialchars($settings['bracelets_heading'] ?? 'Energized Astrological & Custom Crystal Bracelets') ?>">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Bracelets Section Subtitle / Description</label>
-                    <textarea name="bracelets_description" class="form-control" rows="2"><?= htmlspecialchars($settings['bracelets_description'] ?? 'Tailored specifically according to your date and place of birth or personalized healing intentions, charged with high-frequency Reiki symbols.') ?></textarea>
                 </div>
 
                 <div class="mt-3">
