@@ -236,6 +236,19 @@ $heroSubtext = $siteSettings['hero_subtext'] ?? 'Guided by Dr. Chirag Gajjar (Re
 $foundingYear = $siteSettings['founding_year'] ?? '2014';
 $heroBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
 
+// Dynamic Homepage CTAs from Site Settings
+$cta1Text = !empty($siteSettings['hero_cta1_text']) ? $siteSettings['hero_cta1_text'] : 'Explore Healing Services';
+$cta1UrlRaw = !empty($siteSettings['hero_cta1_url']) ? $siteSettings['hero_cta1_url'] : 'services.php';
+$cta1Url = (strpos($cta1UrlRaw, 'http') === 0 || strpos($cta1UrlRaw, '#') === 0) ? $cta1UrlRaw : BASE_URL . ltrim($cta1UrlRaw, '/');
+
+$cta2Text = !empty($siteSettings['hero_cta2_text']) ? $siteSettings['hero_cta2_text'] : 'Order Custom Bracelet';
+$cta2UrlRaw = !empty($siteSettings['hero_cta2_url']) ? $siteSettings['hero_cta2_url'] : 'order-bracelet.php';
+$cta2Url = (strpos($cta2UrlRaw, 'http') === 0 || strpos($cta2UrlRaw, '#') === 0) ? $cta2UrlRaw : BASE_URL . ltrim($cta2UrlRaw, '/');
+
+// Dynamic Bracelets Section Headings
+$braceletsHeading = !empty($siteSettings['bracelets_heading']) ? $siteSettings['bracelets_heading'] : 'Energized Astrological & Custom Crystal Bracelets';
+$braceletsDescription = !empty($siteSettings['bracelets_description']) ? $siteSettings['bracelets_description'] : 'Tailored specifically according to your date and place of birth or personalized healing intentions, charged with high-frequency Reiki symbols.';
+
 // Fallback values for site stats if needed
 $livesHealed = $siteStats['lives_healed']['stat_value'] ?? ($statsData['lives_healed']['stat_value'] ?? '30000');
 $yearsExp = $siteStats['years_experience']['stat_value'] ?? ($statsData['years_experience']['stat_value'] ?? '25');
@@ -271,12 +284,16 @@ include __DIR__ . '/includes/header.php';
             <a href="<?php echo htmlspecialchars($heroBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
                 Book Free Session <span class="btn-arrow">→</span>
             </a>
-            <a href="<?php echo BASE_URL; ?>courses.php" class="btn-secondary btn-hero-secondary">
-                Explore Courses
-            </a>
-            <a href="<?php echo BASE_URL; ?>about.php" class="btn-secondary btn-hero-secondary">
-                About the Center
-            </a>
+            <?php if (!empty($cta1Text)): ?>
+                <a href="<?php echo htmlspecialchars($cta1Url); ?>" class="btn-secondary btn-hero-secondary">
+                    <?php echo htmlspecialchars($cta1Text); ?>
+                </a>
+            <?php endif; ?>
+            <?php if (!empty($cta2Text)): ?>
+                <a href="<?php echo htmlspecialchars($cta2Url); ?>" class="btn-secondary btn-hero-secondary">
+                    <?php echo htmlspecialchars($cta2Text); ?>
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -323,8 +340,8 @@ include __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="text-center animate-on-scroll" style="margin-bottom: 50px;">
             <span class="section-label">Custom Crystal Bracelets</span>
-            <h2 class="section-heading">Handcrafted Just for <em>You</em></h2>
-            <p>Each crystal bracelet is cleansed with white sage, aligned to your planetary vibrations or personal intention, and energized by our Reiki Masters.</p>
+            <h2 class="section-heading"><?php echo htmlspecialchars($braceletsHeading); ?></h2>
+            <p><?php echo htmlspecialchars($braceletsDescription); ?></p>
         </div>
 
         <!-- Dual Bracelet Customization Cards -->

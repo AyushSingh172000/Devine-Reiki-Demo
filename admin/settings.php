@@ -155,10 +155,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 4 Core Values
             $coreValues = [];
             for ($i = 1; $i <= 4; $i++) {
+                $valTitle = trim($_POST["core_val_{$i}_title"] ?? '');
+                $valDesc = trim($_POST["core_val_{$i}_desc"] ?? '');
                 $coreValues[] = [
-                    'title' => trim($_POST["core_val_{$i}_title"] ?? ''),
-                    'description' => trim($_POST["core_val_{$i}_desc"] ?? '')
+                    'title' => $valTitle,
+                    'description' => $valDesc
                 ];
+                setSetting($pdo, "value_{$i}_title", $valTitle);
+                setSetting($pdo, "value_{$i}_desc", $valDesc);
             }
             setSetting($pdo, 'core_values', json_encode($coreValues));
 

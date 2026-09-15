@@ -274,34 +274,43 @@ include __DIR__ . '/includes/header.php';
             <p>Principles that guide every healing session, attunement workshop, and crystal recommendation at our center.</p>
         </div>
 
+        <?php
+        $coreValuesList = [];
+        if (!empty($siteSettings['core_values'])) {
+            $decodedVals = is_string($siteSettings['core_values']) ? json_decode($siteSettings['core_values'], true) : $siteSettings['core_values'];
+            if (is_array($decodedVals) && !empty($decodedVals)) {
+                $coreValuesList = $decodedVals;
+            }
+        }
+        if (empty($coreValuesList)) {
+            $coreValuesList = [
+                [
+                    'title' => $siteSettings['value_1_title'] ?? 'Compassionate Presence',
+                    'description' => $siteSettings['value_1_desc'] ?? 'Every session is held with deep unconditional empathy, confidentiality, and spiritual grounding.'
+                ],
+                [
+                    'title' => $siteSettings['value_2_title'] ?? 'Authentic Lineage',
+                    'description' => $siteSettings['value_2_desc'] ?? 'Direct Usui Reiki tradition handed down through accredited grandmasters with authentic attunement.'
+                ],
+                [
+                    'title' => $siteSettings['value_3_title'] ?? 'Holistic Transformation',
+                    'description' => $siteSettings['value_3_desc'] ?? 'Addressing subtle energetic root causes rather than just superficial physical symptoms.'
+                ],
+                [
+                    'title' => $siteSettings['value_4_title'] ?? 'Empowered Self-Healing',
+                    'description' => $siteSettings['value_4_desc'] ?? 'Guiding every student and healee with knowledge to sustain their own energetic balance.'
+                ]
+            ];
+        }
+        ?>
         <div class="values-grid">
-            <!-- Value 01 -->
-            <div class="value-card animate-on-scroll">
-                <div class="value-number">01</div>
-                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_1_title'] ?? 'Authenticity'); ?></h3>
-                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_1_desc'] ?? 'Rooted in traditional Usui Reiki lineage and pure spiritual energy practices without compromise or diluted shortcuts.'); ?></p>
-            </div>
-
-            <!-- Value 02 -->
-            <div class="value-card animate-on-scroll">
-                <div class="value-number">02</div>
-                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_2_title'] ?? 'Compassion'); ?></h3>
-                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_2_desc'] ?? 'Meeting every student and client without judgment, holding a safe and supportive space for deep emotional recovery and spiritual growth.'); ?></p>
-            </div>
-
-            <!-- Value 03 -->
-            <div class="value-card animate-on-scroll">
-                <div class="value-number">03</div>
-                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_3_title'] ?? 'Empowerment'); ?></h3>
-                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_3_desc'] ?? 'Equipping individuals with practical self-healing tools and knowledge to take control of their lifelong energy balance and well-being.'); ?></p>
-            </div>
-
-            <!-- Value 04 -->
-            <div class="value-card animate-on-scroll">
-                <div class="value-number">04</div>
-                <h3 class="value-card-title"><?php echo htmlspecialchars($siteSettings['value_4_title'] ?? 'Community'); ?></h3>
-                <p class="value-card-text"><?php echo htmlspecialchars($siteSettings['value_4_desc'] ?? 'Building an inclusive global family of practitioners and clients who uplift, support, and inspire each other\'s spiritual evolution.'); ?></p>
-            </div>
+            <?php foreach ($coreValuesList as $vIndex => $valItem): ?>
+                <div class="value-card animate-on-scroll">
+                    <div class="value-number"><?php echo sprintf('%02d', $vIndex + 1); ?></div>
+                    <h3 class="value-card-title"><?php echo htmlspecialchars($valItem['title'] ?? ''); ?></h3>
+                    <p class="value-card-text"><?php echo htmlspecialchars($valItem['description'] ?? ''); ?></p>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
