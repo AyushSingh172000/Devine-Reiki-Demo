@@ -125,7 +125,7 @@ include __DIR__ . '/includes/header.php';
                                 <?php endif; ?>
                                 <span style="font-size: 0.82rem; color: var(--muted-gray);"> (<?php echo htmlspecialchars($service['duration_minutes']); ?> mins)</span>
                             </div>
-                            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-secondary" style="padding: 6px 14px; font-size: 0.84rem;">
+                            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary" style="padding: 8px 18px; font-size: 0.86rem;">
                                 Book Session →
                             </a>
                         </div>

@@ -140,7 +140,7 @@ include __DIR__ . '/includes/header.php';
                 <?php endif; ?>
 
                 <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center;">
-                    <a href="<?php echo BASE_URL; ?>services.php" class="btn-secondary" style="width: 100%; font-size: 0.9rem; padding: 10px;">
+                    <a href="<?php echo BASE_URL; ?>services.php" class="btn-primary" style="width: 100%; font-size: 0.9rem; padding: 10px;">
                         View All Services →
                     </a>
                 </div>

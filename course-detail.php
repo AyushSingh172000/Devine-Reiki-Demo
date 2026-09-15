@@ -115,8 +115,12 @@ include __DIR__ . '/includes/header.php';
                     <a href="<?php echo BASE_URL; ?>contact.php?course=<?php echo urlencode($course['slug']); ?>#enquire" class="btn-gold w-full text-center" style="padding: 12px; font-size: 1rem;">
                         Enquire Now →
                     </a>
-                    <a href="https://wa.me/919971655705?text=Hello%20Reiki%20Bliss,%20I%20want%20to%20enquire%20about%20the%20<?php echo urlencode($course['title']); ?>%20course." target="_blank" rel="noopener" class="btn-secondary w-full text-center" style="padding: 12px; font-size: 0.92rem;">
-                        💬 Chat on WhatsApp
+                    <?php 
+                        $courseWaPhone = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? '919971655705');
+                        $courseWaText = urlencode('Hello Reiki Bliss, I want to enquire about the ' . $course['title'] . ' course.');
+                    ?>
+                    <a href="https://wa.me/<?php echo htmlspecialchars($courseWaPhone); ?>?text=<?php echo $courseWaText; ?>" target="_blank" rel="noopener" class="btn-course-whatsapp w-full text-center">
+                        <span style="font-size: 1.1rem;">💬</span> Chat on WhatsApp
                     </a>
                 </div>
             </aside>
@@ -140,7 +144,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                                 <div class="course-card-footer">
                                     <span class="course-price-text" style="font-size: 1.1rem;"><?php echo htmlspecialchars($rel['price_text']); ?></span>
-                                    <a href="<?php echo BASE_URL; ?>course-detail.php?slug=<?php echo htmlspecialchars($rel['slug']); ?>" class="btn-secondary" style="padding: 6px 14px; font-size: 0.82rem;">
+                                    <a href="<?php echo BASE_URL; ?>course-detail.php?slug=<?php echo htmlspecialchars($rel['slug']); ?>" class="btn-primary" style="padding: 6px 14px; font-size: 0.82rem;">
                                         View Details →
                                     </a>
                                 </div>

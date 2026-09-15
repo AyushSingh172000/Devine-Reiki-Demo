@@ -11,9 +11,24 @@ $prefilledCourse = $_GET['course'] ?? '';
 $defaultMessage = '';
 
 if (!empty($prefilledService)) {
-    $defaultMessage = "Hello Anupama Agrawal, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
+    $defaultMessage = "Hello, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
 } elseif (!empty($prefilledCourse)) {
-    $defaultMessage = "Hello Anupama Agrawal, I am interested in enrolling in the " . htmlspecialchars($prefilledCourse) . " certification course.";
+    $courseName = $prefilledCourse;
+    if (isset($pdo) && $pdo instanceof PDO) {
+        try {
+            $cStmt = $pdo->prepare("SELECT title FROM courses WHERE slug = ? LIMIT 1");
+            $cStmt->execute([$prefilledCourse]);
+            $cRow = $cStmt->fetch(PDO::FETCH_ASSOC);
+            if ($cRow && !empty($cRow['title'])) {
+                $courseName = $cRow['title'];
+            } else {
+                $courseName = ucwords(str_replace('-', ' ', $prefilledCourse));
+            }
+        } catch (PDOException $e) {
+            $courseName = ucwords(str_replace('-', ' ', $prefilledCourse));
+        }
+    }
+    $defaultMessage = "Hello, I am interested in enrolling in the " . htmlspecialchars($courseName) . " certification course.";
 }
 
 // Page Metadata
@@ -136,11 +151,12 @@ $contactMapsEmbed = !empty($siteSettings['maps_embed_url']) ? $siteSettings['map
 <!-- ==========================================================================
      3. CONTACT FORM SECTION (#contact-form-section)
      ========================================================================== -->
-<section class="contact-form-section" id="contact-form-section">
+<div id="enquire" style="scroll-margin-top: 100px;"></div>
+<section class="contact-form-section" id="contact-form-section" style="scroll-margin-top: 100px;">
     <canvas class="hero-bg-canvas"></canvas>
     <div class="container">
         
-        <div class="contact-form-card animate-on-scroll" id="book-form">
+        <div class="contact-form-card animate-on-scroll" id="book-form" style="scroll-margin-top: 100px;">
             <div class="form-title-box">
                 <span class="badge" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Direct Message</span>
                 <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #ffffff;">Send Us a <em>Message</em></h2>
@@ -198,4 +214,16 @@ $contactMapsEmbed = !empty($siteSettings['maps_embed_url']) ? $siteSettings['map
 </section>
 
 <!-- Include Footer Component -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#enquire' || window.location.hash === '#book-form' || window.location.hash === '#contact-form-section' || window.location.search.includes('course=') || window.location.search.includes('service=')) {
+        var target = document.getElementById('book-form') || document.getElementById('enquire') || document.getElementById('contact-form-section');
+        if (target) {
+            setTimeout(function() {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 180);
+        }
+    }
+});
+</script>
 <?php include __DIR__ . '/includes/footer.php'; ?>

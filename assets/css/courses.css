@@ -242,6 +242,32 @@
   color: var(--dark-text);
 }
 
+.btn-course-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 13px 20px;
+  border-radius: var(--radius-btn);
+  border: none;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  transition: all 0.25s ease;
+  width: 100%;
+  cursor: pointer;
+}
+
+.btn-course-whatsapp:hover {
+  background: linear-gradient(135deg, #22c35e 0%, #0e7468 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+  color: #ffffff !important;
+}
+
 /* Related Courses Section */
 .related-courses-section {
   margin-top: 60px;

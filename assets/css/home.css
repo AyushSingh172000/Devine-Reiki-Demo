@@ -392,6 +392,31 @@
   color: var(--muted-gray);
 }
 
+.card-footer-meta .btn-primary,
+.card-footer-meta .btn-secondary {
+  background: linear-gradient(135deg, #2D1B69 0%, #1e1248 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(201, 168, 76, 0.4) !important;
+  padding: 7px 18px !important;
+  font-size: 0.86rem !important;
+  font-weight: 600 !important;
+  border-radius: 50px !important;
+  box-shadow: 0 4px 12px rgba(45, 27, 105, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.card-footer-meta .btn-primary:hover,
+.card-footer-meta .btn-secondary:hover {
+  background: linear-gradient(135deg, var(--accent-gold) 0%, #b5943b 100%) !important;
+  color: #110724 !important;
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 4px 18px rgba(201, 168, 76, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
 /* --------------------------------------------------------------------------
    5. Testimonials Section
    -------------------------------------------------------------------------- */

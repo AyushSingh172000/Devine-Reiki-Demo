@@ -512,7 +512,7 @@ include __DIR__ . '/includes/header.php';
                             </div>
                             <div class="card-footer-meta">
                                 <span class="card-price-value"><?php echo htmlspecialchars($course['price_text']); ?></span>
-                                <a href="<?php echo BASE_URL; ?>courses.php" class="btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;">View details →</a>
+                                <a href="<?php echo BASE_URL; ?><?php echo !empty($course['slug']) ? 'course-detail.php?slug=' . urlencode($course['slug']) : 'courses.php'; ?>" class="btn-primary" style="padding: 7px 18px; font-size: 0.86rem;">View details →</a>
                             </div>
                         </div>
                     </div>
