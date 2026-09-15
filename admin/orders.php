@@ -99,7 +99,7 @@ foreach ($ordersList as $ord) {
     $ordersMap[$ord['id']] = $ord;
 }
 
-$pageTitle = 'Bracelet Orders';
+$pageTitle = 'Orders';
 require_once 'includes/admin-header.php';
 ?>
 

@@ -120,7 +120,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       </li>
       <li>
         <a href="orders.php" class="<?= $currentPage === 'orders.php' ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="package"></i></span> Bracelet Orders
+          <span class="nav-icon"><i data-lucide="package"></i></span> Orders
         </a>
       </li>
 
