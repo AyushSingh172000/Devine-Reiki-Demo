@@ -407,6 +407,17 @@
   color: #ffffff;
 }
 
+.btn-whatsapp-order:disabled,
+.btn-whatsapp-order.disabled {
+  background-color: #94a3b8 !important;
+  color: #ffffff !important;
+  cursor: not-allowed !important;
+  opacity: 0.8 !important;
+  transform: none !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
 .related-products-wrapper {
   margin-top: 60px;
   padding-top: 40px;

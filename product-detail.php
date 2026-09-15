@@ -80,8 +80,11 @@ include __DIR__ . '/includes/header.php';
         <div class="product-detail-grid animate-on-scroll">
             <!-- Left Column: Image Gallery -->
             <div class="gallery-container">
-                <div class="main-img-box">
+                <div class="main-img-box" style="position: relative;">
                     <img id="main-product-display" src="<?php echo htmlspecialchars($mainImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" loading="lazy">
+                    <?php if (!$product['in_stock']): ?>
+                        <span class="badge badge-danger" style="position: absolute; top: 16px; left: 16px; font-size: 0.85rem; padding: 6px 14px; box-shadow: 0 4px 12px rgba(220,38,38,0.25); z-index: 2;">Out of Stock</span>
+                    <?php endif; ?>
                 </div>
 
                 <?php if (count($galleryImages) > 1): ?>
@@ -101,18 +104,19 @@ include __DIR__ . '/includes/header.php';
                     <span class="product-cat-tag"><?php echo htmlspecialchars($product['category']); ?></span>
                     <h1 class="product-detail-title"><?php echo htmlspecialchars($product['title']); ?></h1>
                     
-                    <?php if ($product['discount_percent'] > 0 || !empty($product['badge_text'])): ?>
-                        <div style="margin-bottom: 18px;">
-                            <?php if ($product['discount_percent'] > 0): ?>
-                                <span class="badge badge-gold"><?php echo htmlspecialchars($product['discount_percent']); ?>% OFF ✦ <?php echo htmlspecialchars($product['badge_text']); ?></span>
-                            <?php else: ?>
-                                <span class="badge"><?php echo htmlspecialchars($product['badge_text']); ?></span>
-                            <?php endif; ?>
-                            <?php if ($product['in_stock']): ?>
-                                <span class="badge badge-green" style="margin-left: 8px;">In Stock & Ready to Ship</span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+                    <div style="margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                        <?php if ($product['discount_percent'] > 0): ?>
+                            <span class="badge badge-gold"><?php echo htmlspecialchars($product['discount_percent']); ?>% OFF<?php if (!empty($product['badge_text'])) echo ' ✦ ' . htmlspecialchars($product['badge_text']); ?></span>
+                        <?php elseif (!empty($product['badge_text'])): ?>
+                            <span class="badge"><?php echo htmlspecialchars($product['badge_text']); ?></span>
+                        <?php endif; ?>
+
+                        <?php if ($product['in_stock']): ?>
+                            <span class="badge badge-green">In Stock &amp; Ready to Ship</span>
+                        <?php else: ?>
+                            <span class="badge badge-danger">Out of Stock</span>
+                        <?php endif; ?>
+                    </div>
 
                     <div class="product-detail-prices">
                         <span class="detail-sale-price">₹<?php echo number_format($product['price'], 2); ?></span>
@@ -146,9 +150,18 @@ include __DIR__ . '/includes/header.php';
 
                 <!-- Order via WhatsApp Action Button -->
                 <div>
-                    <a href="<?php echo htmlspecialchars($waOrderUrl); ?>" target="_blank" rel="noopener" class="btn-whatsapp-order">
-                        Order via WhatsApp 💬
-                    </a>
+                    <?php if ($product['in_stock']): ?>
+                        <a href="<?php echo htmlspecialchars($waOrderUrl); ?>" target="_blank" rel="noopener" class="btn-whatsapp-order">
+                            Order via WhatsApp 💬
+                        </a>
+                    <?php else: ?>
+                        <button type="button" class="btn-whatsapp-order disabled" disabled title="This product is currently out of stock">
+                            Currently Out of Stock ✕
+                        </button>
+                        <p style="font-size: 0.88rem; color: #dc2626; margin-top: 10px; text-align: center; font-weight: 500;">
+                            ⚠️ This item is currently out of stock and cannot be ordered at this time.
+                        </p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -162,7 +175,9 @@ include __DIR__ . '/includes/header.php';
                         <a href="<?php echo BASE_URL; ?>product-detail.php?slug=<?php echo htmlspecialchars($rel['slug']); ?>" class="product-shop-card">
                             <div class="product-img-frame">
                                 <img src="<?php echo htmlspecialchars($rel['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
-                                <?php if ($rel['discount_percent'] > 0): ?>
+                                <?php if (!$rel['in_stock']): ?>
+                                    <span class="badge badge-danger shop-badge-pos">Out of Stock</span>
+                                <?php elseif ($rel['discount_percent'] > 0): ?>
                                     <span class="badge badge-gold shop-badge-pos"><?php echo htmlspecialchars($rel['discount_percent']); ?>% OFF</span>
                                 <?php endif; ?>
                             </div>

@@ -254,6 +254,13 @@ p:last-child {
   border: 1px solid rgba(201, 168, 76, 0.3);
 }
 
+.badge-danger,
+.badge-red {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
 /* Buttons Design System */
 .btn-primary,
 .btn-secondary,

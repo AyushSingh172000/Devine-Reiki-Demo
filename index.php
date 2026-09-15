@@ -543,9 +543,11 @@ include __DIR__ . '/includes/header.php';
                     <a href="<?php echo BASE_URL; ?>product-detail.php?slug=<?php echo htmlspecialchars($prod['slug']); ?>" class="product-card-item animate-on-scroll">
                         <div class="product-img-box">
                             <img src="<?php echo htmlspecialchars($prod['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($prod['title']); ?>" loading="lazy">
-                            <?php if ($prod['discount_percent'] > 0): ?>
+                            <?php if (!$prod['in_stock']): ?>
+                                <span class="badge badge-danger product-badge-tag">Out of Stock</span>
+                            <?php elseif ($prod['discount_percent'] > 0): ?>
                                 <span class="badge badge-gold product-badge-tag"><?php echo htmlspecialchars($prod['discount_percent']); ?>% OFF ✦ <?php echo htmlspecialchars($prod['badge_text']); ?></span>
-                            <?php else: ?>
+                            <?php elseif (!empty($prod['badge_text'])): ?>
                                 <span class="badge product-badge-tag"><?php echo htmlspecialchars($prod['badge_text']); ?></span>
                             <?php endif; ?>
                         </div>
