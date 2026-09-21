@@ -245,24 +245,8 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
                 <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>index.php" class="nav-link <?php echo ($currentPage == 'index.php' || $currentPage == '') ? 'active' : ''; ?>">Home</a>
                 </li>
-                <li class="nav-item has-dropdown">
-                    <a href="<?php echo BASE_URL; ?>products.php" class="nav-link <?php echo ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php') ? 'active' : ''; ?>">
-                        Shop <span class="dropdown-arrow">▾</span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="<?php echo BASE_URL; ?>products.php?category=bracelets">Reiki Charged Bracelets</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo BASE_URL; ?>products.php?category=protection">Protection Bracelets</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo BASE_URL; ?>products.php?category=chakra">7 Chakra Collection</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo BASE_URL; ?>custom-bracelet.php">Custom Crystal Bracelet</a>
-                        </li>
-                    </ul>
+                <li class="nav-item">
+                    <a href="<?php echo BASE_URL; ?>products.php" class="nav-link <?php echo ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php') ? 'active' : ''; ?>">Shop</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>services.php" class="nav-link <?php echo ($currentPage == 'services.php' || $currentPage == 'service-detail.php') ? 'active' : ''; ?>">Services</a>
@@ -297,17 +281,7 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
         <div class="mobile-nav-content">
             <ul class="mobile-nav-menu">
                 <li><a href="<?php echo BASE_URL; ?>index.php" class="mobile-nav-link">Home</a></li>
-                <li class="mobile-has-submenu">
-                    <span class="mobile-nav-link-group">
-                        <a href="<?php echo BASE_URL; ?>products.php" class="mobile-nav-link">Shop</a>
-                    </span>
-                    <ul class="mobile-submenu">
-                        <li><a href="<?php echo BASE_URL; ?>products.php?category=bracelets">Reiki Charged Bracelets</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>products.php?category=protection">Protection Bracelets</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>products.php?category=chakra">7 Chakra Collection</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>custom-bracelet.php">Custom Crystal Bracelet</a></li>
-                    </ul>
-                </li>
+                <li><a href="<?php echo BASE_URL; ?>products.php" class="mobile-nav-link">Shop</a></li>
                 <li><a href="<?php echo BASE_URL; ?>services.php" class="mobile-nav-link">Services</a></li>
                 <li><a href="<?php echo BASE_URL; ?>courses.php" class="mobile-nav-link">Courses</a></li>
                 <li><a href="<?php echo BASE_URL; ?>about.php" class="mobile-nav-link">About Us</a></li>

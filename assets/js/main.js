@@ -393,4 +393,36 @@ document.addEventListener('DOMContentLoaded', () => {
       play528HzChime();
     });
   }
+
+  // 12. Testimonials Slider Navigation (Top Right Next & Prev Buttons)
+  const testSlider = document.getElementById('testimonialsSlider');
+  const testPrevBtn = document.getElementById('testimonialPrevBtn');
+  const testNextBtn = document.getElementById('testimonialNextBtn');
+
+  if (testSlider && testPrevBtn && testNextBtn) {
+    const getScrollStep = () => {
+      const firstCard = testSlider.querySelector('.testimonial-card-box');
+      return firstCard ? (firstCard.offsetWidth + 24) : 340;
+    };
+
+    testNextBtn.addEventListener('click', () => {
+      const step = getScrollStep();
+      const maxScrollLeft = testSlider.scrollWidth - testSlider.clientWidth;
+      if (testSlider.scrollLeft >= maxScrollLeft - 15) {
+        testSlider.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        testSlider.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    });
+
+    testPrevBtn.addEventListener('click', () => {
+      const step = getScrollStep();
+      if (testSlider.scrollLeft <= 15) {
+        testSlider.scrollTo({ left: testSlider.scrollWidth, behavior: 'smooth' });
+      } else {
+        testSlider.scrollBy({ left: -step, behavior: 'smooth' });
+      }
+    });
+  }
 });
+

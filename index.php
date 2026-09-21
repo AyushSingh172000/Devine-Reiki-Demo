@@ -407,20 +407,30 @@ include __DIR__ . '/includes/header.php';
      ========================================================================== -->
 <section class="testimonials-section" id="testimonials">
     <div class="container">
-        <div class="text-center animate-on-scroll" style="margin-bottom: 50px;">
-            <span class="section-label">Stories of Healing</span>
-            <h2 class="section-heading">What Our Students & Clients <em>Say</em></h2>
-            <p>Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.</p>
+        <div class="testimonials-header-wrap animate-on-scroll">
+            <div class="testimonials-header-center">
+                <span class="section-label">• STORIES OF HEALING</span>
+                <h2 class="section-heading">What Our Students & Clients <em>Say</em></h2>
+                <p>Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.</p>
+            </div>
+            <div class="testimonials-nav-btns">
+                <button type="button" class="testimonial-nav-btn prev-btn" id="testimonialPrevBtn" onclick="scrollTestimonials('prev')" aria-label="Previous Testimonials">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button type="button" class="testimonial-nav-btn next-btn" id="testimonialNextBtn" onclick="scrollTestimonials('next')" aria-label="Next Testimonials">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="testimonials-grid">
+        <div class="testimonials-single-row" id="testimonialsSlider">
             <?php if (!empty($testimonials)): ?>
                 <?php foreach ($testimonials as $t): ?>
                     <?php 
                         $ratingNum = max(1, min(5, (int)($t['rating'] ?? 5)));
                         $starsHtml = str_repeat('★', $ratingNum) . str_repeat('☆', 5 - $ratingNum);
                     ?>
-                    <div class="testimonial-card-box animate-on-scroll">
+                    <div class="testimonial-card-box">
                         <div class="quote-mark">“</div>
                         <p class="testimonial-text-body"><?php echo htmlspecialchars($t['content']); ?></p>
                         <div class="testimonial-author-row">
@@ -439,7 +449,7 @@ include __DIR__ . '/includes/header.php';
                                     <?php if (!empty($t['location'])): ?>
                                         <?php echo htmlspecialchars($t['location']); ?> · 
                                     <?php endif; ?>
-                                    <span style="color: #f59e0b; letter-spacing: 1.5px; font-size: 0.95rem;"><?php echo $starsHtml; ?></span>
+                                    <span style="color: #d97706; letter-spacing: 1.5px; font-size: 0.95rem;"><?php echo $starsHtml; ?></span>
                                 </span>
                             </div>
                         </div>
@@ -451,6 +461,30 @@ include __DIR__ . '/includes/header.php';
         </div>
     </div>
 </section>
+
+<script>
+function scrollTestimonials(direction) {
+    var slider = document.getElementById('testimonialsSlider');
+    if (!slider) return;
+    var firstCard = slider.querySelector('.testimonial-card-box');
+    var step = firstCard ? (firstCard.getBoundingClientRect().width + 28) : 360;
+    var maxScroll = slider.scrollWidth - slider.clientWidth;
+
+    if (direction === 'next') {
+        if (slider.scrollLeft >= maxScroll - 20) {
+            slider.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: step, behavior: 'smooth' });
+        }
+    } else {
+        if (slider.scrollLeft <= 20) {
+            slider.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: -step, behavior: 'smooth' });
+        }
+    }
+}
+</script>
 
 <!-- ==========================================================================
      7. COURSES SECTION
