@@ -246,13 +246,13 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
                     <a href="<?php echo BASE_URL; ?>index.php" class="nav-link <?php echo ($currentPage == 'index.php' || $currentPage == '') ? 'active' : ''; ?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo BASE_URL; ?>products.php" class="nav-link <?php echo ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php') ? 'active' : ''; ?>">Shop</a>
-                </li>
-                <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>services.php" class="nav-link <?php echo ($currentPage == 'services.php' || $currentPage == 'service-detail.php') ? 'active' : ''; ?>">Services</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>courses.php" class="nav-link <?php echo ($currentPage == 'courses.php' || $currentPage == 'course-detail.php') ? 'active' : ''; ?>">Courses</a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo BASE_URL; ?>products.php" class="nav-link <?php echo ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php') ? 'active' : ''; ?>">Shop</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>about.php" class="nav-link <?php echo ($currentPage == 'about.php') ? 'active' : ''; ?>">About Us</a>
@@ -281,9 +281,9 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
         <div class="mobile-nav-content">
             <ul class="mobile-nav-menu">
                 <li><a href="<?php echo BASE_URL; ?>index.php" class="mobile-nav-link">Home</a></li>
-                <li><a href="<?php echo BASE_URL; ?>products.php" class="mobile-nav-link">Shop</a></li>
                 <li><a href="<?php echo BASE_URL; ?>services.php" class="mobile-nav-link">Services</a></li>
                 <li><a href="<?php echo BASE_URL; ?>courses.php" class="mobile-nav-link">Courses</a></li>
+                <li><a href="<?php echo BASE_URL; ?>products.php" class="mobile-nav-link">Shop</a></li>
                 <li><a href="<?php echo BASE_URL; ?>about.php" class="mobile-nav-link">About Us</a></li>
                 <li><a href="<?php echo BASE_URL; ?>contact.php" class="mobile-nav-link">Contact Us</a></li>
             </ul>

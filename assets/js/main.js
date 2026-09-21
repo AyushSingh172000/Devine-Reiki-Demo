@@ -98,18 +98,72 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedElements.forEach((el) => el.classList.add('visible'));
   }
 
-  // 5. Active Nav Link Highlighting based on current URL
-  const currentPath = window.location.pathname.split('/').pop() || 'index.php';
+  // 5. Active Nav Link Highlighting with Homepage Scrollspy
   const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
-  navLinks.forEach((link) => {
-    const href = link.getAttribute('href');
-    if (href) {
-      const linkPath = href.split('/').pop().split('?')[0].split('#')[0];
-      if (linkPath === currentPath) {
-        link.classList.add('active');
+  const servicesSection = document.getElementById('services');
+
+  if (servicesSection) {
+    // Homepage Scrollspy: Follows user scroll position smoothly
+    const homeLinks = document.querySelectorAll('.nav-link[href*="index.php"], .mobile-nav-link[href*="index.php"]');
+    const servicesLinks = document.querySelectorAll('.nav-link[href*="services.php"], .mobile-nav-link[href*="services.php"]');
+    const coursesLinks = document.querySelectorAll('.nav-link[href*="courses.php"], .mobile-nav-link[href*="courses.php"]');
+    const shopLinks = document.querySelectorAll('.nav-link[href*="products.php"], .mobile-nav-link[href*="products.php"]');
+
+    const coursesSection = document.getElementById('courses');
+    const productsSection = document.getElementById('products');
+
+    const updateScrollspy = () => {
+      const scrollPos = window.scrollY + 200;
+      let activeSection = 'home';
+
+      if (productsSection && scrollPos >= productsSection.offsetTop) {
+        activeSection = 'shop';
+      } else if (coursesSection && scrollPos >= coursesSection.offsetTop) {
+        activeSection = 'courses';
+      } else if (servicesSection && scrollPos >= servicesSection.offsetTop) {
+        activeSection = 'services';
+      } else {
+        activeSection = 'home';
       }
-    }
-  });
+
+      navLinks.forEach(l => l.classList.remove('active'));
+
+      if (activeSection === 'shop') {
+        shopLinks.forEach(l => l.classList.add('active'));
+      } else if (activeSection === 'courses') {
+        coursesLinks.forEach(l => l.classList.add('active'));
+      } else if (activeSection === 'services') {
+        servicesLinks.forEach(l => l.classList.add('active'));
+      } else {
+        homeLinks.forEach(l => l.classList.add('active'));
+      }
+    };
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateScrollspy();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateScrollspy(); // Run immediately on load
+  } else {
+    // Static link highlighting for other dedicated pages
+    const currentPath = window.location.pathname.split('/').pop() || 'index.php';
+    navLinks.forEach((link) => {
+      const href = link.getAttribute('href');
+      if (href) {
+        const linkPath = href.split('/').pop().split('?')[0].split('#')[0];
+        if (linkPath === currentPath) {
+          link.classList.add('active');
+        }
+      }
+    });
+  }
 
   // 6. Global LocalStorage Cart State Persistence & Badge Manager
   window.getDivineCart = function() {
