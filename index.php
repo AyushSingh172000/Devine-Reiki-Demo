@@ -667,6 +667,92 @@ $instagram_reels = [
     </div>
 </section>
 
+<script>
+(function() {
+    var row = document.querySelector('.reels-cards-grid');
+    var section = document.getElementById('instagram-reels');
+    if (!row) return;
+
+    var isHovered = false;
+    var isVideoPlaying = false;
+    var videoStartTime = 0;
+    var speed = 0.8;
+    var pos = 0;
+
+    // 1. Pause on hover over reels section, resume when mouse leaves
+    if (section) {
+        section.addEventListener('mouseenter', function() { isHovered = true; });
+        section.addEventListener('mouseleave', function() { 
+            isHovered = false; 
+            // If user moves mouse away from the entire section, allow resuming
+            if (isVideoPlaying && (Date.now() - videoStartTime > 5000)) {
+                isVideoPlaying = false;
+            }
+        });
+    }
+
+    // 2. Pause on touch
+    row.addEventListener('touchstart', function() { isHovered = true; }, { passive: true });
+    row.addEventListener('touchend', function() {
+        setTimeout(function() { isHovered = false; }, 2000);
+    }, { passive: true });
+
+    // 3. Immediate window blur listener when clicking into an iframe
+    window.addEventListener('blur', function() {
+        setTimeout(function() {
+            var active = document.activeElement;
+            if (active && (active.tagName === 'IFRAME' || row.contains(active))) {
+                isVideoPlaying = true;
+                videoStartTime = Date.now();
+            }
+        }, 50);
+    });
+
+    // 4. Click outside reels section allows resuming scroll
+    document.addEventListener('click', function(e) {
+        if (!row.contains(e.target)) {
+            isVideoPlaying = false;
+        }
+    });
+
+    // 5. 60fps auto-scroll engine with active frame guard
+    function step() {
+        // Continuous check: if an iframe inside row has user focus, video is playing!
+        var active = document.activeElement;
+        if (active && active.tagName === 'IFRAME' && row.contains(active)) {
+            if (!isVideoPlaying) {
+                isVideoPlaying = true;
+                videoStartTime = Date.now();
+            }
+        }
+
+        // After full reel finishes (25 seconds), allow resuming scroll
+        if (isVideoPlaying && videoStartTime > 0 && (Date.now() - videoStartTime > 25000)) {
+            isVideoPlaying = false;
+            videoStartTime = 0;
+        }
+
+        // Scroll only when NOT playing video and NOT hovered
+        if (!isHovered && !isVideoPlaying) {
+            pos += speed;
+            if (pos >= 1) {
+                var p = Math.floor(pos);
+                row.scrollLeft += p;
+                pos -= p;
+
+                var max = row.scrollWidth - row.clientWidth;
+                if (max > 0 && row.scrollLeft >= max - 2) {
+                    row.scrollLeft = 0;
+                }
+            }
+        }
+
+        requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+})();
+</script>
 
 <!-- Include Footer Component -->
 <?php include __DIR__ . '/includes/footer.php'; ?>

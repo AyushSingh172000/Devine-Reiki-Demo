@@ -1073,18 +1073,32 @@
   box-shadow: 0 8px 22px rgba(225, 48, 108, 0.45);
 }
 
-/* Reels Directly Playable Grid */
+/* Reels Directly Playable Single Row */
 .reels-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   position: relative;
   z-index: 2;
   margin-top: 10px;
+  padding-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.reels-cards-grid::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .reel-embed-card {
   position: relative;
+  flex: 0 0 340px;
+  width: 340px;
+  min-width: 340px;
   display: flex;
   flex-direction: column;
   border-radius: 20px;
@@ -1170,13 +1184,6 @@
   display: block;
 }
 
-@media (max-width: 1100px) {
-  .reels-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-}
-
 @media (max-width: 768px) {
   .reels-section {
     padding: 60px 0 70px;
@@ -1200,26 +1207,17 @@
   }
 
   .reels-cards-grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
     gap: 16px;
     padding-bottom: 16px;
     margin: 0 -16px;
     padding-left: 16px;
     padding-right: 16px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .reels-cards-grid::-webkit-scrollbar {
-    display: none;
   }
 
   .reel-embed-card {
-    flex: 0 0 310px;
-    max-width: 86vw;
-    scroll-snap-align: center;
+    flex: 0 0 300px;
+    width: 300px;
+    min-width: 300px;
   }
 
   .reel-embed-frame {
