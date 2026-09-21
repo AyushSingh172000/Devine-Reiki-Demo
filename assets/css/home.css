@@ -824,13 +824,28 @@
   background-color: #F5F1EA;
 }
 
+.products-scroll-row,
 .products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 28px;
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.products-scroll-row::-webkit-scrollbar,
+.products-grid::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .product-card-item {
+  flex: 0 0 300px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
   background-color: #ffffff;
   border-radius: 18px;
   overflow: hidden;
@@ -954,6 +969,12 @@
   .section-header-flex {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .scroll-card {
+    flex: 0 0 280px;
+  }
+  .product-card-item {
+    flex: 0 0 260px;
   }
 }
 

@@ -540,7 +540,8 @@ function scrollTestimonials(direction) {
             <a href="<?php echo BASE_URL; ?>shop.php" class="view-all-link">View all products →</a>
         </div>
 
-        <div class="products-grid">
+        <!-- Horizontal Scrollable Product Cards -->
+        <div class="scroll-cards-row products-scroll-row">
             <?php if (!empty($products)): ?>
                 <?php foreach ($products as $prod): ?>
                     <a href="<?php echo BASE_URL; ?>product-detail.php?slug=<?php echo htmlspecialchars($prod['slug']); ?>" class="product-card-item animate-on-scroll">
