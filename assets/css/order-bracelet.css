@@ -8,8 +8,9 @@
 .order-hero {
   position: relative;
   padding: 140px 0 75px;
-  background: linear-gradient(135deg, #160a2c 0%, #2D1B69 60%, #120726 100%);
-  color: #ffffff;
+  background: #FAF8F5;
+  background-image: radial-gradient(circle at 50% 30%, rgba(200, 155, 60, 0.08) 0%, transparent 60%);
+  color: #0F1117;
   text-align: center;
   overflow: hidden;
 }
@@ -18,39 +19,42 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent-gold);
-  background: rgba(201, 168, 76, 0.12);
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  padding: 6px 20px;
-  border-radius: 20px;
+  letter-spacing: 0.14em;
+  color: var(--accent-gold-dark);
+  background: rgba(200, 155, 60, 0.10);
+  border: 1px solid rgba(200, 155, 60, 0.28);
+  padding: 7px 20px;
+  border-radius: var(--radius-badge);
   margin-bottom: 24px;
 }
 
 .order-hero-title {
   font-family: var(--font-serif);
-  font-size: 3.6rem;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1.18;
+  font-size: 3.8rem;
+  font-weight: 600;
+  color: #0F1117;
+  line-height: 1.15;
   margin-bottom: 20px;
+  letter-spacing: -0.015em;
 }
 
 .order-hero-title em {
   font-style: italic;
   color: var(--accent-gold);
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .order-hero-subtext {
-  font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-sans);
+  font-size: 1.12rem;
+  color: #555D6E;
   max-width: 760px;
   margin: 0 auto;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .type-toggle-pills {

@@ -181,35 +181,45 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     </script>
     <?php endif; ?>
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/header.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/footer.css">
+    <!-- Google Fonts: Cormorant Garamond (Headings) & Plus Jakarta Sans (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets with Dynamic Cache-Busting -->
+    <?php
+    $cssDir = dirname(__DIR__) . '/assets/css';
+    $styleVer = file_exists($cssDir . '/style.css') ? filemtime($cssDir . '/style.css') : time();
+    $headerVer = file_exists($cssDir . '/header.css') ? filemtime($cssDir . '/header.css') : time();
+    $footerVer = file_exists($cssDir . '/footer.css') ? filemtime($cssDir . '/footer.css') : time();
+    $homeVer = file_exists($cssDir . '/home.css') ? filemtime($cssDir . '/home.css') : time();
+    $respVer = file_exists($cssDir . '/responsive.css') ? filemtime($cssDir . '/responsive.css') : time();
+    ?>
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css?v=<?php echo $styleVer; ?>">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/header.css?v=<?php echo $headerVer; ?>">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/footer.css?v=<?php echo $footerVer; ?>">
     <?php if ($currentPage == 'index.php' || $currentPage == ''): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/home.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/home.css?v=<?php echo $homeVer; ?>">
     <?php endif; ?>
     <?php if ($currentPage == 'about.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/about.css?v=<?php echo file_exists(dirname(__DIR__) . '/assets/css/about.css') ? filemtime(dirname(__DIR__) . '/assets/css/about.css') : '2.0'; ?>">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/about.css?v=<?php echo file_exists($cssDir . '/about.css') ? filemtime($cssDir . '/about.css') : time(); ?>">
     <?php endif; ?>
     <?php if ($currentPage == 'services.php' || $currentPage == 'service-detail.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/services.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/services.css?v=<?php echo file_exists($cssDir . '/services.css') ? filemtime($cssDir . '/services.css') : time(); ?>">
     <?php endif; ?>
     <?php if ($currentPage == 'courses.php' || $currentPage == 'course-detail.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/courses.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/courses.css?v=<?php echo file_exists($cssDir . '/courses.css') ? filemtime($cssDir . '/courses.css') : time(); ?>">
     <?php endif; ?>
     <?php if ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/products.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/products.css?v=<?php echo file_exists($cssDir . '/products.css') ? filemtime($cssDir . '/products.css') : time(); ?>">
     <?php endif; ?>
-    <?php /* if ($currentPage == 'gallery.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/gallery.css">
-    <?php endif; */ ?>
     <?php if ($currentPage == 'contact.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/contact.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/contact.css?v=<?php echo file_exists($cssDir . '/contact.css') ? filemtime($cssDir . '/contact.css') : time(); ?>">
     <?php endif; ?>
     <?php if ($currentPage == 'order-bracelet.php' || $currentPage == 'custom-bracelet.php'): ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/order-bracelet.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/order-bracelet.css?v=<?php echo file_exists($cssDir . '/order-bracelet.css') ? filemtime($cssDir . '/order-bracelet.css') : time(); ?>">
     <?php endif; ?>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/responsive.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/responsive.css?v=<?php echo $respVer; ?>">
     
     <!-- Google Calendar Appointment Scheduling Stylesheet -->
     <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
@@ -230,7 +240,7 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
                 </span>
             </a>
 
-            <!-- Desktop Navigation Links -->
+            <!-- Desktop Navigation Links (Original Structure with Light Theme) -->
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>index.php" class="nav-link <?php echo ($currentPage == 'index.php' || $currentPage == '') ? 'active' : ''; ?>">Home</a>
@@ -255,10 +265,10 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo BASE_URL; ?>services.php" class="nav-link <?php echo ($currentPage == 'services.php') ? 'active' : ''; ?>">Services</a>
+                    <a href="<?php echo BASE_URL; ?>services.php" class="nav-link <?php echo ($currentPage == 'services.php' || $currentPage == 'service-detail.php') ? 'active' : ''; ?>">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo BASE_URL; ?>courses.php" class="nav-link <?php echo ($currentPage == 'courses.php') ? 'active' : ''; ?>">Courses</a>
+                    <a href="<?php echo BASE_URL; ?>courses.php" class="nav-link <?php echo ($currentPage == 'courses.php' || $currentPage == 'course-detail.php') ? 'active' : ''; ?>">Courses</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?php echo BASE_URL; ?>about.php" class="nav-link <?php echo ($currentPage == 'about.php') ? 'active' : ''; ?>">About Us</a>

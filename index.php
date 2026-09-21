@@ -260,73 +260,85 @@ include __DIR__ . '/includes/header.php';
 ?>
 
 <!-- ==========================================================================
-     1. HERO SECTION
+     1. HERO SECTION (Luminous White & Golden Sanctuary Theme)
      ========================================================================== -->
-<section class="hero-section" id="hero">
-    <!-- Absolute Background Animation Canvas (Zero Layout Impact, Positioned Behind All Text) -->
+<!-- ==========================================================================
+     1. HERO SECTION (Centered Luminous Sanctuary Theme with Dimmed Scrolling Images)
+     ========================================================================== -->
+<section class="hero-section hero-section-centered" id="hero">
+    <!-- Scrolling Background Dummy Images (Right to Left in a few seconds) -->
+    <div class="hero-bg-scroller" aria-hidden="true">
+        <div class="hero-bg-track">
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-bg.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/yoga-meditation-hero.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/about-sanctuary.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/sacred-healer-hero.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/custom-bracelet-hero.jpg');"></div>
+            <!-- Seamless loop duplicate -->
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-bg.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/yoga-meditation-hero.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/about-sanctuary.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/sacred-healer-hero.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/custom-bracelet-hero.jpg');"></div>
+        </div>
+    </div>
+
+    <!-- Dimmed Soft Aura Overlay -->
+    <div class="hero-dim-overlay"></div>
+
+    <!-- Ambient Canvas Glow Layer -->
     <canvas id="hero-bg-canvas"></canvas>
 
-    <div class="container hero-content animate-on-scroll">
-
+    <div class="container hero-container-center animate-on-scroll">
         <span class="hero-location-badge">
-            📍 Adajan, Surat · Est. <?php echo htmlspecialchars($foundingYear); ?>
+            ● ADAJAN, SURAT · EST. <?php echo htmlspecialchars($foundingYear); ?>
         </span>
 
         <h1 class="hero-title">
-            <?php echo nl2br(htmlspecialchars($heroHeading)); ?>
+            Awaken Inner Harmony.<br>
+            <span class="hero-gold-text">Heal. Balance. Transform.</span>
         </h1>
 
         <p class="hero-subtext">
-            <?php echo htmlspecialchars($heroSubtext); ?>
+            Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more.
         </p>
 
         <div class="hero-ctas">
             <a href="<?php echo htmlspecialchars($heroBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
                 Book Free Session <span class="btn-arrow">→</span>
             </a>
-            <?php if (!empty($cta1Text)): ?>
-                <a href="<?php echo htmlspecialchars($cta1Url); ?>" class="btn-secondary btn-hero-secondary">
-                    <?php echo htmlspecialchars($cta1Text); ?>
-                </a>
-            <?php endif; ?>
-            <?php if (!empty($cta2Text)): ?>
-                <a href="<?php echo htmlspecialchars($cta2Url); ?>" class="btn-secondary btn-hero-secondary">
-                    <?php echo htmlspecialchars($cta2Text); ?>
-                </a>
-            <?php endif; ?>
+            <a href="<?php echo BASE_URL; ?>courses.php" class="btn-secondary btn-hero-secondary">
+                Explore Courses
+            </a>
         </div>
-    </div>
 
-    <!-- Stats Counter Row -->
-    <div class="hero-stats-wrapper">
-        <div class="container">
-            <div class="hero-stats-grid">
-                <div class="hero-stat-card">
-                    <div class="hero-stat-number stat-number" data-target="<?php echo htmlspecialchars($livesHealed); ?>">30K+</div>
-                    <div class="hero-stat-label">Lives Healed & Transformed</div>
-                </div>
-                <div class="hero-stat-card">
-                    <div class="hero-stat-number stat-number" data-target="<?php echo htmlspecialchars($yearsExp); ?>">25+</div>
-                    <div class="hero-stat-label">Years Experience</div>
-                </div>
-                <div class="hero-stat-card">
-                    <div class="hero-stat-number stat-number" data-target="<?php echo htmlspecialchars($courseLevels); ?>">6</div>
-                    <div class="hero-stat-label">Course Levels Offered</div>
-                </div>
-                <div class="hero-stat-card">
-                    <div class="hero-stat-number stat-number" data-target="<?php echo htmlspecialchars($sessionsDone); ?>">25K+</div>
-                    <div class="hero-stat-label">Sessions Completed</div>
-                </div>
+        <!-- Centered Trust Stats Bar -->
+        <div class="hero-trust-bar">
+            <div class="trust-stat">
+                <div class="trust-stat-number stat-number" data-target="15000">15K+</div>
+                <div class="trust-stat-label">LIVES HEALED</div>
+            </div>
+            <div class="trust-stat">
+                <div class="trust-stat-number stat-number" data-target="12">12+</div>
+                <div class="trust-stat-label">YEARS EXPERIENCE</div>
+            </div>
+            <div class="trust-stat">
+                <div class="trust-stat-number stat-number" data-target="10">10+</div>
+                <div class="trust-stat-label">COURSES OFFERED</div>
+            </div>
+            <div class="trust-stat">
+                <div class="trust-stat-number stat-number" data-target="8000">8K+</div>
+                <div class="trust-stat-label">SESSIONS COMPLETED</div>
             </div>
         </div>
     </div>
 </section>
 
-
 <!-- ==========================================================================
-     4. SERVICES SECTION
+     4. SERVICES & 7 CHAKRAS SECTION
      ========================================================================== -->
 <section class="services-section" id="services">
+    <div id="chakras" style="position: relative; top: -80px; visibility: hidden;"></div>
     <div class="container">
         <div class="section-header-flex animate-on-scroll">
             <div>

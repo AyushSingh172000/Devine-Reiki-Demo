@@ -290,6 +290,107 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // 8. 528 Hz Solfeggio Vibration Sound Generator (Sacred Healing Frequency)
+  let audioCtx = null;
+  let isSoundPlaying = false;
+  let activeOscillators = [];
+
+  function play528HzChime() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      stop528HzSound();
+
+      const now = audioCtx.currentTime;
+      const gainNode = audioCtx.createGain();
+      gainNode.connect(audioCtx.destination);
+
+      // Bell envelope: smooth fade-in, long resonant healing decay
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.18, now + 0.12);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
+
+      // Fundamental Solfeggio 528 Hz
+      const osc1 = audioCtx.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(528, now);
+      osc1.connect(gainNode);
+
+      // Singing bowl overtone 1056 Hz
+      const osc2 = audioCtx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1056, now);
+      const overtoneGain = audioCtx.createGain();
+      overtoneGain.gain.setValueAtTime(0.04, now);
+      osc2.connect(overtoneGain);
+      overtoneGain.connect(gainNode);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 4.5);
+      osc2.stop(now + 4.5);
+
+      activeOscillators = [osc1, osc2];
+      isSoundPlaying = true;
+      updateSoundUI(true);
+
+      setTimeout(() => {
+        isSoundPlaying = false;
+        updateSoundUI(false);
+      }, 4500);
+
+    } catch (err) {
+      console.warn('Audio playback not supported or blocked:', err);
+    }
+  }
+
+  function stop528HzSound() {
+    if (activeOscillators.length > 0) {
+      activeOscillators.forEach(osc => {
+        try { osc.stop(); } catch (e) {}
+      });
+      activeOscillators = [];
+    }
+    isSoundPlaying = false;
+    updateSoundUI(false);
+  }
+
+  function updateSoundUI(playing) {
+    const soundBtn = document.getElementById('solfeggioAudioBtn');
+    const heroCard = document.getElementById('heroSolfeggioCard');
+    if (soundBtn) {
+      soundBtn.classList.toggle('active', playing);
+    }
+    if (heroCard) {
+      heroCard.classList.toggle('playing', playing);
+    }
+  }
+
+  const soundToggleBtn = document.getElementById('solfeggioAudioBtn');
+  if (soundToggleBtn) {
+    soundToggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (isSoundPlaying) {
+        stop528HzSound();
+      } else {
+        play528HzChime();
+      }
+    });
+  }
+
+  const heroSolfeggio = document.getElementById('heroSolfeggioCard');
+  if (heroSolfeggio) {
+    heroSolfeggio.addEventListener('click', (e) => {
+      e.preventDefault();
+      play528HzChime();
+    });
+  }
 });
-
-
