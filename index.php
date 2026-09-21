@@ -266,20 +266,16 @@ include __DIR__ . '/includes/header.php';
      1. HERO SECTION (Centered Luminous Sanctuary Theme with Dimmed Scrolling Images)
      ========================================================================== -->
 <section class="hero-section hero-section-centered" id="hero">
-    <!-- Scrolling Background Dummy Images (Right to Left in a few seconds) -->
+    <!-- Scrolling Background Posters (Full Banner Size Scrolling Right to Left) -->
     <div class="hero-bg-scroller" aria-hidden="true">
         <div class="hero-bg-track">
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-bg.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/yoga-meditation-hero.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/about-sanctuary.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/sacred-healer-hero.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/custom-bracelet-hero.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-1.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-2.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-3.jpg');"></div>
             <!-- Seamless loop duplicate -->
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-bg.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/yoga-meditation-hero.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/about-sanctuary.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/sacred-healer-hero.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/custom-bracelet-hero.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-1.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-2.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-3.jpg');"></div>
         </div>
     </div>
 

@@ -22,7 +22,7 @@
   color: #ffffff;
 }
 
-/* Background Scroller: Dummy Images Scrolling Right to Left in a few seconds */
+/* Background Scroller: Full Banner Posters Scrolling Right to Left */
 .hero-bg-scroller {
   position: absolute;
   top: 0;
@@ -36,27 +36,29 @@
 
 .hero-bg-track {
   display: flex;
-  width: 200%;
+  width: 600%;
   height: 100%;
-  animation: heroScrollRTL 24s linear infinite;
+  animation: heroScrollLTR 36s linear infinite;
   will-change: transform;
 }
 
-@keyframes heroScrollRTL {
+@keyframes heroScrollLTR {
   0% {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
 }
 
 .hero-bg-slide {
-  flex: 0 0 10%;
+  flex: 0 0 calc(100% / 6);
+  width: calc(100% / 6);
   height: 100%;
   background-size: cover;
-  background-position: center;
-  filter: brightness(0.85) contrast(1.12) saturate(1.1);
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: brightness(0.92) contrast(1.08) saturate(1.05);
 }
 
 /* Dimmed Scrim Overlay: Allows Background Imagery to be Clearly Visible while Providing Premium Depth */
