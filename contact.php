@@ -63,9 +63,9 @@ $contactMapsEmbed = !empty($siteSettings['maps_embed_url']) ? $siteSettings['map
         </p>
 
         <ul class="contact-hero-bullets">
-            <li>🌐 100% Online &amp; Confidential Call</li>
-            <li>🧘 Understand root cause of energy blockages</li>
-            <li>🎁 Completely Free — No Obligations</li>
+            <li>100% Online &amp; Confidential Call</li>
+            <li>Understand root cause of energy blockages</li>
+            <li>Completely Free — No Obligations</li>
         </ul>
 
         <div class="contact-hero-btns">
@@ -84,13 +84,12 @@ $contactMapsEmbed = !empty($siteSettings['maps_embed_url']) ? $siteSettings['map
      2. CENTER INFO SECTION (REIKI BLISS)
      ========================================================================== -->
 <section class="center-info-section" id="center-info">
-    <canvas class="hero-bg-canvas"></canvas>
     <div class="container">
         
         <div style="text-align: center; margin-bottom: 50px; position: relative; z-index: 2;" class="animate-on-scroll">
-            <span class="badge badge-gold" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Our Sanctuary Location</span>
-            <h2 class="section-heading" style="font-size: 2.8rem; color: #ffffff;"><?php echo htmlspecialchars(SITE_NAME); ?></h2>
-            <p style="color: rgba(255, 255, 255, 0.82); max-width: 600px; margin: 0 auto; font-size: 1.05rem;">
+            <span class="badge badge-gold" style="margin-bottom: 12px;">Our Sanctuary Location</span>
+            <h2 class="section-heading" style="font-size: 2.8rem; color: #0F1117;"><?php echo htmlspecialchars(SITE_NAME); ?></h2>
+            <p style="color: #555D6E; max-width: 600px; margin: 0 auto; font-size: 1.05rem;">
                 Located in the heart of Adajan, Surat. Visit our peaceful center or connect with our healing practitioners virtually.
             </p>
         </div>
@@ -153,14 +152,13 @@ $contactMapsEmbed = !empty($siteSettings['maps_embed_url']) ? $siteSettings['map
      ========================================================================== -->
 <div id="enquire" style="scroll-margin-top: 100px;"></div>
 <section class="contact-form-section" id="contact-form-section" style="scroll-margin-top: 100px;">
-    <canvas class="hero-bg-canvas"></canvas>
     <div class="container">
         
         <div class="contact-form-card animate-on-scroll" id="book-form" style="scroll-margin-top: 100px;">
             <div class="form-title-box">
-                <span class="badge" style="margin-bottom: 12px; background: rgba(201, 168, 76, 0.18); color: #C9A84C; border: 1px solid rgba(201, 168, 76, 0.4);">Direct Message</span>
-                <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #ffffff;">Send Us a <em>Message</em></h2>
-                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Fill out the form below and our healing masters will reach out to you promptly within 24 hours.</p>
+                <span class="badge badge-gold" style="margin-bottom: 12px;">Direct Message</span>
+                <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #0F1117;">Send Us a <em>Message</em></h2>
+                <p style="color: #555D6E; font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Fill out the form below and our healing masters will reach out to you promptly within 24 hours.</p>
             </div>
 
             <!-- AJAX Response Alert Box -->

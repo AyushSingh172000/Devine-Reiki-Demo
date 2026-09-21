@@ -20,11 +20,12 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
         <!-- CTA Banner -->
         <div class="footer-cta-banner">
             <div class="footer-cta-text">
-                <h3>Begin Your Energy Healing Journey Today</h3>
-                <p>Your first 20-minute spiritual consultation with our Reiki Masters is completely free.</p>
+                <span class="footer-cta-tag">FIRST SESSION IS FREE</span>
+                <h3>Begin Your <em>Healing Journey</em> Today</h3>
+                <p>Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.</p>
             </div>
             <div class="footer-cta-action">
-                <a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold">Book Free Session ✨</a>
+                <a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold">Book Free Session →</a>
             </div>
         </div>
 

@@ -10,14 +10,11 @@ require_once __DIR__ . '/../config/constants.php';
         <span class="section-label cta-label">First Session is Free</span>
         <h2 class="cta-heading">Begin Your <em>Healing Journey</em> Today</h2>
         <p class="cta-subtext">
-            Take the first step. Connect with <strong>Reiki Grandmaster Anupama Agrawal</strong> and discover which modality resonates with your soul.
+            Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.
         </p>
         <div class="cta-buttons">
             <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold btn-cta-primary">
                 Book Free Session <span class="btn-arrow">→</span>
-            </a>
-            <a href="<?php echo BASE_URL; ?>about.php" class="btn-secondary btn-cta-secondary">
-                About the Center
             </a>
         </div>
     </div>

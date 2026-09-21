@@ -43,6 +43,16 @@
   box-shadow: 0 10px 30px rgba(15, 17, 23, 0.04);
 }
 
+.footer-cta-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C89B3C;
+  margin-bottom: 6px;
+}
+
 .footer-cta-text h3 {
   font-family: var(--font-serif);
   font-size: 1.8rem;
@@ -50,11 +60,17 @@
   margin-bottom: 6px;
 }
 
+.footer-cta-text h3 em {
+  font-style: italic;
+  color: #C89B3C;
+}
+
 .footer-cta-text p {
   color: #555D6E;
   font-size: 0.95rem;
-  max-width: 600px;
+  max-width: 620px;
   margin-bottom: 0;
+  line-height: 1.6;
 }
 
 .footer-cta-action {
