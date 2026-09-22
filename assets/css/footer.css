@@ -607,8 +607,19 @@
 /* ==========================================================================
    Google Calendar Appointment Scheduling - Mobile & Responsive Styling
    ========================================================================== */
+:root {
+  --gm3-sys-color-surface: #ffffff;
+}
+
 .qxCTlb {
   display: none !important;
+}
+
+/* Ensure Google Calendar Modal Iframe always has a solid white background */
+.mmGMM,
+iframe.mmGMM {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 /* Tablet Styling (769px - 1024px) */

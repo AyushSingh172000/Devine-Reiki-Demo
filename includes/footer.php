@@ -243,10 +243,17 @@ $footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
 <script src="<?php echo BASE_URL; ?>assets/js/order-bracelet.js"></script>
 <?php endif; ?>
 
-<!-- Google Calendar Appointment Scheduling Popup Integration -->
 <style>
+:root {
+  --gm3-sys-color-surface: #ffffff;
+}
 .qxCTlb {
   display: none !important;
+}
+.mmGMM,
+iframe.mmGMM {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 </style>
 <div id="gcal-scheduling-target-wrapper" style="display: none !important;" aria-hidden="true">

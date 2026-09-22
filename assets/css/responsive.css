@@ -193,8 +193,18 @@
 /* --------------------------------------------------------------------------
    4. GOOGLE CALENDAR APPOINTMENT SCHEDULING (MOBILE & TABLET OVERRIDES)
    -------------------------------------------------------------------------- */
+:root {
+  --gm3-sys-color-surface: #ffffff;
+}
+
 .qxCTlb {
   display: none !important;
+}
+
+.mmGMM,
+iframe.mmGMM {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 @media (max-width: 1024px) and (min-width: 769px) {
