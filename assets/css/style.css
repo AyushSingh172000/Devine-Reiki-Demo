@@ -420,10 +420,10 @@ p:last-child {
   position: relative;
   padding: 110px 0;
   background: url('../images/journey.jpg') center/cover no-repeat;
-  background-color: var(--primary-purple);
+  background-color: #380556;
   color: #ffffff;
   overflow: hidden;
-  border-top: 1fr solid rgba(201, 168, 76, 0.2);
+  border-top: 1px solid rgba(201, 168, 76, 0.2);
   border-bottom: 1px solid rgba(201, 168, 76, 0.2);
 }
 
@@ -433,10 +433,11 @@ p:last-child {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(45, 27, 105, 0.92) 0%,
-    rgba(19, 12, 44, 0.96) 100%
+  background: radial-gradient(
+    circle at 50% 35%,
+    rgba(157, 20, 227, 0.88) 0%,
+    rgba(95, 12, 142, 0.94) 50%,
+    rgba(46, 5, 71, 0.98) 100%
   );
   z-index: 1;
 }

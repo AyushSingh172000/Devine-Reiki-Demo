@@ -7,11 +7,11 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 
 // Page Metadata
 $pageTitle = "About Us | Reiki Bliss";
-$pageDescription = "Learn about the founding story of Reiki Bliss in Adajan, Surat, guided by Dr. Chirag Gajjar & Binal Gajjar, and meet our team of dedicated energy practitioners.";
+$pageDescription = "A journey inward. A purpose to help others heal. Learn about the founding story and philosophy of Reiki Bliss, founded by Reiki Grand Master & Spiritual Wellness Coach Anupama Agrawal in Adajan, Surat.";
 
 // Helper function to resolve team image URL properly
 if (!function_exists('getTeamImgUrl')) {
-    function getTeamImgUrl($imgPath, $fallback = 'assets/images/team/ananya-sharma.jpg') {
+    function getTeamImgUrl($imgPath, $fallback = 'assets/images/team/anupama_mam.jpeg') {
         if (empty($imgPath)) {
             return BASE_URL . ltrim($fallback, '/');
         }
@@ -22,93 +22,33 @@ if (!function_exists('getTeamImgUrl')) {
     }
 }
 
-// Fetch Team Members from MySQL
-try {
-    $teamStmt = $pdo->query("SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order ASC, id DESC");
-    $teamMembers = $teamStmt ? $teamStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-} catch (PDOException $e) {
-    error_log("Database error in about.php: " . $e->getMessage());
-    $teamMembers = [];
-}
-
-// Keep a master copy for the full carousel
-$allTeamOriginal = $teamMembers;
-
-// Filter main founders dynamically from database
-$founder1 = null;
-$founder2 = null;
-
-// 1. Identify Founder 1 (Match specifically for Anupama / Chirag, or lead Grandmaster / Founder)
-foreach ($teamMembers as $idx => $member) {
-    $nameLower = strtolower($member['name']);
-    if (strpos($nameLower, 'anupama') !== false || strpos($nameLower, 'chirag') !== false) {
-        $founder1 = $member;
-        unset($teamMembers[$idx]);
-        break;
-    }
-}
-if (!$founder1) {
-    foreach ($teamMembers as $idx => $member) {
-        $roleLower = strtolower($member['role'] . ' ' . ($member['title'] ?? ''));
-        if (strpos($roleLower, 'grandmaster') !== false || strpos($roleLower, 'grand master') !== false || strpos($roleLower, 'founder') !== false) {
-            $founder1 = $member;
-            unset($teamMembers[$idx]);
-            break;
-        }
-    }
-}
-
-// 2. Identify Founder 2 (Match for Binal or Crystal Master / Co-Founder)
-foreach ($teamMembers as $idx => $member) {
-    $nameLower = strtolower($member['name']);
-    $roleLower = strtolower($member['role'] . ' ' . ($member['title'] ?? ''));
-    if (strpos($nameLower, 'binal') !== false || strpos($roleLower, 'crystal') !== false || strpos($roleLower, 'co-founder') !== false) {
-        $founder2 = $member;
-        unset($teamMembers[$idx]);
-        break;
-    }
-}
-
-// Fallbacks from remaining active members if needed
-if (!$founder1 && !empty($teamMembers)) {
-    $founder1 = array_shift($teamMembers);
-}
-if (!$founder2 && !empty($teamMembers)) {
-    $founder2 = array_shift($teamMembers);
-}
-
-// Static fallback data ONLY if database is completely empty
-if (!$founder1) {
-    $founder1 = [
-        'name' => 'Anupama Agrawal',
-        'role' => 'Founder & Reiki Grandmaster',
-        'title' => 'Reiki Grandmaster & Spiritual Healer',
-        'bio' => 'Anupama Agrawal is a renowned Reiki Grandmaster with extensive experience in energy medicine, aura transformation, chakra alignment, and holistic spiritual wellness. She has guided thousands of individuals worldwide to unlock their natural healing capacity.',
-        'specialties' => json_encode(["Usui Reiki Grandmaster", "Aura Transformation", "Energy Medicine", "Spiritual Counseling"]),
-        'image' => 'assets/images/team/ananya-sharma.jpg'
-    ];
-}
-if (!$founder2) {
-    $founder2 = [
-        'name' => 'Binal Gajjar',
-        'role' => 'Co-Founder & Crystal Healing Master',
-        'title' => 'Crystal Healing & Numerology Expert',
-        'bio' => 'Binal Gajjar is a master crystal energy therapist and numerology consultant. Her intuitive gemstone attunements and personalized energy grids help clients manifest harmony, health, and prosperity.',
-        'specialties' => json_encode(["Crystal Healing Expert", "Numerology Consultant", "Chakra Alignment", "Gemstone Attunement"]),
-        'image' => 'assets/images/team/binal-gajjar.jpg'
-    ];
-}
-
-// All team members for full carousel
-$allTeam = !empty($allTeamOriginal) ? $allTeamOriginal : [$founder1, $founder2];
+// Single Founder Data (Anupama Agrawal)
+$founder = [
+    'name' => 'Anupama Agrawal',
+    'role' => 'Founder, Reiki Grand Master & Spiritual Wellness Coach',
+    'image' => 'assets/images/team/anupama_mam.jpeg',
+    'quote' => 'Think Positive, Be Positive.',
+    'specialties' => [
+        'Reiki Healing',
+        'Chakra Balancing',
+        'Guided Meditation',
+        'Lama Fera',
+        'Access Bars',
+        'Angel Healing',
+        'Victory Reiki',
+        'Money Reiki',
+        'Switch Words',
+        'Tarot Card Reading'
+    ]
+];
 
 // Dynamic About Page Content from $siteSettings & $siteStats
-$aboutHeading = $siteSettings['about_heading'] ?? 'Healing with Heart & Purpose';
-$aboutDescription = $siteSettings['about_description'] ?? 'Reiki Bliss was born from a single conviction — that every person deserves access to authentic energy healing. We have been guiding seekers on their healing journey since 2014.';
+$aboutHeading = 'A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>';
+$aboutDescription = 'Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach dedicated to authentic energy healing, self-awareness, and holistic inner transformation.';
 $foundingYear = $siteSettings['founding_year'] ?? '2014';
 
 $healedCount = !empty($siteStats['lives_healed']['stat_value']) ? $siteStats['lives_healed']['stat_value'] . '+' : '30K+';
-$expYears = !empty($siteStats['years_experience']['stat_value']) ? $siteStats['years_experience']['stat_value'] . '+ Years Experience' : '25+ Years Experience';
+$expYears = !empty($siteStats['years_experience']['stat_value']) ? $siteStats['years_experience']['stat_value'] . '+ Years Experience' : '10+ Years Experience';
 $sessionsCount = !empty($siteStats['sessions_completed']['stat_value']) ? $siteStats['sessions_completed']['stat_value'] . '+ Sessions' : '25K+ Sessions Completed';
 $coursesCount = !empty($siteStats['course_levels']['stat_value']) ? $siteStats['course_levels']['stat_value'] . ' Course Levels' : '6 Course Levels Offered';
 
@@ -124,7 +64,8 @@ include __DIR__ . '/includes/header.php';
     <div class="container animate-on-scroll">
         <span class="about-hero-badge">Est. <?php echo htmlspecialchars($foundingYear); ?> · Adajan, Surat</span>
         <h1 class="about-hero-title">
-            <?php echo nl2br(htmlspecialchars($aboutHeading)); ?>
+            A Journey Inward.<br>
+            A Purpose to <em>Help Others Heal.</em>
         </h1>
         <p class="about-hero-text">
             <?php echo htmlspecialchars($aboutDescription); ?>
@@ -142,82 +83,129 @@ include __DIR__ . '/includes/header.php';
             <div class="marquee-item"><span><?php echo htmlspecialchars($healedCount); ?> Healed Clients</span> <span class="marquee-dot">✦</span></div>
             <div class="marquee-item"><span><?php echo htmlspecialchars($expYears); ?></span> <span class="marquee-dot">✦</span></div>
             <div class="marquee-item"><span><?php echo htmlspecialchars($sessionsCount); ?></span> <span class="marquee-dot">✦</span></div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     2. FOUNDER SECTION (ANUPAMA AGRAWAL)
+     ========================================================================== -->
+<section class="founders-section" id="founder">
+    <div class="container">
+        <div class="text-center animate-on-scroll" style="margin-bottom: 48px;">
+            <span class="section-label">Our Founder</span>
+            <h2 class="section-heading">Meet The Soul Behind <em>Reiki Bliss</em></h2>
+            <p style="max-width: 680px; margin: 0 auto; color: #555D6E; font-size: 1.05rem;">
+                Dedicated to authentic healing, energy alignment, and empowering individuals to discover their inner harmony.
+            </p>
+        </div>
+
+        <div class="founder-single-container animate-on-scroll">
+            <div class="founder-card single-founder">
+                <div class="founder-img-box">
+                    <img src="<?php echo BASE_URL; ?>assets/images/team/anupama_mam.jpeg" alt="Anupama Agrawal - Founder &amp; Reiki Grand Master" loading="lazy">
+                    <div class="founder-photo-badge">
+                        <span class="badge-icon">✦</span>
+                        <span class="badge-text">Reiki Grand Master</span>
+                    </div>
+                </div>
+                <div class="founder-content-box">
+                    <span class="founder-role-title"><?php echo htmlspecialchars($founder['role']); ?></span>
+                    <h3 class="founder-name"><?php echo htmlspecialchars($founder['name']); ?></h3>
+                    
+                    <div class="founder-quote-banner">
+                        <div class="quote-mark">“</div>
+                        <div class="quote-content">
+                            <p class="quote-text"><?php echo htmlspecialchars($founder['quote']); ?></p>
+                            <span class="quote-caption">The guiding belief at the heart of her life and healing practice</span>
+                        </div>
+                    </div>
+
+                    <div class="founder-story-paragraphs">
+                        <p>
+                            <strong>Reiki Bliss</strong> was founded by <strong>Anupama Agrawal</strong>, a Reiki Grand Master and Spiritual Wellness Coach whose journey into holistic wellness began with a simple but powerful interest in meditation and self-healing.
+                        </p>
+                        <p>
+                            What started as a personal practice gradually became a deeper calling. For more than a decade, Anupama has studied and practiced Reiki with dedication, progressing to the level of Reiki Grand Master while continuing to explore complementary spiritual and energy practices.
+                        </p>
+                        <p>
+                            Through Reiki Bliss, Anupama creates a warm, supportive space for people to slow down, reconnect with themselves and explore practices that can support greater balance, clarity and inner well-being. Her approach is personal and grounded—meeting each individual where they are rather than treating wellness as one-size-fits-all.
+                        </p>
+                        <p>
+                            Her work today includes individual consultations as well as classes for those who wish to learn and deepen their own practice across a comprehensive range of sacred energy disciplines.
+                        </p>
+                    </div>
+
+                    <div class="founder-specialties-box">
+                        <div class="specialties-title">Core Healing Modalities &amp; Offerings</div>
+                        <div class="specialty-tags-list">
+                            <?php foreach ($founder['specialties'] as $modality): ?>
+                                <span class="specialty-tag-badge"><?php echo htmlspecialchars($modality); ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
 <!-- ==========================================================================
-     2. FOUNDERS SECTION
+     3. THE PHILOSOPHY BEHIND REIKI BLISS
      ========================================================================== -->
-<section class="founders-section" id="founders">
+<section class="philosophy-section" id="philosophy">
     <div class="container">
         <div class="text-center animate-on-scroll">
-            <span class="section-label">The Founders</span>
-            <h2 class="section-heading">The People Behind Every <em>Healing</em></h2>
-            <p>Meet our visionary founders who have dedicated their lives to raising spiritual consciousness and healing hearts.</p>
+            <span class="section-label">Our Philosophy</span>
+            <h2 class="section-heading">The Philosophy Behind <em>Reiki Bliss</em></h2>
+            <p style="max-width: 720px; margin: 0 auto; color: #555D6E; font-size: 1.05rem;">
+                Anupama believes that meaningful change often begins by turning inward—creating space to understand ourselves, release what no longer serves us and become more intentional about the energy we bring into our lives.
+            </p>
         </div>
 
-        <div class="founders-grid">
-            <!-- Founder Card 1: Lead Grandmaster / Founder -->
-            <div class="founder-card animate-on-scroll">
-                <div class="founder-img-box">
-                    <img src="<?php echo htmlspecialchars(getTeamImgUrl($founder1['image'], 'assets/images/team/ananya-sharma.jpg')); ?>" alt="<?php echo htmlspecialchars($founder1['name']); ?>" loading="lazy">
-                </div>
-                <div class="founder-content-box">
-                    <span class="founder-role-title"><?php echo htmlspecialchars($founder1['role']); ?></span>
-                    <h3 class="founder-name"><?php echo htmlspecialchars($founder1['name']); ?></h3>
-                    <p class="founder-bio-text"><?php echo htmlspecialchars($founder1['bio']); ?></p>
-                    <div>
-                        <div class="specialties-title">Core Specialties</div>
-                        <div class="specialty-tags-list">
-                            <?php 
-                            $specs = is_string($founder1['specialties']) ? json_decode($founder1['specialties'], true) : $founder1['specialties'];
-                            if (is_array($specs)):
-                                foreach ($specs as $tag):
-                            ?>
-                                <span class="specialty-tag-badge"><?php echo htmlspecialchars($tag); ?></span>
-                            <?php 
-                                endforeach;
-                            endif;
-                            ?>
-                        </div>
-                    </div>
-                </div>
+        <div class="philosophy-grid">
+            <!-- Pillar 1: Turning Inward -->
+            <div class="philosophy-card animate-on-scroll">
+                <div class="philosophy-icon">🧘‍♀️</div>
+                <h3 class="philosophy-card-title">Turning Inward</h3>
+                <p class="philosophy-card-text">
+                    Meaningful change begins by creating space to understand ourselves, gently releasing emotional and energetic blocks that no longer serve us, and cultivating intentional positive energy.
+                </p>
             </div>
 
-            <!-- Founder Card 2: Co-Founder / Crystal Master (Reverse Layout) -->
-            <div class="founder-card reverse animate-on-scroll">
-                <div class="founder-img-box">
-                    <img src="<?php echo htmlspecialchars(getTeamImgUrl($founder2['image'], 'assets/images/team/binal-gajjar.jpg')); ?>" alt="<?php echo htmlspecialchars($founder2['name']); ?>" loading="lazy">
-                </div>
-                <div class="founder-content-box">
-                    <span class="founder-role-title"><?php echo htmlspecialchars($founder2['role']); ?></span>
-                    <h3 class="founder-name"><?php echo htmlspecialchars($founder2['name']); ?></h3>
-                    <p class="founder-bio-text"><?php echo htmlspecialchars($founder2['bio']); ?></p>
-                    <div>
-                        <div class="specialties-title">Core Specialties</div>
-                        <div class="specialty-tags-list">
-                            <?php 
-                            $specs2 = is_string($founder2['specialties']) ? json_decode($founder2['specialties'], true) : $founder2['specialties'];
-                            if (is_array($specs2)):
-                                foreach ($specs2 as $tag):
-                            ?>
-                                <span class="specialty-tag-badge"><?php echo htmlspecialchars($tag); ?></span>
-                            <?php 
-                                endforeach;
-                            endif;
-                            ?>
-                        </div>
-                    </div>
-                </div>
+            <!-- Pillar 2: Approachable Spiritual Wellness -->
+            <div class="philosophy-card animate-on-scroll">
+                <div class="philosophy-icon">✨</div>
+                <h3 class="philosophy-card-title">Our Mission</h3>
+                <p class="philosophy-card-text">
+                    To make spiritual wellness approachable and to help more people discover the transformative power of self-awareness, self-healing, and conscious positive living.
+                </p>
+            </div>
+
+            <!-- Pillar 3: Begin Where You Are -->
+            <div class="philosophy-card animate-on-scroll">
+                <div class="philosophy-icon">🌱</div>
+                <h3 class="philosophy-card-title">Begin Where You Are</h3>
+                <p class="philosophy-card-text">
+                    Whether you are completely new to spiritual wellness, looking for greater balance in your everyday life, or hoping to deepen an existing practice, you are welcome to begin exactly where you are.
+                </p>
+            </div>
+
+            <!-- Pillar 4: Your Journey is Your Own -->
+            <div class="philosophy-card animate-on-scroll">
+                <div class="philosophy-icon">🌟</div>
+                <h3 class="philosophy-card-title">Your Journey is Your Own</h3>
+                <p class="philosophy-card-text">
+                    Your journey is your own. Reiki Bliss is here to provide grounded, compassionate guidance and create a safe sanctuary to help you explore it at your own rhythm.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- ==========================================================================
-     3. TEAM SECTION
+     4. MEET OUR HEALING TEAM (HIDDEN AS REQUESTED)
      ========================================================================== -->
+<!--
 <section class="team-section" id="team">
     <div class="container">
         <div class="text-center animate-on-scroll">
@@ -225,43 +213,9 @@ include __DIR__ . '/includes/header.php';
             <h2 class="section-heading">Meet Our <em>Healing</em> Team</h2>
             <p>Our certified masters and energy therapists bring deep wisdom, compassion, and specialized healing techniques to every session.</p>
         </div>
-
-        <!-- Dynamic Team Carousel with Manual Drag and Nav Controls (Exact Database Members Only) -->
-        <div class="team-carousel-outer">
-            <button type="button" class="team-carousel-nav-btn prev-btn" id="teamCarouselPrev" aria-label="Scroll Team Cards Left">‹</button>
-            <div class="team-carousel-wrapper" id="teamCarouselWrapper">
-                <div class="team-carousel-track" id="teamCarouselTrack">
-                    <?php foreach ($allTeam as $member): ?>
-                        <div class="team-member-card">
-                            <div class="team-img-box">
-                                <img src="<?php echo htmlspecialchars(getTeamImgUrl($member['image'], 'assets/images/team/ananya-sharma.jpg')); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" loading="lazy">
-                                <span class="badge badge-gold team-badge-tag">Reiki Master</span>
-                            </div>
-                            <div class="team-info-body">
-                                <h3 class="team-name-title"><?php echo htmlspecialchars($member['name']); ?></h3>
-                                <span class="team-role-subtitle"><?php echo htmlspecialchars($member['role']); ?></span>
-                                <p class="team-bio-short"><?php echo htmlspecialchars(substr($member['bio'], 0, 110)) . '...'; ?></p>
-                                <div class="specialty-tags-list">
-                                    <?php 
-                                    $mSpecs = is_string($member['specialties']) ? json_decode($member['specialties'], true) : $member['specialties'];
-                                    if (is_array($mSpecs)):
-                                        foreach (array_slice($mSpecs, 0, 2) as $t):
-                                    ?>
-                                        <span class="specialty-tag-badge" style="font-size: 0.75rem; padding: 4px 10px;"><?php echo htmlspecialchars($t); ?></span>
-                                    <?php 
-                                        endforeach;
-                                    endif;
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <button type="button" class="team-carousel-nav-btn next-btn" id="teamCarouselNext" aria-label="Scroll Team Cards Right">›</button>
-        </div>
     </div>
 </section>
+-->
 
 <!-- ==========================================================================
      4. VALUES SECTION
