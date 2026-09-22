@@ -93,9 +93,16 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
         </a>
       </li>
       */ ?>
+      <?php /*
       <li>
         <a href="team.php" class="<?= $currentPage === 'team.php' ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="users"></i></span> Team Members
+        </a>
+      </li>
+      */ ?>
+      <li>
+        <a href="settings.php?tab=about" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'about') ? 'active' : '' ?>">
+          <span class="nav-icon"><i data-lucide="book-open"></i></span> About Us Page
         </a>
       </li>
       <li>

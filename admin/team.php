@@ -517,6 +517,19 @@ try {
 }
 ?>
 
+<!-- Deactivation Notice Banner -->
+<div class="alert flex-between gap-3 mb-4" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 14px 18px; color: #b45309; flex-wrap: wrap;">
+    <div class="flex items-center gap-2">
+        <i data-lucide="info" style="width: 20px; height: 20px; flex-shrink: 0; color: #f59e0b;"></i>
+        <div style="font-size: 0.9rem;">
+            <strong>Notice:</strong> Multi-practitioner team cards are currently deactivated on the public website. The About Us page is dedicated to Founder <strong>Anupama Agrawal</strong> and can be fully customized from the <strong>About Us Page</strong> settings.
+        </div>
+    </div>
+    <a href="settings.php?tab=about" class="btn btn-sm btn-gold flex items-center gap-1" style="white-space: nowrap;">
+        <i data-lucide="settings-2" style="width: 14px; height: 14px;"></i> Open About Us Customizer
+    </a>
+</div>
+
 <!-- Search & Action Bar -->
 <div class="search-bar flex-between mb-4">
     <form action="team.php" method="GET" class="search-input-wrapper" style="max-width: 380px;">

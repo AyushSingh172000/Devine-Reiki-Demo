@@ -27,13 +27,18 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <?php
     $faviconUrl = !empty($siteSettings['favicon_path']) ? BASE_URL . ltrim($siteSettings['favicon_path'], '/') : BASE_URL . 'assets/images/favicon-circle.png';
     $logoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSettings['logo_path'], '/') : BASE_URL . 'assets/images/reikilogo1.png';
-    
-    // Resolve Open Graph Social Image (Priority: Page Override -> Settings OG Image -> og-image.jpg -> Logo)
     $docRoot = dirname(__DIR__);
+    $appleTouchUrl = !empty($siteSettings['apple_touch_icon_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['apple_touch_icon_path'], '/'))
+        ? BASE_URL . ltrim($siteSettings['apple_touch_icon_path'], '/')
+        : $faviconUrl;
+    
+    // Resolve Open Graph Social Image (Priority: Page Override -> Settings OG Image -> Apple Touch Icon -> og-image.jpg -> og-image.png -> Logo)
     if (!empty($pageOgImage)) {
         $rawOgImage = $pageOgImage;
     } elseif (!empty($siteSettings['og_image_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['og_image_path'], '/'))) {
         $rawOgImage = $siteSettings['og_image_path'];
+    } elseif (!empty($siteSettings['apple_touch_icon_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['apple_touch_icon_path'], '/'))) {
+        $rawOgImage = $siteSettings['apple_touch_icon_path'];
     } elseif (file_exists($docRoot . '/assets/images/og-image.jpg')) {
         $rawOgImage = 'assets/images/og-image.jpg';
     } elseif (file_exists($docRoot . '/assets/images/og-image.png')) {
@@ -87,7 +92,7 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
     <link rel="shortcut icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
-    <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($faviconUrl); ?>">
+    <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($appleTouchUrl); ?>">
 
     <!-- Open Graph / WhatsApp / Facebook Meta Tags -->
     <meta property="og:type" content="website">

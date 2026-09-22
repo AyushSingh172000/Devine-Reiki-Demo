@@ -141,18 +141,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // TAB 3: ABOUT PAGE CONTENT & SITE STATS
     if ($tab === 'about') {
         try {
-            // Text Settings
+            // 1. Hero & Introduction
+            setSetting($pdo, 'about_hero_badge', trim($_POST['about_hero_badge'] ?? ''));
             setSetting($pdo, 'about_hero_heading', trim($_POST['about_hero_heading'] ?? ''));
             setSetting($pdo, 'about_hero_description', trim($_POST['about_hero_description'] ?? ''));
             setSetting($pdo, 'founding_year', trim($_POST['founding_year'] ?? '2014'));
 
-            // Site Stats
+            // 2. Site Stats & Marquee
             setStat($pdo, 'lives_healed', (string)(int)($_POST['stat_lives_healed'] ?? 30000));
             setStat($pdo, 'years_experience', (string)(int)($_POST['stat_years_experience'] ?? 25));
             setStat($pdo, 'course_levels', (string)(int)($_POST['stat_course_levels'] ?? 6));
             setStat($pdo, 'sessions_completed', (string)(int)($_POST['stat_sessions_completed'] ?? 25000));
+            setSetting($pdo, 'about_marquee_extra', trim($_POST['about_marquee_extra'] ?? '100% Authentic Lineage'));
 
-            // 4 Core Values
+            // 3. Founder Profile (Anupama Agrawal)
+            setSetting($pdo, 'about_founder_label', trim($_POST['about_founder_label'] ?? 'Our Founder'));
+            setSetting($pdo, 'about_founder_heading', trim($_POST['about_founder_heading'] ?? ''));
+            setSetting($pdo, 'about_founder_subheading', trim($_POST['about_founder_subheading'] ?? ''));
+            setSetting($pdo, 'about_founder_name', trim($_POST['about_founder_name'] ?? 'Anupama Agrawal'));
+            setSetting($pdo, 'about_founder_role', trim($_POST['about_founder_role'] ?? ''));
+            setSetting($pdo, 'about_founder_badge', trim($_POST['about_founder_badge'] ?? ''));
+            setSetting($pdo, 'about_founder_quote', trim($_POST['about_founder_quote'] ?? ''));
+            setSetting($pdo, 'about_founder_quote_caption', trim($_POST['about_founder_quote_caption'] ?? ''));
+            setSetting($pdo, 'about_founder_story', trim($_POST['about_founder_story'] ?? ''));
+            setSetting($pdo, 'about_founder_specialties', trim($_POST['about_founder_specialties'] ?? ''));
+
+            // Founder Photo Upload
+            if (isset($_FILES['founder_photo']) && $_FILES['founder_photo']['error'] === UPLOAD_ERR_OK) {
+                $photoRes = uploadImage($_FILES['founder_photo'], '../uploads/team/', 5242880);
+                if ($photoRes['success']) {
+                    setSetting($pdo, 'about_founder_image', $photoRes['path']);
+                }
+            }
+
+            // 4. Philosophy Section (4 Pillars)
+            setSetting($pdo, 'about_philosophy_label', trim($_POST['about_philosophy_label'] ?? 'Our Philosophy'));
+            setSetting($pdo, 'about_philosophy_heading', trim($_POST['about_philosophy_heading'] ?? ''));
+            setSetting($pdo, 'about_philosophy_intro', trim($_POST['about_philosophy_intro'] ?? ''));
+            for ($p = 1; $p <= 4; $p++) {
+                setSetting($pdo, "about_phil_{$p}_icon", trim($_POST["about_phil_{$p}_icon"] ?? ''));
+                setSetting($pdo, "about_phil_{$p}_title", trim($_POST["about_phil_{$p}_title"] ?? ''));
+                setSetting($pdo, "about_phil_{$p}_desc", trim($_POST["about_phil_{$p}_desc"] ?? ''));
+            }
+
+            // 5. Core Values Section (4 Values)
+            setSetting($pdo, 'about_values_label', trim($_POST['about_values_label'] ?? 'What We Stand For'));
+            setSetting($pdo, 'about_values_heading', trim($_POST['about_values_heading'] ?? ''));
+            setSetting($pdo, 'about_values_intro', trim($_POST['about_values_intro'] ?? ''));
             $coreValues = [];
             for ($i = 1; $i <= 4; $i++) {
                 $valTitle = trim($_POST["core_val_{$i}_title"] ?? '');
@@ -166,11 +201,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             setSetting($pdo, 'core_values', json_encode($coreValues));
 
-            $_SESSION['flash_success'] = "About page content & stats saved!";
+            $_SESSION['flash_success'] = "About Us page content & settings saved successfully! All updates are live on the website.";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Error saving About page settings: " . $e->getMessage();
         }
-        header("Location: settings.php#tab-about");
+        header("Location: settings.php?tab=about");
         exit;
     }
 
@@ -419,6 +454,7 @@ require_once 'includes/admin-header.php';
                 <?php 
                     $currentLogoPath = !empty($settings['logo_path']) ? '../' . ltrim($settings['logo_path'], '/') : '../assets/images/reikilogo1.png';
                     $currentFavPath = !empty($settings['favicon_path']) ? '../' . ltrim($settings['favicon_path'], '/') : '../assets/images/favicon-circle.png';
+                    $currentTouchPath = !empty($settings['apple_touch_icon_path']) ? '../' . ltrim($settings['apple_touch_icon_path'], '/') : $currentFavPath;
                     $cacheVer = time();
                 ?>
 
@@ -466,25 +502,24 @@ require_once 'includes/admin-header.php';
 
                 <!-- 3. Apple Touch Icon -->
                 <div class="form-group mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 24px;">
-                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Apple Touch Icon</label>
-                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Icon shown when users bookmark or save your website to their iOS or Android mobile home screen.</p>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Apple Touch Icon (iOS Home Screen)</label>
+                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Icon shown when users add or bookmark your website to their Apple iPhone/iPad home screen.</p>
                     
                     <div class="flex items-center gap-3" style="flex-wrap: wrap;">
                         <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 12px; width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--card-shadow);">
-                            <img src="<?= htmlspecialchars($currentFavPath) ?>?v=<?= $cacheVer ?>" alt="Apple Touch Icon" style="width: 44px; height: 44px; object-fit: contain; border-radius: 8px;">
+                            <img id="touchLivePreview" src="<?= htmlspecialchars($currentTouchPath) ?>?v=<?= $cacheVer ?>" alt="Apple Touch Icon" style="width: 44px; height: 44px; object-fit: contain; border-radius: 8px;">
                         </div>
                         <div style="flex: 1; min-width: 250px;">
-                            <input type="file" name="apple_touch_icon" class="form-control mb-1" accept="image/png">
+                            <input type="file" id="touchFileInput" name="apple_touch_icon" class="form-control mb-1" accept="image/png">
                             <span class="form-hint">Square 180×180 PNG recommended.</span>
                         </div>
                     </div>
                 </div>
 
-                <?php /*
-                <!-- 4. OpenGraph Social Share Card -->
+                <!-- 4. OpenGraph Social Share Card (WhatsApp, Facebook, Twitter Preview) -->
                 <div class="form-group mb-4">
                     <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">OpenGraph Social Share Image (WhatsApp / Facebook Preview)</label>
-                    <p class="text-muted mb-3" style="font-size: 0.84rem;">Banner image displayed automatically whenever your website link is shared on <strong>WhatsApp, Facebook, Twitter (X), LinkedIn, or iMessage</strong>.</p>
+                    <p class="text-muted mb-3" style="font-size: 0.84rem;">Preview image displayed automatically whenever your website link is shared on <strong>WhatsApp, Facebook, Twitter (X), LinkedIn, or iMessage</strong>.</p>
                     
                     <?php 
                         $rawOg = !empty($settings['og_image_path']) ? ltrim($settings['og_image_path'], '/') : 'assets/images/og-image.jpg';
@@ -512,13 +547,14 @@ require_once 'includes/admin-header.php';
 
                     <!-- Realistic WhatsApp / Social Link Preview Card -->
                     <div style="background: #eef2f6; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; max-width: 520px;">
+                        <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px;">WhatsApp / Social Link Live Preview</div>
                         <!-- WhatsApp Message Bubble Mockup -->
                         <div style="background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
                             <div style="width: 100%; height: 170px; background: #f8fafc; overflow: hidden; position: relative;">
                                 <img id="ogLivePreview" src="<?= htmlspecialchars($ogPath) ?>?v=<?= $cacheVer ?>" alt="OG Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/logo.png'">
                                 <?php if (!empty($ogDimensions)): ?>
                                     <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;">
-                                        <?= $ogDimensions ?>
+                                        <?= $ogDimensions ?> (<?= $ogFileSizeKb ?> KB)
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -532,10 +568,9 @@ require_once 'includes/admin-header.php';
 
                     <div style="max-width: 520px;">
                         <input type="file" id="ogFileInput" name="og_image" class="form-control mb-1" accept="image/jpeg,image/png,image/webp">
-                        <span class="form-hint">Recommended banner dimensions: <strong>1200 × 630 pixels</strong> (or 600 × 600 square), JPG or PNG, <strong>strictly under 300 KB</strong> for WhatsApp compatibility.</span>
+                        <span class="form-hint">Recommended dimensions: <strong>1200 × 630 pixels</strong> (or square 600 × 600), JPG/PNG/WebP, <strong>strictly under 300 KB</strong> for WhatsApp compatibility. (Images are automatically resized and compressed on upload).</span>
                     </div>
                 </div>
-                */ ?>
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-gold">
@@ -546,85 +581,295 @@ require_once 'includes/admin-header.php';
         </div>
     </div>
 
-    <!-- =====================================================================
-         TAB 3: ABOUT PAGE & STATS
+    <!-- ======================================================          TAB 3: ABOUT US PAGE CUSTOMIZER & STATS
          ===================================================================== -->
     <div class="tab-content" id="tab-about">
         <div class="admin-card">
-            <h3 class="admin-card-title mb-3" style="color: var(--gold);">About Sanctuary &amp; Mission Content</h3>
-            <form action="settings.php" method="POST">
+            <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
+                <div>
+                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
+                        About Us Page Full Customizer
+                    </h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
+                        Manage every section of the public About Us page — from the Hero banner &amp; Impact counters to Founder Anupama Agrawal's biography, philosophy pillars, and core values.
+                    </p>
+                </div>
+                <a href="../about.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1" style="white-space: nowrap;">
+                    <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View Live Page
+                </a>
+            </div>
+
+            <form action="settings.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="tab" value="about">
 
-                <div class="form-group">
-                    <label class="form-label">About Hero Headline</label>
-                    <input type="text" name="about_hero_heading" class="form-control" value="<?= htmlspecialchars($settings['about_hero_heading'] ?? 'Healing with Heart & Purpose') ?>">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">About Hero Introduction Description</label>
-                    <textarea name="about_hero_description" class="form-control" rows="3"><?= htmlspecialchars($settings['about_hero_description'] ?? 'Founded with the sacred intention of bringing authentic Usui Reiki to seekers everywhere, our sanctuary blends ancient spiritual healing with modern mindfulness practices.') ?></textarea>
-                </div>
-
-                <div class="form-group" style="max-width: 240px;">
-                    <label class="form-label">Center Founding Year</label>
-                    <input type="text" name="founding_year" class="form-control" value="<?= htmlspecialchars($settings['founding_year'] ?? '2014') ?>">
-                </div>
-
-                <!-- Numeric Site Stats -->
-                <h4 style="font-size: 0.95rem; color: var(--gold); margin: 24px 0 14px; border-top: 1px solid var(--card-border); padding-top: 16px;">
-                    Key Impact Counter Statistics (Site Stats)
-                </h4>
-
-                <div class="form-row" style="grid-template-columns: repeat(4, 1fr);">
-                    <div class="form-group">
-                        <label class="form-label">Healed Clients</label>
-                        <input type="number" name="stat_lives_healed" class="form-control" value="<?= htmlspecialchars($stats['lives_healed'] ?? '30000') ?>">
+                <!-- -------------------------------------------------------------
+                     SECTION 1: HERO & INTRODUCTION BANNER
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Banner &amp; Introduction</h4>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Years of Practice</label>
-                        <input type="number" name="stat_years_experience" class="form-control" value="<?= htmlspecialchars($stats['years_experience'] ?? '25') ?>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Course Levels</label>
-                        <input type="number" name="stat_course_levels" class="form-control" value="<?= htmlspecialchars($stats['course_levels'] ?? '6') ?>">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Sessions Completed</label>
-                        <input type="number" name="stat_sessions_completed" class="form-control" value="<?= htmlspecialchars($stats['sessions_completed'] ?? '25000') ?>">
-                    </div>
-                </div>
 
-                <!-- 4 Core Values -->
-                <h4 style="font-size: 0.95rem; color: var(--gold); margin: 24px 0 14px; border-top: 1px solid var(--card-border); padding-top: 16px;">
-                    Four Pillars / Core Values
-                </h4>
-
-                <?php 
-                    $defaultValues = [
-                        ['title' => 'Compassionate Presence', 'description' => 'Every session is held with deep unconditional empathy, confidentiality, and spiritual grounding.'],
-                        ['title' => 'Authentic Lineage', 'description' => 'Direct Usui Reiki tradition handed down through accredited grandmasters with authentic attunement.'],
-                        ['title' => 'Holistic Transformation', 'description' => 'Addressing subtle energetic root causes rather than just superficial physical symptoms.'],
-                        ['title' => 'Empowered Self-Healing', 'description' => 'Guiding every student and healee with knowledge to sustain their own energetic balance.']
-                    ];
-                    $vals = !empty($coreValues) ? $coreValues : $defaultValues;
-                ?>
-
-                <div class="form-row">
-                    <?php for ($i = 0; $i < 4; $i++): ?>
-                        <div class="form-group" style="background: rgba(30, 21, 69, 0.4); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
-                            <label class="form-label" style="color: var(--gold); font-weight: 600;">Pillar #<?= $i + 1 ?> Title</label>
-                            <input type="text" name="core_val_<?= $i + 1 ?>_title" class="form-control mb-2" value="<?= htmlspecialchars($vals[$i]['title'] ?? '') ?>">
-                            
-                            <label class="form-label" style="font-size: 0.78rem;">Description</label>
-                            <textarea name="core_val_<?= $i + 1 ?>_desc" class="form-control" rows="2"><?= htmlspecialchars($vals[$i]['description'] ?? '') ?></textarea>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Hero Badge Tagline</label>
+                            <input type="text" name="about_hero_badge" class="form-control" value="<?= htmlspecialchars($settings['about_hero_badge'] ?? 'Est. 2014 · Adajan, Surat') ?>" placeholder="e.g. Est. 2014 · Adajan, Surat">
+                            <span class="form-hint">Appears in small pill badge above the main title.</span>
                         </div>
-                    <?php endfor; ?>
+                        <div class="form-group">
+                            <label class="form-label">Founding Year</label>
+                            <input type="text" name="founding_year" class="form-control" value="<?= htmlspecialchars($settings['founding_year'] ?? '2014') ?>" placeholder="e.g. 2014">
+                            <span class="form-hint">Used in center history and badge calculations.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Main Headline (H1)</label>
+                        <input type="text" name="about_hero_heading" class="form-control" value="<?= htmlspecialchars($settings['about_hero_heading'] ?? 'A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>') ?>" placeholder="e.g. A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>">
+                        <span class="form-hint">Tip: Use <code>&lt;em&gt;text&lt;/em&gt;</code> for cursive gold italic accent, and <code>&lt;br&gt;</code> for line breaks.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Introduction Paragraph</label>
+                        <textarea name="about_hero_description" class="form-control" rows="3" placeholder="Introduction text under headline..."><?= htmlspecialchars($settings['about_hero_description'] ?? 'Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach dedicated to authentic energy healing, self-awareness, and holistic inner transformation.') ?></textarea>
+                    </div>
                 </div>
 
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-gold">
-                        Save About Page
-                    </button>
+                <!-- -------------------------------------------------------------
+                     SECTION 2: IMPACT COUNTER STATISTICS & MARQUEE
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Impact Statistics &amp; Scrolling Marquee</h4>
+                    </div>
+
+                    <div class="form-row" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="form-group">
+                            <label class="form-label">Healed Clients</label>
+                            <input type="number" name="stat_lives_healed" class="form-control" value="<?= htmlspecialchars($stats['lives_healed'] ?? '30000') ?>">
+                            <span class="form-hint">Displayed as: <strong><?= !empty($stats['lives_healed']) ? $stats['lives_healed'] : '30000' ?>+ Healed Clients</strong></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Years of Practice</label>
+                            <input type="number" name="stat_years_experience" class="form-control" value="<?= htmlspecialchars($stats['years_experience'] ?? '25') ?>">
+                            <span class="form-hint">Displayed as: <strong><?= !empty($stats['years_experience']) ? $stats['years_experience'] : '25' ?>+ Years Experience</strong></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Course Levels</label>
+                            <input type="number" name="stat_course_levels" class="form-control" value="<?= htmlspecialchars($stats['course_levels'] ?? '6') ?>">
+                            <span class="form-hint">Displayed as: <strong><?= !empty($stats['course_levels']) ? $stats['course_levels'] : '6' ?> Course Levels</strong></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sessions Completed</label>
+                            <input type="number" name="stat_sessions_completed" class="form-control" value="<?= htmlspecialchars($stats['sessions_completed'] ?? '25000') ?>">
+                            <span class="form-hint">Displayed as: <strong><?= !empty($stats['sessions_completed']) ? $stats['sessions_completed'] : '25000' ?>+ Sessions</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 12px;">
+                        <label class="form-label">Scrolling Marquee Extra Highlight</label>
+                        <input type="text" name="about_marquee_extra" class="form-control" value="<?= htmlspecialchars($settings['about_marquee_extra'] ?? '100% Authentic Lineage') ?>" placeholder="e.g. 100% Authentic Lineage">
+                        <span class="form-hint">Rotates alongside the numerical stats in the continuous infinite marquee.</span>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 3: FOUNDER PROFILE (ANUPAMA AGRAWAL)
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Founder Profile &amp; Biography (Anupama Agrawal)</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Section Eyebrow Label</label>
+                            <input type="text" name="about_founder_label" class="form-control" value="<?= htmlspecialchars($settings['about_founder_label'] ?? 'Our Founder') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Section Main Title</label>
+                            <input type="text" name="about_founder_heading" class="form-control" value="<?= htmlspecialchars($settings['about_founder_heading'] ?? 'Meet The Soul Behind <em>Reiki Bliss</em>') ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Section Tagline / Subtitle</label>
+                        <input type="text" name="about_founder_subheading" class="form-control" value="<?= htmlspecialchars($settings['about_founder_subheading'] ?? 'Dedicated to authentic healing, energy alignment, and empowering individuals to discover their inner harmony.') ?>">
+                    </div>
+
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label class="form-label">Founder Full Name</label>
+                            <input type="text" name="about_founder_name" class="form-control" value="<?= htmlspecialchars($settings['about_founder_name'] ?? 'Anupama Agrawal') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Founder Title / Credentials</label>
+                            <input type="text" name="about_founder_role" class="form-control" value="<?= htmlspecialchars($settings['about_founder_role'] ?? 'Founder, Reiki Grand Master & Spiritual Wellness Coach') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Photo Badge Pill</label>
+                            <input type="text" name="about_founder_badge" class="form-control" value="<?= htmlspecialchars($settings['about_founder_badge'] ?? 'Reiki Grand Master') ?>">
+                        </div>
+                    </div>
+
+                    <!-- Founder Photo Upload -->
+                    <?php 
+                        $founderImgSrc = !empty($settings['about_founder_image']) ? '../' . ltrim($settings['about_founder_image'], '/') : '../assets/images/team/anupama_mam.jpeg';
+                    ?>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Founder Portrait Photo</label>
+                        <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0; background: #fff;">
+                                <img id="founderImgPreview" src="<?= htmlspecialchars($founderImgSrc) ?>?v=<?= time() ?>" alt="Founder Photo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/team/anupama_mam.jpeg'">
+                            </div>
+                            <div style="flex: 1; min-width: 250px;">
+                                <input type="file" id="founderImgInput" name="founder_photo" class="form-control mb-1" accept="image/jpeg,image/png,image/webp">
+                                <span class="form-hint">Upload a portrait or square photo (JPG, PNG, WebP, max 5MB). Photo is automatically styled on the page.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Guiding Quote</label>
+                            <input type="text" name="about_founder_quote" class="form-control" value="<?= htmlspecialchars($settings['about_founder_quote'] ?? 'Think Positive, Be Positive.') ?>" placeholder="e.g. Think Positive, Be Positive.">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quote Caption / Context</label>
+                            <input type="text" name="about_founder_quote_caption" class="form-control" value="<?= htmlspecialchars($settings['about_founder_quote_caption'] ?? 'The guiding belief at the heart of her life and healing practice') ?>">
+                        </div>
+                    </div>
+
+                    <?php 
+                        $defaultStory = "Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach whose journey into holistic wellness began with a simple but powerful interest in meditation and self-healing.\n\nWhat started as a personal practice gradually became a deeper calling. For more than a decade, Anupama has studied and practiced Reiki with dedication, progressing to the level of Reiki Grand Master while continuing to explore complementary spiritual and energy practices.\n\nThrough Reiki Bliss, Anupama creates a warm, supportive space for people to slow down, reconnect with themselves and explore practices that can support greater balance, clarity and inner well-being. Her approach is personal and grounded—meeting each individual where they are rather than treating wellness as one-size-fits-all.\n\nHer work today includes individual consultations as well as classes for those who wish to learn and deepen their own practice across a comprehensive range of sacred energy disciplines.";
+                        $founderStoryVal = !empty($settings['about_founder_story']) ? $settings['about_founder_story'] : $defaultStory;
+                    ?>
+                    <div class="form-group">
+                        <label class="form-label">Founder Detailed Story &amp; Journey</label>
+                        <textarea name="about_founder_story" class="form-control" rows="8" placeholder="Enter multi-paragraph founder journey..."><?= htmlspecialchars($founderStoryVal) ?></textarea>
+                        <span class="form-hint">Separate paragraphs with a blank line. Each paragraph will be rendered cleanly on the website.</span>
+                    </div>
+
+                    <?php 
+                        $defaultSpecialties = "Reiki Healing, Chakra Balancing, Guided Meditation, Lama Fera, Access Bars, Angel Healing, Victory Reiki, Money Reiki, Switch Words, Tarot Card Reading";
+                        $founderSpecVal = !empty($settings['about_founder_specialties']) ? $settings['about_founder_specialties'] : $defaultSpecialties;
+                    ?>
+                    <div class="form-group">
+                        <label class="form-label">Core Healing Modalities &amp; Offerings (Specialty Tags)</label>
+                        <input type="text" name="about_founder_specialties" class="form-control" value="<?= htmlspecialchars($founderSpecVal) ?>" placeholder="Reiki Healing, Chakra Balancing, ...">
+                        <span class="form-hint">Comma-separated list. Each specialty is displayed as a badge in the offerings box.</span>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 4: THE PHILOSOPHY BEHIND REIKI BLISS
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">The Philosophy Behind Reiki Bliss</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Philosophy Section Eyebrow</label>
+                            <input type="text" name="about_philosophy_label" class="form-control" value="<?= htmlspecialchars($settings['about_philosophy_label'] ?? 'Our Philosophy') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Philosophy Section Title</label>
+                            <input type="text" name="about_philosophy_heading" class="form-control" value="<?= htmlspecialchars($settings['about_philosophy_heading'] ?? 'The Philosophy Behind <em>Reiki Bliss</em>') ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Philosophy Introduction Paragraph</label>
+                        <textarea name="about_philosophy_intro" class="form-control" rows="2"><?= htmlspecialchars($settings['about_philosophy_intro'] ?? 'Anupama believes that meaningful change often begins by turning inward—creating space to understand ourselves, release what no longer serves us and become more intentional about the energy we bring into our lives.') ?></textarea>
+                    </div>
+
+                    <?php 
+                        $defaultPhil = [
+                            ['icon' => '🧘‍♀️', 'title' => 'Turning Inward', 'desc' => 'Meaningful change begins by creating space to understand ourselves, gently releasing emotional and energetic blocks that no longer serve us, and cultivating intentional positive energy.'],
+                            ['icon' => '✨', 'title' => 'Our Mission', 'desc' => 'To make spiritual wellness approachable and to help more people discover the transformative power of self-awareness, self-healing, and conscious positive living.'],
+                            ['icon' => '🌱', 'title' => 'Begin Where You Are', 'desc' => 'Whether you are completely new to spiritual wellness, looking for greater balance in your everyday life, or hoping to deepen an existing practice, you are welcome to begin exactly where you are.'],
+                            ['icon' => '🌟', 'title' => 'Your Journey is Your Own', 'desc' => 'Your journey is your own. Reiki Bliss is here to provide grounded, compassionate guidance and create a safe sanctuary to help you explore it at your own rhythm.']
+                        ];
+                    ?>
+
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr;">
+                        <?php for ($p = 1; $p <= 4; $p++): 
+                            $pIdx = $p - 1;
+                            $pIcon = $settings["about_phil_{$p}_icon"] ?? $defaultPhil[$pIdx]['icon'];
+                            $pTitle = $settings["about_phil_{$p}_title"] ?? $defaultPhil[$pIdx]['title'];
+                            $pDesc = $settings["about_phil_{$p}_desc"] ?? $defaultPhil[$pIdx]['desc'];
+                        ?>
+                            <div class="form-group" style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <input type="text" name="about_phil_<?= $p ?>_icon" class="form-control" style="width: 50px; text-align: center; font-size: 1.2rem; padding: 4px;" value="<?= htmlspecialchars($pIcon) ?>" title="Emoji Icon">
+                                    <input type="text" name="about_phil_<?= $p ?>_title" class="form-control" style="flex: 1; font-weight: 700; color: var(--gold);" value="<?= htmlspecialchars($pTitle) ?>" placeholder="Pillar Title">
+                                </div>
+                                <textarea name="about_phil_<?= $p ?>_desc" class="form-control" rows="3" placeholder="Pillar Description" style="font-size: 0.84rem;"><?= htmlspecialchars($pDesc) ?></textarea>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 5: OUR CORE VALUES
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 5</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Our Core Values (What We Stand For)</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Values Section Eyebrow</label>
+                            <input type="text" name="about_values_label" class="form-control" value="<?= htmlspecialchars($settings['about_values_label'] ?? 'What We Stand For') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Values Section Title</label>
+                            <input type="text" name="about_values_heading" class="form-control" value="<?= htmlspecialchars($settings['about_values_heading'] ?? 'Our Core <em>Values</em>') ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Values Section Tagline</label>
+                        <textarea name="about_values_intro" class="form-control" rows="2"><?= htmlspecialchars($settings['about_values_intro'] ?? 'Principles that guide every healing session, attunement workshop, and crystal recommendation at our center.') ?></textarea>
+                    </div>
+
+                    <?php 
+                        $defaultValues = [
+                            ['title' => 'Compassionate Presence', 'description' => 'Every session is held with deep unconditional empathy, confidentiality, and spiritual grounding.'],
+                            ['title' => 'Authentic Lineage', 'description' => 'Direct Usui Reiki tradition handed down through accredited grandmasters with authentic attunement.'],
+                            ['title' => 'Holistic Transformation', 'description' => 'Addressing subtle energetic root causes rather than just superficial physical symptoms.'],
+                            ['title' => 'Empowered Self-Healing', 'description' => 'Guiding every student and healee with knowledge to sustain their own energetic balance.']
+                        ];
+                        $vals = !empty($coreValues) ? $coreValues : $defaultValues;
+                    ?>
+
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr;">
+                        <?php for ($i = 0; $i < 4; $i++): ?>
+                            <div class="form-group" style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
+                                <label class="form-label" style="color: var(--gold); font-weight: 600;">Value #<?= $i + 1 ?> Title</label>
+                                <input type="text" name="core_val_<?= $i + 1 ?>_title" class="form-control mb-2" value="<?= htmlspecialchars($vals[$i]['title'] ?? ($settings["value_" . ($i + 1) . "_title"] ?? '')) ?>">
+                                
+                                <label class="form-label" style="font-size: 0.78rem;">Description</label>
+                                <textarea name="core_val_<?= $i + 1 ?>_desc" class="form-control" rows="2"><?= htmlspecialchars($vals[$i]['description'] ?? ($settings["value_" . ($i + 1) . "_desc"] ?? '')) ?></textarea>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+
+                <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                    <div class="flex-between">
+                        <button type="submit" class="btn btn-gold flex items-center gap-2">
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save All About Us Changes
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -787,7 +1032,20 @@ if (favFileInput) {
     });
 }
 
-/*
+const touchFileInput = document.getElementById('touchFileInput');
+const touchLivePreview = document.getElementById('touchLivePreview');
+if (touchFileInput && touchLivePreview) {
+    touchFileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                touchLivePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
+
 const ogFileInput = document.getElementById('ogFileInput');
 const ogLivePreview = document.getElementById('ogLivePreview');
 if (ogFileInput && ogLivePreview) {
@@ -801,7 +1059,20 @@ if (ogFileInput && ogLivePreview) {
         }
     });
 }
-*/
+
+const founderImgInput = document.getElementById('founderImgInput');
+const founderImgPreview = document.getElementById('founderImgPreview');
+if (founderImgInput && founderImgPreview) {
+    founderImgInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                founderImgPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
 
 // Password Strength Meter
 const newPass = document.getElementById('newPass');
