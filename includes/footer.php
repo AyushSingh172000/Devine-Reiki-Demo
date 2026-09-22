@@ -41,7 +41,7 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
                     </span>
                 </a>
                 <p class="footer-tagline">
-                    Guided by <strong>Dr. Chirag Gajjar</strong> (Reiki Grand Master) & <strong>Binal Gajjar</strong> (Crystal & Numerology Expert) — dedicated to authentic healing, chakra alignment, and empowered living.
+                    Guided by <strong>Anupama Agrawal</strong> (Reiki Grand Master) dedicated to authentic healing, chakra alignment, and empowered living.
                 </p>
                 <div class="footer-socials">
                     <?php if (!empty(FACEBOOK_URL)): ?>
