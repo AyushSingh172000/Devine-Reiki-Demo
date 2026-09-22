@@ -224,6 +224,9 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <?php if ($currentPage == 'order-bracelet.php' || $currentPage == 'custom-bracelet.php'): ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/order-bracelet.css?v=<?php echo file_exists($cssDir . '/order-bracelet.css') ? filemtime($cssDir . '/order-bracelet.css') : time(); ?>">
     <?php endif; ?>
+    <?php if ($currentPage == 'privacy.php' || $currentPage == 'terms.php'): ?>
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/legal.css?v=<?php echo file_exists($cssDir . '/legal.css') ? filemtime($cssDir . '/legal.css') : time(); ?>">
+    <?php endif; ?>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/responsive.css?v=<?php echo $respVer; ?>">
     
     <!-- Google Calendar Appointment Scheduling Stylesheet -->

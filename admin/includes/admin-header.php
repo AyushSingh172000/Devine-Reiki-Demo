@@ -145,8 +145,13 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
 
       <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> SETTINGS</div>
       <li>
-        <a href="settings.php" class="<?= $currentPage === 'settings.php' ? 'active' : '' ?>">
+        <a href="settings.php" class="<?= ($currentPage === 'settings.php' && empty($_GET['tab'])) ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="settings"></i></span> Site Settings
+        </a>
+      </li>
+      <li>
+        <a href="settings.php?tab=footer" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'footer') ? 'active' : '' ?>">
+          <span class="nav-icon"><i data-lucide="panel-bottom"></i></span> Footer &amp; Legal
         </a>
       </li>
       <?php /* Hidden: Logo & Favicon can be managed directly inside Site Settings -> Branding & Assets tab

@@ -223,6 +223,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // TAB 6: FOOTER & LEGAL PAGES
+    if ($tab === 'footer') {
+        try {
+            // Footer Description & Copyright
+            setSetting($pdo, 'footer_about_text', trim($_POST['footer_about_text'] ?? ''));
+            setSetting($pdo, 'footer_copyright', trim($_POST['footer_copyright'] ?? ''));
+
+            // Footer CTA Banner
+            setSetting($pdo, 'footer_cta_tag', trim($_POST['footer_cta_tag'] ?? ''));
+            setSetting($pdo, 'footer_cta_title', trim($_POST['footer_cta_title'] ?? ''));
+            setSetting($pdo, 'footer_cta_desc', trim($_POST['footer_cta_desc'] ?? ''));
+            setSetting($pdo, 'footer_cta_btn_text', trim($_POST['footer_cta_btn_text'] ?? ''));
+            setSetting($pdo, 'footer_cta_btn_url', trim($_POST['footer_cta_btn_url'] ?? ''));
+
+            // Privacy Policy Page Content
+            setSetting($pdo, 'privacy_title', trim($_POST['privacy_title'] ?? ''));
+            setSetting($pdo, 'privacy_tagline', trim($_POST['privacy_tagline'] ?? ''));
+            setSetting($pdo, 'privacy_content', trim($_POST['privacy_content'] ?? ''));
+
+            // Terms & Conditions Page Content
+            setSetting($pdo, 'terms_title', trim($_POST['terms_title'] ?? ''));
+            setSetting($pdo, 'terms_tagline', trim($_POST['terms_tagline'] ?? ''));
+            setSetting($pdo, 'terms_content', trim($_POST['terms_content'] ?? ''));
+
+            $_SESSION['flash_success'] = "Footer branding and Legal pages (Privacy & Terms) updated successfully!";
+        } catch (Exception $e) {
+            $_SESSION['flash_error'] = "Error saving Footer & Legal settings: " . $e->getMessage();
+        }
+        header("Location: settings.php?tab=footer");
+        exit;
+    }
+
     // TAB 5: ADMIN ACCOUNT SECURITY
     if ($tab === 'account') {
         $currentPassword = $_POST['current_password'] ?? '';
@@ -343,6 +375,9 @@ require_once 'includes/admin-header.php';
         </button>
         <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="homepage">
             <i data-lucide="home" style="width: 16px; height: 16px;"></i> Homepage Content
+        </button>
+        <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="footer">
+            <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer &amp; Legal
         </button>
         <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="account">
             <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i> Admin Account
@@ -898,6 +933,171 @@ require_once 'includes/admin-header.php';
                     <button type="submit" class="btn btn-gold">
                         Save Homepage Content
                     </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         TAB: FOOTER & LEGAL PAGES
+         ===================================================================== -->
+    <div class="tab-content" id="tab-footer">
+        <div class="admin-card">
+            <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
+                <div>
+                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
+                        Footer &amp; Legal Pages Customizer
+                    </h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
+                        Manage the global website footer description, consultation CTA banner, and full legal agreements (Terms of Attunement &amp; Privacy Sanctuary).
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="../privacy.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1">
+                        <i data-lucide="shield" style="width: 14px; height: 14px;"></i> View Privacy Page
+                    </a>
+                    <a href="../terms.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1">
+                        <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> View Terms Page
+                    </a>
+                </div>
+            </div>
+
+            <form action="settings.php" method="POST">
+                <input type="hidden" name="tab" value="footer">
+
+                <!-- -------------------------------------------------------------
+                     SECTION 1: FOOTER BRANDING & DESCRIPTION (COLUMN 1)
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Footer Brand Bio &amp; Copyright</h4>
+                    </div>
+
+                    <?php 
+                        $defaultFooterDesc = "Guided by Anupama Agrawal (Reiki Grand Master) dedicated to authentic healing, chakra alignment, and empowered living.";
+                        $footerDescVal = !empty($settings['footer_about_text']) ? $settings['footer_about_text'] : $defaultFooterDesc;
+                    ?>
+                    <div class="form-group">
+                        <label class="form-label">Footer Brand Bio / Description (Under Logo)</label>
+                        <textarea name="footer_about_text" class="form-control" rows="3" placeholder="Enter short bio under footer logo..."><?= htmlspecialchars($footerDescVal) ?></textarea>
+                        <span class="form-hint">Displayed in Column 1 directly under the Reiki Bliss logo and tagline. Supports <code>&lt;strong&gt;</code> bold styling.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Bottom Bar Copyright Notice</label>
+                        <input type="text" name="footer_copyright" class="form-control" value="<?= htmlspecialchars($settings['footer_copyright'] ?? '© {year} Reiki Bliss Healing Center. All sacred rights reserved.') ?>" placeholder="e.g. © {year} Reiki Bliss Healing Center. All sacred rights reserved.">
+                        <span class="form-hint">Use <code>{year}</code> to automatically insert the current year (e.g. 2026).</span>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 2: FOOTER FREE CONSULTATION CTA BANNER
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Footer Booking CTA Banner</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">CTA Eyebrow Tag</label>
+                            <input type="text" name="footer_cta_tag" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_tag'] ?? 'FIRST SESSION IS FREE') ?>" placeholder="e.g. FIRST SESSION IS FREE">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CTA Main Heading</label>
+                            <input type="text" name="footer_cta_title" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_title'] ?? 'Begin Your <em>Healing Journey</em> Today') ?>" placeholder="e.g. Begin Your <em>Healing Journey</em> Today">
+                            <span class="form-hint">Supports <code>&lt;em&gt;</code> gold cursive accent.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">CTA Subtext Paragraph</label>
+                        <textarea name="footer_cta_desc" class="form-control" rows="2" placeholder="Subtext..."><?= htmlspecialchars($settings['footer_cta_desc'] ?? 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.') ?></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">CTA Button Label</label>
+                            <input type="text" name="footer_cta_btn_text" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_btn_text'] ?? 'Book Free Session →') ?>" placeholder="e.g. Book Free Session →">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CTA Button Link URL</label>
+                            <input type="text" name="footer_cta_btn_url" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_btn_url'] ?? '') ?>" placeholder="Leave blank to use primary booking calendar URL">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 3: PRIVACY SANCTUARY POLICY (privacy.php)
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Privacy Sanctuary Policy Page (privacy.php)</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Page Title (H1)</label>
+                            <input type="text" name="privacy_title" class="form-control" value="<?= htmlspecialchars($settings['privacy_title'] ?? 'Privacy Sanctuary Policy') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Page Subtitle / Spiritual Commitment</label>
+                            <input type="text" name="privacy_tagline" class="form-control" value="<?= htmlspecialchars($settings['privacy_tagline'] ?? 'Our sacred commitment to honoring your personal information, confidentiality, and spiritual trust.') ?>">
+                        </div>
+                    </div>
+
+                    <?php 
+                        $defaultPrivacyContent = "### 1. Sacred Sanctuary & Confidentiality\nAt Reiki Bliss, your privacy is treated with the same reverence and sacred trust as our healing sessions. We hold all personal conversations, session discussions, energy readings, and inquiries in absolute confidence.\n\n### 2. Information We Gather\nWhen you interact with our website, book an appointment, or order a sacred energized bracelet, we may collect:\n- Personal Details: Name, email address, contact phone number, and WhatsApp number.\n- Birth Details (For Custom Astrological & Birth Chart Bracelets): Date of birth, exact time of birth, and place of birth. This sensitive data is used strictly for chart calculations and planetary gemstone alignment.\n- Inquiry Details: Specific spiritual intentions, personal wellness goals, or health concerns you share voluntarily.\n\n### 3. How We Use Your Sacred Information\nYour data is used exclusively to:\n- Schedule and confirm in-person or distance Reiki sessions.\n- Provide tailored consultation regarding courses and crystal recommendations.\n- Calculate and craft customized birth chart crystal bracelets aligned with your astrological energies.\n- Send important appointment reminders or order updates via WhatsApp or email.\n\n### 4. Zero Data Selling & Third-Party Protection\nWe never sell, rent, lease, or trade your personal information to third parties or marketing agencies under any circumstance. Your information remains strictly within the Reiki Bliss healing sanctuary.\n\n### 5. Spiritual Wellness & Complementary Care Disclaimer\nReiki energy healing, chakra balancing, and crystal therapy are gentle complementary spiritual wellness practices designed to support the body's natural healing capacity. They are not substitutes for professional medical diagnosis, psychiatric care, or prescribed medical treatments. We encourage you to always maintain regular consultation with licensed medical practitioners.\n\n### 6. Security of Your Records\nAll digital inquiries and consultation notes are safeguarded using secure server protocols and strict administrative access controls. Only Grand Master Anupama Agrawal and authorized administrative personnel have access to appointment details.\n\n### 7. Inquiries & Data Rights\nIf you wish to view, update, or permanently delete any personal information from our sanctuary records, please contact us at info@reikibliss.com or message us directly via WhatsApp.";
+                        $privacyVal = !empty($settings['privacy_content']) ? $settings['privacy_content'] : $defaultPrivacyContent;
+                    ?>
+                    <div class="form-group">
+                        <label class="form-label">Privacy Policy Full Text / Sections</label>
+                        <textarea name="privacy_content" class="form-control" rows="12" style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"><?= htmlspecialchars($privacyVal) ?></textarea>
+                        <span class="form-hint">Supports Markdown headings (<code>### Section Title</code>), bullet points (<code>- Item</code>), and clean multi-paragraph formatting.</span>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 4: TERMS OF ATTUNEMENT (terms.php)
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Terms of Attunement &amp; Conditions (terms.php)</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Page Title (H1)</label>
+                            <input type="text" name="terms_title" class="form-control" value="<?= htmlspecialchars($settings['terms_title'] ?? 'Terms of Attunement & Healing Agreement') ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Page Subtitle / Principles</label>
+                            <input type="text" name="terms_tagline" class="form-control" value="<?= htmlspecialchars($settings['terms_tagline'] ?? 'Clear guidelines for healing sessions, certified attunement courses, and consecrated crystal products.') ?>">
+                        </div>
+                    </div>
+
+                    <?php 
+                        $defaultTermsContent = "### 1. Sacred Agreement & General Terms\nBy scheduling a healing session, enrolling in a certification course, or acquiring energized crystals from Reiki Bliss, you acknowledge and agree to the sacred principles and guidelines outlined herein.\n\n### 2. Nature of Energy Healing Sessions\n- Reiki is a non-invasive, gentle Japanese energy technique that facilitates relaxation, emotional release, and spiritual balance.\n- Healing sessions involve gentle touch or hands hovering over energy centers (chakras). Distance sessions are conducted remotely through quantum energetic connection.\n- Individual healing responses vary naturally. While clients often report immediate lightness, peace, and emotional clarity, Reiki Bliss does not make medical guarantees or claims of physical disease cure.\n\n### 3. Free Initial Consultation Policy\nWe offer a complimentary initial consultation so seekers may meet Reiki Grand Master Anupama Agrawal, discuss their wellness journey, and understand recommended healing modalities with zero pressure or obligation. Free sessions must be booked in advance and are subject to schedule availability.\n\n### 4. Rescheduling & Courtesy Notice\nTo honor the sacred time and energy allocated for each seeker, we kindly request a minimum of 12 hours notice for appointment rescheduling or cancellations. This allows us to offer the healing window to someone else in need.\n\n### 5. Sacred Courses & Attunements\n- Certification courses (Level 1, Level 2, Master, and Grand Master) require dedicated participation, practice, and personal commitment.\n- Sacred attunement symbols, manuals, and lineage materials shared during workshops are confidential and intended exclusively for the initiated practitioner's personal development.\n\n### 6. Energized Crystal Bracelets & Products\n- All crystal bracelets are hand-selected, cleansed, and consecrated through authentic Reiki energy rituals prior to dispatch.\n- Natural gemstones vary naturally in color tone, banding, and internal inclusions. These organic variations reflect the natural origin and authenticity of the Earth's crystals.\n- Customized and birth-chart energized bracelets are uniquely tailored to individual astrological coordinates; therefore, customized orders are crafted specifically for the intended bearer.\n\n### 7. Sanctuary Code of Conduct\nReiki Bliss maintains a warm, respectful, and compassionate sanctuary. Any disruptive, disrespectful, or inappropriate behavior will result in immediate termination of the session without refund.\n\n### 8. Questions & Sacred Assistance\nFor any questions regarding these terms or your healing journey, reach out to Anupama Agrawal and the Reiki Bliss team at info@reikibliss.com or +91 9726581787.";
+                        $termsVal = !empty($settings['terms_content']) ? $settings['terms_content'] : $defaultTermsContent;
+                    ?>
+                    <div class="form-group">
+                        <label class="form-label">Terms of Attunement Full Agreement / Sections</label>
+                        <textarea name="terms_content" class="form-control" rows="12" style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"><?= htmlspecialchars($termsVal) ?></textarea>
+                        <span class="form-hint">Supports Markdown headings (<code>### Section Title</code>), bullet points (<code>- Item</code>), and clean multi-paragraph formatting.</span>
+                    </div>
+                </div>
+
+                <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                    <div class="flex-between">
+                        <span class="text-muted" style="font-size: 0.85rem;">Click save to publish all footer, privacy, and terms updates live.</span>
+                        <button type="submit" class="btn btn-gold flex items-center gap-2">
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Footer &amp; Legal Changes
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

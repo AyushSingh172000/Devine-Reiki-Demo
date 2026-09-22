@@ -4,6 +4,16 @@ require_once __DIR__ . '/../config/constants.php';
 $footerLogoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSettings['logo_path'], '/') : BASE_URL . 'assets/images/reikilogo1.png';
 $footerBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
 $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defined('SITE_WHATSAPP') ? SITE_WHATSAPP : '919726581787'));
+
+$footerAboutText = !empty($siteSettings['footer_about_text']) ? $siteSettings['footer_about_text'] : 'Guided by <strong>Anupama Agrawal</strong> (Reiki Grand Master) dedicated to authentic healing, chakra alignment, and empowered living.';
+$footerCtaTag = !empty($siteSettings['footer_cta_tag']) ? $siteSettings['footer_cta_tag'] : 'FIRST SESSION IS FREE';
+$footerCtaTitle = !empty($siteSettings['footer_cta_title']) ? $siteSettings['footer_cta_title'] : 'Begin Your <em>Healing Journey</em> Today';
+$footerCtaDesc = !empty($siteSettings['footer_cta_desc']) ? $siteSettings['footer_cta_desc'] : 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.';
+$footerCtaBtnText = !empty($siteSettings['footer_cta_btn_text']) ? $siteSettings['footer_cta_btn_text'] : 'Book Free Session →';
+$footerCtaBtnUrl = !empty($siteSettings['footer_cta_btn_url']) ? $siteSettings['footer_cta_btn_url'] : $footerBookingUrl;
+
+$footerCopyrightTpl = !empty($siteSettings['footer_copyright']) ? $siteSettings['footer_copyright'] : '&copy; {year} ' . htmlspecialchars(SITE_NAME) . ' Healing Center. All sacred rights reserved.';
+$footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
 ?>
 
 <!-- Footer Section -->
@@ -20,12 +30,12 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
         <!-- CTA Banner -->
         <div class="footer-cta-banner">
             <div class="footer-cta-text">
-                <span class="footer-cta-tag">FIRST SESSION IS FREE</span>
-                <h3>Begin Your <em>Healing Journey</em> Today</h3>
-                <p>Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.</p>
+                <span class="footer-cta-tag"><?php echo htmlspecialchars($footerCtaTag); ?></span>
+                <h3><?php echo $footerCtaTitle; ?></h3>
+                <p><?php echo htmlspecialchars($footerCtaDesc); ?></p>
             </div>
             <div class="footer-cta-action">
-                <a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold">Book Free Session →</a>
+                <a href="<?php echo htmlspecialchars($footerCtaBtnUrl); ?>" target="_blank" rel="noopener" class="btn-gold"><?php echo htmlspecialchars($footerCtaBtnText); ?></a>
             </div>
         </div>
 
@@ -41,7 +51,7 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
                     </span>
                 </a>
                 <p class="footer-tagline">
-                    Guided by <strong>Anupama Agrawal</strong> (Reiki Grand Master) dedicated to authentic healing, chakra alignment, and empowered living.
+                    <?php echo $footerAboutText; ?>
                 </p>
                 <div class="footer-socials">
                     <?php if (!empty(FACEBOOK_URL)): ?>
@@ -120,10 +130,10 @@ $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defi
         <!-- Bottom Bar -->
         <div class="footer-bottom">
             <div class="footer-bottom-content">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars(SITE_NAME); ?> Healing Center. All sacred rights reserved. &middot; <a href="<?php echo BASE_URL; ?>admin/" style="color: inherit; opacity: 0.65; text-decoration: none; font-size: 0.9em;" title="Admin Portal">Admin Portal</a></p>
+                <p><?php echo $footerCopyright; ?> &middot; <a href="<?php echo BASE_URL; ?>admin/" style="color: inherit; opacity: 0.65; text-decoration: none; font-size: 0.9em;" title="Admin Portal">Admin Portal</a></p>
                 <div class="footer-bottom-links">
-                    <a href="<?php echo BASE_URL; ?>contact.php">Privacy Sanctuary</a>
-                    <a href="<?php echo BASE_URL; ?>contact.php">Terms of Attunement</a>
+                    <a href="<?php echo BASE_URL; ?>privacy.php">Privacy Sanctuary</a>
+                    <a href="<?php echo BASE_URL; ?>terms.php">Terms of Attunement</a>
                     <a href="#hero" class="footer-back-top">Back to Top ↑</a>
                 </div>
             </div>
