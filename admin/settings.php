@@ -7,15 +7,19 @@ $error = '';
 $currentAdminUser = $_SESSION['admin_user'] ?? ($_SESSION['admin_username'] ?? 'admin');
 
 // Helper to update site_settings
-function setSetting($pdo, $key, $value) {
-    $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
-    $stmt->execute([$key, $value]);
+if (!function_exists('setSetting')) {
+    function setSetting($pdo, $key, $value) {
+        $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
+        $stmt->execute([$key, $value]);
+    }
 }
 
 // Helper to update site_stats
-function setStat($pdo, $key, $value) {
-    $stmt = $pdo->prepare("INSERT INTO site_stats (stat_key, stat_value, label) VALUES (?, ?, '') ON DUPLICATE KEY UPDATE stat_value = VALUES(stat_value)");
-    $stmt->execute([$key, $value]);
+if (!function_exists('setStat')) {
+    function setStat($pdo, $key, $value) {
+        $stmt = $pdo->prepare("INSERT INTO site_stats (stat_key, stat_value, label) VALUES (?, ?, '') ON DUPLICATE KEY UPDATE stat_value = VALUES(stat_value)");
+        $stmt->execute([$key, $value]);
+    }
 }
 
 // =========================================================================
@@ -209,17 +213,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // TAB 4: HOMEPAGE CONTENT
+    // TAB 4: HOMEPAGE CONTENT & HERO SECTION
     if ($tab === 'homepage') {
         try {
-            setSetting($pdo, 'hero_heading', trim($_POST['hero_heading'] ?? ''));
-            setSetting($pdo, 'hero_subtext', trim($_POST['hero_subtext'] ?? ''));
+            // 1. Hero Badge, Headlines & Subtext
+            $badge = trim($_POST['hero_badge'] ?? '');
+            $title = trim($_POST['hero_title'] ?? '');
+            $titleGold = trim($_POST['hero_title_gold'] ?? '');
+            $heading = trim($_POST['hero_heading'] ?? '');
+            $subtext = trim($_POST['hero_subtext'] ?? '');
 
-            $_SESSION['flash_success'] = "Homepage content saved successfully!";
+            if (empty($heading) && (!empty($title) || !empty($titleGold))) {
+                $heading = $title . (!empty($titleGold) ? '<br><span class="hero-gold-text">' . $titleGold . '</span>' : '');
+            }
+
+            setSetting($pdo, 'hero_badge', $badge);
+            setSetting($pdo, 'hero_title', $title);
+            setSetting($pdo, 'hero_title_gold', $titleGold);
+            setSetting($pdo, 'hero_heading', $heading);
+            setSetting($pdo, 'hero_subtext', $subtext);
+
+            // 2. Hero Call-To-Action Buttons
+            setSetting($pdo, 'hero_cta1_text', trim($_POST['hero_cta1_text'] ?? ''));
+            setSetting($pdo, 'hero_cta1_url', trim($_POST['hero_cta1_url'] ?? ''));
+            setSetting($pdo, 'hero_cta2_text', trim($_POST['hero_cta2_text'] ?? ''));
+            setSetting($pdo, 'hero_cta2_url', trim($_POST['hero_cta2_url'] ?? ''));
+
+            // 3. Hero Trust Counters & Stats Figures
+            $stat1Num = (string)(int)($_POST['hero_stat1_num'] ?? 15000);
+            $stat1Text = trim($_POST['hero_stat1_text'] ?? '15K+');
+            $stat1Label = trim($_POST['hero_stat1_label'] ?? 'LIVES HEALED');
+
+            $stat2Num = (string)(int)($_POST['hero_stat2_num'] ?? 12);
+            $stat2Text = trim($_POST['hero_stat2_text'] ?? '12+');
+            $stat2Label = trim($_POST['hero_stat2_label'] ?? 'YEARS EXPERIENCE');
+
+            $stat3Num = (string)(int)($_POST['hero_stat3_num'] ?? 10);
+            $stat3Text = trim($_POST['hero_stat3_text'] ?? '10+');
+            $stat3Label = trim($_POST['hero_stat3_label'] ?? 'COURSES OFFERED');
+
+            $stat4Num = (string)(int)($_POST['hero_stat4_num'] ?? 8000);
+            $stat4Text = trim($_POST['hero_stat4_text'] ?? '8K+');
+            $stat4Label = trim($_POST['hero_stat4_label'] ?? 'SESSIONS COMPLETED');
+
+            setSetting($pdo, 'hero_stat1_num', $stat1Num);
+            setSetting($pdo, 'hero_stat1_text', $stat1Text);
+            setSetting($pdo, 'hero_stat1_label', $stat1Label);
+
+            setSetting($pdo, 'hero_stat2_num', $stat2Num);
+            setSetting($pdo, 'hero_stat2_text', $stat2Text);
+            setSetting($pdo, 'hero_stat2_label', $stat2Label);
+
+            setSetting($pdo, 'hero_stat3_num', $stat3Num);
+            setSetting($pdo, 'hero_stat3_text', $stat3Text);
+            setSetting($pdo, 'hero_stat3_label', $stat3Label);
+
+            setSetting($pdo, 'hero_stat4_num', $stat4Num);
+            setSetting($pdo, 'hero_stat4_text', $stat4Text);
+            setSetting($pdo, 'hero_stat4_label', $stat4Label);
+
+            // Also keep site_stats table in sync
+            setStat($pdo, 'lives_healed', $stat1Num);
+            setStat($pdo, 'years_experience', $stat2Num);
+            setStat($pdo, 'course_levels', $stat3Num);
+            setStat($pdo, 'sessions_completed', $stat4Num);
+
+            // 4. Hero Background Slides Uploads
+            for ($s = 1; $s <= 3; $s++) {
+                if (isset($_FILES["hero_slide_{$s}"]) && $_FILES["hero_slide_{$s}"]['error'] === UPLOAD_ERR_OK) {
+                    $slideRes = uploadImage($_FILES["hero_slide_{$s}"], '../uploads/hero/', 8388608); // 8MB
+                    if ($slideRes['success']) {
+                        setSetting($pdo, "hero_slide_{$s}", $slideRes['path']);
+                    }
+                }
+            }
+
+            $_SESSION['flash_success'] = "Homepage Hero & Trust Stats updated successfully! All changes are live.";
         } catch (Exception $e) {
-            $_SESSION['flash_error'] = "Error saving Homepage settings: " . $e->getMessage();
+            $_SESSION['flash_error'] = "Error saving Homepage Hero settings: " . $e->getMessage();
         }
-        header("Location: settings.php#tab-homepage");
+        header("Location: settings.php?tab=homepage");
         exit;
     }
 
@@ -354,6 +427,14 @@ $pageTitle = 'Site Settings';
 require_once 'includes/admin-header.php';
 ?>
 
+<?php
+$currentTab = $_GET['tab'] ?? 'general';
+$validTabs = ['general', 'branding', 'about', 'homepage', 'footer', 'account'];
+if (!in_array($currentTab, $validTabs)) {
+    $currentTab = 'general';
+}
+?>
+
 <div style="max-width: 960px; margin: 0 auto;">
     <div class="flex-between mb-3">
         <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
@@ -364,22 +445,22 @@ require_once 'includes/admin-header.php';
 
     <!-- SETTINGS NAVIGATION TABS -->
     <div class="settings-tabs" id="settingsTabsBar">
-        <button type="button" class="settings-tab-btn active flex items-center gap-1" data-tab="general">
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'general' ? 'active' : '' ?> flex items-center gap-1" data-tab="general">
             <i data-lucide="settings" style="width: 16px; height: 16px;"></i> General Settings
         </button>
-        <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="branding">
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'branding' ? 'active' : '' ?> flex items-center gap-1" data-tab="branding">
             <i data-lucide="palette" style="width: 16px; height: 16px;"></i> Branding &amp; Assets
         </button>
-        <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="about">
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'about' ? 'active' : '' ?> flex items-center gap-1" data-tab="about">
             <i data-lucide="book-open" style="width: 16px; height: 16px;"></i> About Page &amp; Stats
         </button>
-        <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="homepage">
-            <i data-lucide="home" style="width: 16px; height: 16px;"></i> Homepage Content
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'homepage' ? 'active' : '' ?> flex items-center gap-1" data-tab="homepage">
+            <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Homepage Hero
         </button>
-        <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="footer">
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'footer' ? 'active' : '' ?> flex items-center gap-1" data-tab="footer">
             <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer &amp; Legal
         </button>
-        <button type="button" class="settings-tab-btn flex items-center gap-1" data-tab="account">
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'account' ? 'active' : '' ?> flex items-center gap-1" data-tab="account">
             <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i> Admin Account
         </button>
     </div>
@@ -387,7 +468,7 @@ require_once 'includes/admin-header.php';
     <!-- =====================================================================
          TAB 1: GENERAL SETTINGS
          ===================================================================== -->
-    <div class="tab-content active" id="tab-general">
+    <div class="tab-content <?= $currentTab === 'general' ? 'active' : '' ?>" id="tab-general">
         <div class="admin-card">
             <h3 class="admin-card-title mb-3" style="color: var(--gold);">General Contact &amp; Business Information</h3>
             <form action="settings.php" method="POST">
@@ -473,7 +554,7 @@ require_once 'includes/admin-header.php';
     <!-- =====================================================================
          TAB 2: BRANDING (Logo, Favicon, OG Image)
          ===================================================================== -->
-    <div class="tab-content" id="tab-branding">
+    <div class="tab-content <?= $currentTab === 'branding' ? 'active' : '' ?>" id="tab-branding">
         <div class="admin-card">
             <div class="flex-between mb-3" style="border-bottom: 1px solid var(--card-border); padding-bottom: 14px;">
                 <div>
@@ -618,7 +699,7 @@ require_once 'includes/admin-header.php';
 
     <!-- ======================================================          TAB 3: ABOUT US PAGE CUSTOMIZER & STATS
          ===================================================================== -->
-    <div class="tab-content" id="tab-about">
+    <div class="tab-content <?= $currentTab === 'about' ? 'active' : '' ?>" id="tab-about">
         <div class="admin-card">
             <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
                 <div>
@@ -911,28 +992,294 @@ require_once 'includes/admin-header.php';
     </div>
 
     <!-- =====================================================================
-         TAB 4: HOMEPAGE CONTENT
+         TAB 4: HOMEPAGE HERO & TRUST STATS
          ===================================================================== -->
-    <div class="tab-content" id="tab-homepage">
+    <div class="tab-content <?= $currentTab === 'homepage' ? 'active' : '' ?>" id="tab-homepage">
         <div class="admin-card">
-            <h3 class="admin-card-title mb-3" style="color: var(--gold);">Homepage Main Hero &amp; Sections</h3>
-            <form action="settings.php" method="POST">
+            <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
+                <div>
+                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
+                        Homepage Hero Section &amp; Trust Stats
+                    </h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
+                        Manage the primary hero banner, location badge, headlines with gold highlight, subtext paragraph, CTAs, impact figures, and background slide images.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="../index.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1">
+                        <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View Live Homepage
+                    </a>
+                </div>
+            </div>
+
+            <form action="settings.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="tab" value="homepage">
 
-                <div class="form-group">
-                    <label class="form-label">Hero Main Headline (H1)</label>
-                    <input type="text" name="hero_heading" class="form-control" value="<?= htmlspecialchars($settings['hero_heading'] ?? 'Heal. Balance. Transform.') ?>">
+                <!-- -------------------------------------------------------------
+                     SECTION 1: HERO BADGE & HEADLINES
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Badge &amp; Headlines</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Location Badge (Top Tagline Pill)</label>
+                        <input type="text" name="hero_badge" id="heroBadgeInput" class="form-control" 
+                               value="<?= htmlspecialchars($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016') ?>" 
+                               placeholder="e.g. ● ADAJAN, SURAT · EST. 2016">
+                        <div class="form-hint">Displayed inside the glowing pill badge at the very top of the hero section.</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Hero Main Title (Line 1 - White Text)</label>
+                            <input type="text" name="hero_title" id="heroTitleInput" class="form-control" 
+                                   value="<?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?>" 
+                                   placeholder="e.g. Awaken Inner Harmony.">
+                            <div class="form-hint">Primary serif heading displayed in luminous white.</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hero Accent Title (Line 2 - Gold Text)</label>
+                            <input type="text" name="hero_title_gold" id="heroTitleGoldInput" class="form-control" 
+                                   value="<?= htmlspecialchars($settings['hero_title_gold'] ?? 'Heal. Balance. Transform.') ?>" 
+                                   placeholder="e.g. Heal. Balance. Transform.">
+                            <div class="form-hint">Second line styled with sacred golden gradient aura.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Subtext Paragraph</label>
+                        <textarea name="hero_subtext" id="heroSubtextInput" class="form-control" rows="3" 
+                                  placeholder="e.g. Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more."><?= htmlspecialchars($settings['hero_subtext'] ?? 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.') ?></textarea>
+                        <div class="form-hint">HTML allowed (e.g. <code>&lt;strong&gt;Grand Master Ms Anupama Agrawal&lt;/strong&gt;</code>).</div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Hero Subtext Paragraph</label>
-                    <textarea name="hero_subtext" class="form-control" rows="3"><?= htmlspecialchars($settings['hero_subtext'] ?? 'Awaken your inner vitality with authentic Usui Reiki healing sessions, transformative certification courses, and sacred energized crystal bracelets.') ?></textarea>
+                <!-- -------------------------------------------------------------
+                     SECTION 2: CALL-TO-ACTION BUTTONS
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Call-to-Action (CTA) Buttons</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Primary Button Text (Gold Glow)</label>
+                            <input type="text" name="hero_cta1_text" id="heroCta1TextInput" class="form-control" 
+                                   value="<?= htmlspecialchars($settings['hero_cta1_text'] ?? 'Book Free Session') ?>" 
+                                   placeholder="e.g. Book Free Session">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Primary Button URL</label>
+                            <input type="text" name="hero_cta1_url" class="form-control" 
+                                   value="<?= htmlspecialchars($settings['hero_cta1_url'] ?? '') ?>" 
+                                   placeholder="Leave blank to use Global Booking URL (<?= htmlspecialchars($settings['booking_url'] ?? 'Calendar link') ?>)">
+                            <div class="form-hint">Opens appointment calendar in a new tab.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Secondary Button Text (Glass Border)</label>
+                            <input type="text" name="hero_cta2_text" id="heroCta2TextInput" class="form-control" 
+                                   value="<?= htmlspecialchars($settings['hero_cta2_text'] ?? 'Explore Courses') ?>" 
+                                   placeholder="e.g. Explore Courses">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Secondary Button URL</label>
+                            <input type="text" name="hero_cta2_url" class="form-control" 
+                                   value="<?= htmlspecialchars($settings['hero_cta2_url'] ?? 'courses.php') ?>" 
+                                   placeholder="e.g. courses.php or #services">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-gold">
-                        Save Homepage Content
-                    </button>
+                <!-- -------------------------------------------------------------
+                     SECTION 3: HERO TRUST COUNTERS & IMPACT FIGURES
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Trust Counters &amp; Impact Figures</h4>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">Controls the 4 golden numbers below the hero buttons</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px;">
+                        <!-- Stat 1 -->
+                        <div style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
+                            <label class="form-label" style="color: var(--gold); font-weight: 700;">Counter #1</label>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Target Number (Integer)</label>
+                                <input type="number" name="hero_stat1_num" id="stat1NumInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat1_num'] ?? ($stats['lives_healed'] ?? '15000')) ?>">
+                            </div>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Display Text (Initial/Static)</label>
+                                <input type="text" name="hero_stat1_text" id="stat1TextInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat1_text'] ?? '15K+') ?>" placeholder="e.g. 15K+">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Badge Label</label>
+                                <input type="text" name="hero_stat1_label" id="stat1LabelInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat1_label'] ?? 'LIVES HEALED') ?>" placeholder="e.g. LIVES HEALED">
+                            </div>
+                        </div>
+
+                        <!-- Stat 2 -->
+                        <div style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
+                            <label class="form-label" style="color: var(--gold); font-weight: 700;">Counter #2</label>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Target Number (Integer)</label>
+                                <input type="number" name="hero_stat2_num" id="stat2NumInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat2_num'] ?? ($stats['years_experience'] ?? '12')) ?>">
+                            </div>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Display Text (Initial/Static)</label>
+                                <input type="text" name="hero_stat2_text" id="stat2TextInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat2_text'] ?? '12+') ?>" placeholder="e.g. 12+">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Badge Label</label>
+                                <input type="text" name="hero_stat2_label" id="stat2LabelInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat2_label'] ?? 'YEARS EXPERIENCE') ?>" placeholder="e.g. YEARS EXPERIENCE">
+                            </div>
+                        </div>
+
+                        <!-- Stat 3 -->
+                        <div style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
+                            <label class="form-label" style="color: var(--gold); font-weight: 700;">Counter #3</label>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Target Number (Integer)</label>
+                                <input type="number" name="hero_stat3_num" id="stat3NumInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat3_num'] ?? ($stats['course_levels'] ?? '10')) ?>">
+                            </div>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Display Text (Initial/Static)</label>
+                                <input type="text" name="hero_stat3_text" id="stat3TextInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat3_text'] ?? '10+') ?>" placeholder="e.g. 10+">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Badge Label</label>
+                                <input type="text" name="hero_stat3_label" id="stat3LabelInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat3_label'] ?? 'COURSES OFFERED') ?>" placeholder="e.g. COURSES OFFERED">
+                            </div>
+                        </div>
+
+                        <!-- Stat 4 -->
+                        <div style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;">
+                            <label class="form-label" style="color: var(--gold); font-weight: 700;">Counter #4</label>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Target Number (Integer)</label>
+                                <input type="number" name="hero_stat4_num" id="stat4NumInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat4_num'] ?? ($stats['sessions_completed'] ?? '8000')) ?>">
+                            </div>
+                            <div class="form-group mb-2">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Display Text (Initial/Static)</label>
+                                <input type="text" name="hero_stat4_text" id="stat4TextInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat4_text'] ?? '8K+') ?>" placeholder="e.g. 8K+">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label style="font-size: 0.75rem; color: var(--text-muted);">Badge Label</label>
+                                <input type="text" name="hero_stat4_label" id="stat4LabelInput" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['hero_stat4_label'] ?? 'SESSIONS COMPLETED') ?>" placeholder="e.g. SESSIONS COMPLETED">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 4: HERO BACKGROUND SLIDES (SCROLLING IMAGES)
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Background Carousel Slides</h4>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">Dimmed ambient background loop (1920x1080 recommended)</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                        <?php 
+                        $slides = [
+                            1 => !empty($settings['hero_slide_1']) ? '../' . ltrim($settings['hero_slide_1'], '/') : '../assets/images/hero-poster-1.jpg',
+                            2 => !empty($settings['hero_slide_2']) ? '../' . ltrim($settings['hero_slide_2'], '/') : '../assets/images/hero-poster-2.jpg',
+                            3 => !empty($settings['hero_slide_3']) ? '../' . ltrim($settings['hero_slide_3'], '/') : '../assets/images/hero-poster-3.jpg',
+                        ];
+                        for ($s = 1; $s <= 3; $s++): ?>
+                            <div style="background: rgba(30, 21, 69, 0.35); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; text-align: center;">
+                                <div style="font-weight: 600; color: var(--gold); margin-bottom: 8px; font-size: 0.85rem;">Background Slide #<?= $s ?></div>
+                                <div style="height: 120px; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 10px; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
+                                    <img id="heroSlidePreview<?= $s ?>" src="<?= htmlspecialchars($slides[$s]) ?>" alt="Slide <?= $s ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <input type="file" name="hero_slide_<?= $s ?>" id="heroSlideInput<?= $s ?>" class="form-control form-control-sm" accept="image/*">
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 5: LIVE INTERACTIVE PREVIEW
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(15, 17, 23, 0.85); border: 1px solid rgba(243, 201, 102, 0.35); border-radius: 16px; padding: 28px 20px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px;">
+                        ✦ Live Hero Preview (Updates as you type) ✦
+                    </div>
+
+                    <div style="display: inline-block; padding: 5px 16px; border-radius: 9999px; background: rgba(243, 201, 102, 0.12); border: 1px solid rgba(243, 201, 102, 0.35); color: #F3C966; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;" id="previewBadge">
+                        <?= htmlspecialchars($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016') ?>
+                    </div>
+
+                    <h2 style="font-family: 'Cinzel', serif, Georgia; font-size: 2rem; color: #fff; margin-bottom: 12px; line-height: 1.2;">
+                        <span id="previewTitle"><?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?></span><br>
+                        <span id="previewTitleGold" style="color: #F3C966;"><?= htmlspecialchars($settings['hero_title_gold'] ?? 'Heal. Balance. Transform.') ?></span>
+                    </h2>
+
+                    <p id="previewSubtext" style="color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 620px; margin: 0 auto 20px; line-height: 1.6;">
+                        <?= htmlspecialchars(strip_tags($settings['hero_subtext'] ?? 'Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.')) ?>
+                    </p>
+
+                    <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-gold" id="previewBtn1" style="pointer-events: none; padding: 8px 20px; font-weight: 700;">
+                            <?= htmlspecialchars($settings['hero_cta1_text'] ?? 'Book Free Session') ?> →
+                        </button>
+                        <button type="button" class="btn btn-outline" id="previewBtn2" style="pointer-events: none; padding: 8px 20px; color: #fff; border-color: rgba(255,255,255,0.3);">
+                            <?= htmlspecialchars($settings['hero_cta2_text'] ?? 'Explore Courses') ?>
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 650px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px;">
+                        <div>
+                            <div id="previewStat1Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat1_text'] ?? '15K+') ?></div>
+                            <div id="previewStat1Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat1_label'] ?? 'LIVES HEALED') ?></div>
+                        </div>
+                        <div>
+                            <div id="previewStat2Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat2_text'] ?? '12+') ?></div>
+                            <div id="previewStat2Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat2_label'] ?? 'YEARS EXPERIENCE') ?></div>
+                        </div>
+                        <div>
+                            <div id="previewStat3Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat3_text'] ?? '10+') ?></div>
+                            <div id="previewStat3Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat3_label'] ?? 'COURSES OFFERED') ?></div>
+                        </div>
+                        <div>
+                            <div id="previewStat4Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat4_text'] ?? '8K+') ?></div>
+                            <div id="previewStat4Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat4_label'] ?? 'SESSIONS COMPLETED') ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                    <div class="flex-between">
+                        <button type="submit" class="btn btn-gold flex items-center gap-2">
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Homepage Hero Changes
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -941,7 +1288,7 @@ require_once 'includes/admin-header.php';
     <!-- =====================================================================
          TAB: FOOTER & LEGAL PAGES
          ===================================================================== -->
-    <div class="tab-content" id="tab-footer">
+    <div class="tab-content <?= $currentTab === 'footer' ? 'active' : '' ?>" id="tab-footer">
         <div class="admin-card">
             <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
                 <div>
@@ -1106,7 +1453,7 @@ require_once 'includes/admin-header.php';
     <!-- =====================================================================
          TAB 5: ADMIN ACCOUNT SECURITY
          ===================================================================== -->
-    <div class="tab-content" id="tab-account">
+    <div class="tab-content <?= $currentTab === 'account' ? 'active' : '' ?>" id="tab-account">
         <div class="admin-card">
             <h3 class="admin-card-title mb-3" style="color: var(--gold);">Administrator Credentials &amp; Password</h3>
             <form action="settings.php" method="POST">
@@ -1179,8 +1526,11 @@ function activateTab(tabId) {
         }
     });
 
-    // Update URL hash
+    // Update URL hash & query param
     window.location.hash = 'tab-' + tabId;
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '?tab=' + encodeURIComponent(tabId));
+    }
 }
 
 tabButtons.forEach(btn => {
@@ -1191,7 +1541,7 @@ tabButtons.forEach(btn => {
 });
 
 // Load Active Tab from URL Query Param or URL Hash
-window.addEventListener('DOMContentLoaded', () => {
+function initActiveTab() {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     const hash = window.location.hash.replace('#tab-', '');
@@ -1199,7 +1549,13 @@ window.addEventListener('DOMContentLoaded', () => {
     if (activeTab && document.getElementById('tab-' + activeTab)) {
         activateTab(activeTab);
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initActiveTab);
+} else {
+    initActiveTab();
+}
 
 // Instant Client-Side Image Previews for Branding Assets
 const logoFileInput = document.getElementById('logoFileInput');
@@ -1309,6 +1665,74 @@ if (newPass && strengthFill && strengthLabel) {
             strengthLabel.style.color = '#4ade80';
         }
     });
+}
+
+// Live Interactive Preview for Homepage Hero Customizer
+const heroBadgeInput = document.getElementById('heroBadgeInput');
+const previewBadge = document.getElementById('previewBadge');
+if (heroBadgeInput && previewBadge) {
+    heroBadgeInput.addEventListener('input', () => previewBadge.textContent = heroBadgeInput.value || '● ADAJAN, SURAT · EST. 2016');
+}
+
+const heroTitleInput = document.getElementById('heroTitleInput');
+const previewTitle = document.getElementById('previewTitle');
+if (heroTitleInput && previewTitle) {
+    heroTitleInput.addEventListener('input', () => previewTitle.textContent = heroTitleInput.value || 'Awaken Inner Harmony.');
+}
+
+const heroTitleGoldInput = document.getElementById('heroTitleGoldInput');
+const previewTitleGold = document.getElementById('previewTitleGold');
+if (heroTitleGoldInput && previewTitleGold) {
+    heroTitleGoldInput.addEventListener('input', () => previewTitleGold.textContent = heroTitleGoldInput.value || 'Heal. Balance. Transform.');
+}
+
+const heroSubtextInput = document.getElementById('heroSubtextInput');
+const previewSubtext = document.getElementById('previewSubtext');
+if (heroSubtextInput && previewSubtext) {
+    heroSubtextInput.addEventListener('input', () => {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = heroSubtextInput.value;
+        previewSubtext.textContent = tmp.textContent || tmp.innerText || '';
+    });
+}
+
+const heroCta1TextInput = document.getElementById('heroCta1TextInput');
+const previewBtn1 = document.getElementById('previewBtn1');
+if (heroCta1TextInput && previewBtn1) {
+    heroCta1TextInput.addEventListener('input', () => previewBtn1.textContent = (heroCta1TextInput.value || 'Book Free Session') + ' →');
+}
+
+const heroCta2TextInput = document.getElementById('heroCta2TextInput');
+const previewBtn2 = document.getElementById('previewBtn2');
+if (heroCta2TextInput && previewBtn2) {
+    heroCta2TextInput.addEventListener('input', () => previewBtn2.textContent = heroCta2TextInput.value || 'Explore Courses');
+}
+
+// 4 Stats and Slide previews
+for (let s = 1; s <= 4; s++) {
+    const textInp = document.getElementById('stat' + s + 'TextInput');
+    const labelInp = document.getElementById('stat' + s + 'LabelInput');
+    const prevText = document.getElementById('previewStat' + s + 'Text');
+    const prevLabel = document.getElementById('previewStat' + s + 'Label');
+
+    if (textInp && prevText) {
+        textInp.addEventListener('input', () => prevText.textContent = textInp.value);
+    }
+    if (labelInp && prevLabel) {
+        labelInp.addEventListener('input', () => prevLabel.textContent = labelInp.value.toUpperCase());
+    }
+
+    const slideInp = document.getElementById('heroSlideInput' + s);
+    const slideImg = document.getElementById('heroSlidePreview' + s);
+    if (slideInp && slideImg) {
+        slideInp.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => slideImg.src = e.target.result;
+                r.readAsDataURL(this.files[0]);
+            }
+        });
+    }
 }
 </script>
 

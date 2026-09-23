@@ -101,6 +101,11 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       </li>
       */ ?>
       <li>
+        <a href="settings.php?tab=homepage" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'homepage') ? 'active' : '' ?>">
+          <span class="nav-icon"><i data-lucide="sparkles"></i></span> Homepage Hero
+        </a>
+      </li>
+      <li>
         <a href="settings.php?tab=about" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'about') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="book-open"></i></span> About Us Page
         </a>

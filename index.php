@@ -230,30 +230,66 @@ if (empty($healerClientCarouselImages)) {
     }
 }
 
-// Dynamic Hero and Stats from $siteSettings and $siteStats
-$heroHeading = $siteSettings['hero_heading'] ?? 'Heal. Balance. Transform. Your Journey Starts Here';
-$heroSubtext = $siteSettings['hero_subtext'] ?? 'Guided by Dr. Chirag Gajjar (Reiki Grand Master) & Binal Gajjar (Crystal & Numerology Expert) — offering Reiki, Crystal Healing, Chakra Balancing & more.';
-$foundingYear = $siteSettings['founding_year'] ?? '2014';
+// Dynamic Hero Settings from $siteSettings and $siteStats
+$heroBadge = !empty($siteSettings['hero_badge']) ? $siteSettings['hero_badge'] : ('● ADAJAN, SURAT · EST. ' . ($siteSettings['founding_year'] ?? '2016'));
+$heroTitle = $siteSettings['hero_title'] ?? 'Awaken Inner Harmony.';
+$heroTitleGold = $siteSettings['hero_title_gold'] ?? 'Heal. Balance. Transform.';
+$heroHeadingRaw = $siteSettings['hero_heading'] ?? '';
+
+// Build dynamic headline
+if (!empty($heroHeadingRaw) && empty($siteSettings['hero_title'])) {
+    if (strpos($heroHeadingRaw, '<') !== false) {
+        $heroTitleHtml = $heroHeadingRaw;
+    } else {
+        $heroTitleHtml = htmlspecialchars($heroHeadingRaw);
+    }
+} else {
+    $heroTitleHtml = htmlspecialchars($heroTitle);
+    if (!empty($heroTitleGold)) {
+        $heroTitleHtml .= '<br><span class="hero-gold-text">' . htmlspecialchars($heroTitleGold) . '</span>';
+    }
+}
+
+$heroSubtext = !empty($siteSettings['hero_subtext']) 
+    ? $siteSettings['hero_subtext'] 
+    : 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.';
+
 $heroBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
 
 // Dynamic Homepage CTAs from Site Settings
-$cta1Text = !empty($siteSettings['hero_cta1_text']) ? $siteSettings['hero_cta1_text'] : 'Explore Healing Services';
-$cta1UrlRaw = !empty($siteSettings['hero_cta1_url']) ? $siteSettings['hero_cta1_url'] : 'services.php';
+$cta1Text = !empty($siteSettings['hero_cta1_text']) ? $siteSettings['hero_cta1_text'] : 'Book Free Session';
+$cta1UrlRaw = !empty($siteSettings['hero_cta1_url']) ? $siteSettings['hero_cta1_url'] : $heroBookingUrl;
 $cta1Url = (strpos($cta1UrlRaw, 'http') === 0 || strpos($cta1UrlRaw, '#') === 0) ? $cta1UrlRaw : BASE_URL . ltrim($cta1UrlRaw, '/');
 
-$cta2Text = !empty($siteSettings['hero_cta2_text']) ? $siteSettings['hero_cta2_text'] : 'Order Custom Bracelet';
-$cta2UrlRaw = !empty($siteSettings['hero_cta2_url']) ? $siteSettings['hero_cta2_url'] : 'order-bracelet.php';
+$cta2Text = !empty($siteSettings['hero_cta2_text']) ? $siteSettings['hero_cta2_text'] : 'Explore Courses';
+$cta2UrlRaw = !empty($siteSettings['hero_cta2_url']) ? $siteSettings['hero_cta2_url'] : 'courses.php';
 $cta2Url = (strpos($cta2UrlRaw, 'http') === 0 || strpos($cta2UrlRaw, '#') === 0) ? $cta2UrlRaw : BASE_URL . ltrim($cta2UrlRaw, '/');
 
 // Dynamic Bracelets Section Headings
 $braceletsHeading = !empty($siteSettings['bracelets_heading']) ? $siteSettings['bracelets_heading'] : 'Energized Astrological & Custom Crystal Bracelets';
 $braceletsDescription = !empty($siteSettings['bracelets_description']) ? $siteSettings['bracelets_description'] : 'Tailored specifically according to your date and place of birth or personalized healing intentions, charged with high-frequency Reiki symbols.';
 
-// Fallback values for site stats if needed
-$livesHealed = $siteStats['lives_healed']['stat_value'] ?? ($statsData['lives_healed']['stat_value'] ?? '30000');
-$yearsExp = $siteStats['years_experience']['stat_value'] ?? ($statsData['years_experience']['stat_value'] ?? '25');
-$courseLevels = $siteStats['course_levels']['stat_value'] ?? ($statsData['course_levels']['stat_value'] ?? '6');
-$sessionsDone = $siteStats['sessions_completed']['stat_value'] ?? ($statsData['sessions_completed']['stat_value'] ?? '25000');
+// Dynamic Hero Trust Counters & Stats
+$heroStat1Num = !empty($siteSettings['hero_stat1_num']) ? (int)$siteSettings['hero_stat1_num'] : (!empty($siteStats['lives_healed']['stat_value']) ? (int)$siteStats['lives_healed']['stat_value'] : 15000);
+$heroStat1Text = !empty($siteSettings['hero_stat1_text']) ? $siteSettings['hero_stat1_text'] : ($heroStat1Num >= 1000 ? floor($heroStat1Num / 1000) . 'K+' : $heroStat1Num . '+');
+$heroStat1Label = !empty($siteSettings['hero_stat1_label']) ? $siteSettings['hero_stat1_label'] : 'LIVES HEALED';
+
+$heroStat2Num = !empty($siteSettings['hero_stat2_num']) ? (int)$siteSettings['hero_stat2_num'] : (!empty($siteStats['years_experience']['stat_value']) ? (int)$siteStats['years_experience']['stat_value'] : 12);
+$heroStat2Text = !empty($siteSettings['hero_stat2_text']) ? $siteSettings['hero_stat2_text'] : ($heroStat2Num . '+');
+$heroStat2Label = !empty($siteSettings['hero_stat2_label']) ? $siteSettings['hero_stat2_label'] : 'YEARS EXPERIENCE';
+
+$heroStat3Num = !empty($siteSettings['hero_stat3_num']) ? (int)$siteSettings['hero_stat3_num'] : (!empty($siteStats['course_levels']['stat_value']) ? (int)$siteStats['course_levels']['stat_value'] : 10);
+$heroStat3Text = !empty($siteSettings['hero_stat3_text']) ? $siteSettings['hero_stat3_text'] : ($heroStat3Num . '+');
+$heroStat3Label = !empty($siteSettings['hero_stat3_label']) ? $siteSettings['hero_stat3_label'] : 'COURSES OFFERED';
+
+$heroStat4Num = !empty($siteSettings['hero_stat4_num']) ? (int)$siteSettings['hero_stat4_num'] : (!empty($siteStats['sessions_completed']['stat_value']) ? (int)$siteStats['sessions_completed']['stat_value'] : 8000);
+$heroStat4Text = !empty($siteSettings['hero_stat4_text']) ? $siteSettings['hero_stat4_text'] : ($heroStat4Num >= 1000 ? floor($heroStat4Num / 1000) . 'K+' : $heroStat4Num . '+');
+$heroStat4Label = !empty($siteSettings['hero_stat4_label']) ? $siteSettings['hero_stat4_label'] : 'SESSIONS COMPLETED';
+
+// Dynamic Hero Background Slides
+$heroSlide1 = !empty($siteSettings['hero_slide_1']) ? getCarouselImgUrl($siteSettings['hero_slide_1'], 'assets/images/hero-poster-1.jpg') : BASE_URL . 'assets/images/hero-poster-1.jpg';
+$heroSlide2 = !empty($siteSettings['hero_slide_2']) ? getCarouselImgUrl($siteSettings['hero_slide_2'], 'assets/images/hero-poster-2.jpg') : BASE_URL . 'assets/images/hero-poster-2.jpg';
+$heroSlide3 = !empty($siteSettings['hero_slide_3']) ? getCarouselImgUrl($siteSettings['hero_slide_3'], 'assets/images/hero-poster-3.jpg') : BASE_URL . 'assets/images/hero-poster-3.jpg';
 
 // Include Header
 include __DIR__ . '/includes/header.php';
@@ -262,20 +298,17 @@ include __DIR__ . '/includes/header.php';
 <!-- ==========================================================================
      1. HERO SECTION (Luminous White & Golden Sanctuary Theme)
      ========================================================================== -->
-<!-- ==========================================================================
-     1. HERO SECTION (Centered Luminous Sanctuary Theme with Dimmed Scrolling Images)
-     ========================================================================== -->
 <section class="hero-section hero-section-centered" id="hero">
     <!-- Scrolling Background Posters (Full Banner Size Scrolling Right to Left) -->
     <div class="hero-bg-scroller" aria-hidden="true">
         <div class="hero-bg-track">
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-1.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-2.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-3.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo htmlspecialchars($heroSlide1); ?>');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo htmlspecialchars($heroSlide2); ?>');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo htmlspecialchars($heroSlide3); ?>');"></div>
             <!-- Seamless loop duplicate -->
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-1.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-2.jpg');"></div>
-            <div class="hero-bg-slide" style="background-image: url('<?php echo BASE_URL; ?>assets/images/hero-poster-3.jpg');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo htmlspecialchars($heroSlide1); ?>');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo htmlspecialchars($heroSlide2); ?>');"></div>
+            <div class="hero-bg-slide" style="background-image: url('<?php echo htmlspecialchars($heroSlide3); ?>');"></div>
         </div>
     </div>
 
@@ -287,44 +320,43 @@ include __DIR__ . '/includes/header.php';
 
     <div class="container hero-container-center animate-on-scroll">
         <span class="hero-location-badge">
-            ● ADAJAN, SURAT · EST. <?php echo htmlspecialchars($foundingYear); ?>
+            <?php echo htmlspecialchars($heroBadge); ?>
         </span>
 
         <h1 class="hero-title">
-            Awaken Inner Harmony.<br>
-            <span class="hero-gold-text">Heal. Balance. Transform.</span>
+            <?php echo $heroTitleHtml; ?>
         </h1>
 
-        <p class="hero-subtext">
-            Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more.
-        </p>
+        <div class="hero-subtext">
+            <?php echo $heroSubtext; ?>
+        </div>
 
         <div class="hero-ctas">
-            <a href="<?php echo htmlspecialchars($heroBookingUrl); ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
-                Book Free Session <span class="btn-arrow">→</span>
+            <a href="<?php echo htmlspecialchars($cta1Url); ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
+                <?php echo htmlspecialchars($cta1Text); ?> <span class="btn-arrow">→</span>
             </a>
-            <a href="<?php echo BASE_URL; ?>courses.php" class="btn-secondary btn-hero-secondary">
-                Explore Courses
+            <a href="<?php echo htmlspecialchars($cta2Url); ?>" class="btn-secondary btn-hero-secondary">
+                <?php echo htmlspecialchars($cta2Text); ?>
             </a>
         </div>
 
         <!-- Centered Trust Stats Bar -->
         <div class="hero-trust-bar">
             <div class="trust-stat">
-                <div class="trust-stat-number stat-number" data-target="15000">15K+</div>
-                <div class="trust-stat-label">LIVES HEALED</div>
+                <div class="trust-stat-number stat-number" data-target="<?php echo $heroStat1Num; ?>"><?php echo htmlspecialchars($heroStat1Text); ?></div>
+                <div class="trust-stat-label"><?php echo htmlspecialchars($heroStat1Label); ?></div>
             </div>
             <div class="trust-stat">
-                <div class="trust-stat-number stat-number" data-target="12">12+</div>
-                <div class="trust-stat-label">YEARS EXPERIENCE</div>
+                <div class="trust-stat-number stat-number" data-target="<?php echo $heroStat2Num; ?>"><?php echo htmlspecialchars($heroStat2Text); ?></div>
+                <div class="trust-stat-label"><?php echo htmlspecialchars($heroStat2Label); ?></div>
             </div>
             <div class="trust-stat">
-                <div class="trust-stat-number stat-number" data-target="10">10+</div>
-                <div class="trust-stat-label">COURSES OFFERED</div>
+                <div class="trust-stat-number stat-number" data-target="<?php echo $heroStat3Num; ?>"><?php echo htmlspecialchars($heroStat3Text); ?></div>
+                <div class="trust-stat-label"><?php echo htmlspecialchars($heroStat3Label); ?></div>
             </div>
             <div class="trust-stat">
-                <div class="trust-stat-number stat-number" data-target="8000">8K+</div>
-                <div class="trust-stat-label">SESSIONS COMPLETED</div>
+                <div class="trust-stat-number stat-number" data-target="<?php echo $heroStat4Num; ?>"><?php echo htmlspecialchars($heroStat4Text); ?></div>
+                <div class="trust-stat-label"><?php echo htmlspecialchars($heroStat4Label); ?></div>
             </div>
         </div>
     </div>
