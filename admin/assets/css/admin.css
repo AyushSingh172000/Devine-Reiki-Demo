@@ -82,9 +82,24 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* Intelligent text override for legacy inline white text in templates */
-[style*="color: #ffffff"]:not(.btn):not(.badge):not(.sidebar-badge):not(.notif-badge):not(.tag-chip):not(.btn-gold):not(.btn-danger):not(.btn-purple):not(.btn-whatsapp):not(.btn-email):not(.btn-signin),
-[style*="color: #fff"]:not(.btn):not(.badge):not(.sidebar-badge):not(.notif-badge):not(.tag-chip):not(.btn-gold):not(.btn-danger):not(.btn-purple):not(.btn-whatsapp):not(.btn-email):not(.btn-signin) {
+[style*="color: #ffffff"]:not(.btn):not(.badge):not(.sidebar-badge):not(.notif-badge):not(.tag-chip):not(.btn-gold):not(.btn-danger):not(.btn-purple):not(.btn-whatsapp):not(.btn-email):not(.btn-signin):not(#waLivePreviewCard *):not(.wa-preview-card *),
+[style*="color: #fff"]:not(.btn):not(.badge):not(.sidebar-badge):not(.notif-badge):not(.tag-chip):not(.btn-gold):not(.btn-danger):not(.btn-purple):not(.btn-whatsapp):not(.btn-email):not(.btn-signin):not(#waLivePreviewCard *):not(.wa-preview-card *) {
   color: var(--text-primary) !important;
+}
+
+/* WhatsApp Live Preview Modal Text Colors */
+#waLivePreviewCard h4,
+#waLivePreviewCard #previewWaTitle,
+#waLivePreviewCard .preview-wa-pill-item,
+#waLivePreviewCard .preview-wa-pill-item span,
+#waLivePreviewCard .preview-wa-pill-title {
+  color: #ffffff !important;
+}
+#waLivePreviewCard #previewWaSubtitle {
+  color: #55ca7b !important;
+}
+#waLivePreviewCard #previewWaLabel {
+  color: rgba(255, 255, 255, 0.45) !important;
 }
 
 /* Custom Refined Scrollbar */

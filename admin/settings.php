@@ -1689,8 +1689,24 @@ if (!in_array($currentTab, $validTabs)) {
                         <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Live Website Preview
                     </div>
 
+                    <!-- Scoped Styles for WhatsApp Preview Modal (Ensures text stays clean white on dark background) -->
+                    <style>
+                        #waLivePreviewCard h4#previewWaTitle,
+                        #waLivePreviewCard .preview-wa-pill-item,
+                        #waLivePreviewCard .preview-wa-pill-item span,
+                        #waLivePreviewCard .preview-wa-pill-title {
+                            color: #ffffff !important;
+                        }
+                        #waLivePreviewCard #previewWaSubtitle {
+                            color: #55ca7b !important;
+                        }
+                        #waLivePreviewCard #previewWaLabel {
+                            color: rgba(255, 255, 255, 0.45) !important;
+                        }
+                    </style>
+
                     <!-- Simulated Widget Card (matches screenshot) -->
-                    <div style="background: #111722; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7); overflow: hidden; font-family: 'Inter', sans-serif;">
+                    <div id="waLivePreviewCard" class="wa-preview-card" style="background: #111722; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7); overflow: hidden; font-family: 'Inter', sans-serif;">
                         <!-- Header -->
                         <div style="background: #19271e; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
                             <div style="display: flex; align-items: center; gap: 10px;">
@@ -1700,8 +1716,8 @@ if (!in_array($currentTab, $validTabs)) {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h4 id="previewWaTitle" style="color: #ffffff; font-size: 0.95rem; font-weight: 700; margin: 0; line-height: 1.2;"><?= htmlspecialchars($settings['wa_modal_title'] ?? 'How can we help?') ?></h4>
-                                    <p id="previewWaSubtitle" style="color: #55ca7b; font-size: 0.72rem; margin: 2px 0 0 0; font-weight: 500;"><?= htmlspecialchars($settings['wa_modal_subtitle'] ?? 'Reiki Bliss · Usually replies in hours') ?></p>
+                                    <h4 id="previewWaTitle" style="color: #ffffff !important; font-size: 0.95rem; font-weight: 700; margin: 0; line-height: 1.2;"><?= htmlspecialchars($settings['wa_modal_title'] ?? 'How can we help?') ?></h4>
+                                    <p id="previewWaSubtitle" style="color: #55ca7b !important; font-size: 0.72rem; margin: 2px 0 0 0; font-weight: 500;"><?= htmlspecialchars($settings['wa_modal_subtitle'] ?? 'Reiki Bliss · Usually replies in hours') ?></p>
                                 </div>
                             </div>
                             <div style="background: rgba(255, 255, 255, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.7); font-size: 0.8rem;">✕</div>
@@ -1709,7 +1725,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                         <!-- Body -->
                         <div style="padding: 16px;">
-                            <span id="previewWaLabel" style="display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.45); margin-bottom: 12px;"><?= htmlspecialchars($settings['wa_modal_label'] ?? "WHAT'S THIS ABOUT?") ?></span>
+                            <span id="previewWaLabel" style="display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.45) !important; margin-bottom: 12px;"><?= htmlspecialchars($settings['wa_modal_label'] ?? "WHAT'S THIS ABOUT?") ?></span>
                             
                             <div id="previewWaOptionsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto;">
                                 <?php foreach ($waTemplates as $tmpl): 
@@ -1717,9 +1733,9 @@ if (!in_array($currentTab, $validTabs)) {
                                     $title = $tmpl['title'] ?? '';
                                     if (empty($title)) continue;
                                 ?>
-                                <div class="preview-wa-pill-item" style="display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 9px 14px; color: #ffffff; font-size: 0.82rem; font-weight: 500; box-sizing: border-box;">
+                                <div class="preview-wa-pill-item" style="display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 9px 14px; color: #ffffff !important; font-size: 0.82rem; font-weight: 500; box-sizing: border-box;">
                                     <span style="font-size: 1rem;"><?= htmlspecialchars($icon) ?></span>
-                                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($title) ?></span>
+                                    <span class="preview-wa-pill-title" style="color: #ffffff !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($title) ?></span>
                                 </div>
                                 <?php endforeach; ?>
                             </div>
@@ -2020,14 +2036,15 @@ function updateWaPreviewList() {
         
         const pill = document.createElement('div');
         pill.className = 'preview-wa-pill-item';
-        pill.style.cssText = 'display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 9px 14px; color: #ffffff; font-size: 0.82rem; font-weight: 500; box-sizing: border-box;';
+        pill.style.cssText = 'display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 9px 14px; color: #ffffff !important; font-size: 0.82rem; font-weight: 500; box-sizing: border-box;';
         
         const iconSpan = document.createElement('span');
         iconSpan.style.fontSize = '1rem';
         iconSpan.textContent = icon;
         
         const titleSpan = document.createElement('span');
-        titleSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+        titleSpan.className = 'preview-wa-pill-title';
+        titleSpan.style.cssText = 'color: #ffffff !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
         titleSpan.textContent = title;
         
         pill.appendChild(iconSpan);
