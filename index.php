@@ -416,8 +416,9 @@ include __DIR__ . '/includes/header.php';
 </section>
 
 <!-- ==========================================================================
-     5. TESTIMONIAL IMAGES CAROUSEL
+     5. TESTIMONIAL IMAGES CAROUSEL (HIDDEN - CLIENT HAS NO TEAM YET)
      ========================================================================== -->
+<?php if (false): // Temporarily hidden as client does not have a team yet ?>
 <section class="testimonials-photos-section" style="padding: 40px 0; background-color: var(--light-cream);">
     <div class="infinite-carousel testimonials-photos-row">
         <div class="infinite-carousel-track">
@@ -429,6 +430,7 @@ include __DIR__ . '/includes/header.php';
         </div>
     </div>
 </section>
+<?php endif; ?>
 
 <!-- ==========================================================================
      6. TESTIMONIALS TEXT SECTION
