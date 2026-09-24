@@ -233,11 +233,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             setSetting($pdo, 'hero_heading', $heading);
             setSetting($pdo, 'hero_subtext', $subtext);
 
-            // 2. Hero Call-To-Action Buttons
-            setSetting($pdo, 'hero_cta1_text', trim($_POST['hero_cta1_text'] ?? ''));
-            setSetting($pdo, 'hero_cta1_url', trim($_POST['hero_cta1_url'] ?? ''));
-            setSetting($pdo, 'hero_cta2_text', trim($_POST['hero_cta2_text'] ?? ''));
-            setSetting($pdo, 'hero_cta2_url', trim($_POST['hero_cta2_url'] ?? ''));
+            // 2. Hero Call-To-Action Buttons (Guarded when Section 2 is hidden/commented)
+            if (isset($_POST['hero_cta1_text'])) {
+                setSetting($pdo, 'hero_cta1_text', trim($_POST['hero_cta1_text'] ?? ''));
+                setSetting($pdo, 'hero_cta1_url', trim($_POST['hero_cta1_url'] ?? ''));
+                setSetting($pdo, 'hero_cta2_text', trim($_POST['hero_cta2_text'] ?? ''));
+                setSetting($pdo, 'hero_cta2_url', trim($_POST['hero_cta2_url'] ?? ''));
+            }
 
             // 3. Hero Trust Counters & Stats Figures
             $stat1Num = (string)(int)($_POST['hero_stat1_num'] ?? 15000);
@@ -1111,13 +1113,14 @@ if (!in_array($currentTab, $validTabs)) {
                         <label class="form-label">Hero Subtext Paragraph</label>
                         <textarea name="hero_subtext" id="heroSubtextInput" class="form-control" rows="3" 
                                   placeholder="e.g. Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more."><?= htmlspecialchars($settings['hero_subtext'] ?? 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.') ?></textarea>
-                        <div class="form-hint">HTML allowed (e.g. <code>&lt;strong&gt;Grand Master Ms Anupama Agrawal&lt;/strong&gt;</code>).</div>
+                        <!-- <div class="form-hint">HTML allowed (e.g. <code>&lt;strong&gt;Grand Master Ms Anupama Agrawal&lt;/strong&gt;</code>).</div> -->
                     </div>
                 </div>
 
                 <!-- -------------------------------------------------------------
-                     SECTION 2: CALL-TO-ACTION BUTTONS
+                     SECTION 2: CALL-TO-ACTION BUTTONS (COMMENTED OUT)
                      ------------------------------------------------------------- -->
+                <?php /* SECTION 2 COMMENTED OUT AS REQUESTED:
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
@@ -1155,6 +1158,7 @@ if (!in_array($currentTab, $validTabs)) {
                         </div>
                     </div>
                 </div>
+                */ ?>
 
                 <!-- -------------------------------------------------------------
                      SECTION 3: HERO TRUST COUNTERS & IMPACT FIGURES
@@ -1162,7 +1166,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex-between mb-3">
                         <div class="flex items-center gap-2">
-                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
                             <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Trust Counters &amp; Impact Figures</h4>
                         </div>
                         <span class="text-muted" style="font-size: 0.8rem;">Controls the 4 golden numbers below the hero buttons</span>
@@ -1257,7 +1261,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex-between mb-3">
                         <div class="flex items-center gap-2">
-                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
                             <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Background Carousel Slides</h4>
                         </div>
                         <span class="text-muted" style="font-size: 0.8rem;">Dimmed ambient background loop (1920x1080 recommended)</span>
