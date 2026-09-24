@@ -26,7 +26,7 @@ if (!function_exists('setStat')) {
 // 1. HANDLE FORM SUBMISSIONS BY TAB
 // =========================================================================
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $tab = trim($_POST['tab'] ?? 'general');
 
     // TAB 1: GENERAL SETTINGS
@@ -396,6 +396,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: settings.php#tab-account");
         exit;
     }
+
+    // TAB 6: WHATSAPP WIDGET & TEMPLATES
+    if ($tab === 'whatsapp') {
+        try {
+            $modalTitle = trim($_POST['wa_modal_title'] ?? 'How can we help?');
+            $modalSubtitle = trim($_POST['wa_modal_subtitle'] ?? 'Reiki Bliss · Usually replies in hours');
+            $modalLabel = trim($_POST['wa_modal_label'] ?? "WHAT'S THIS ABOUT?");
+            
+            setSetting($pdo, 'wa_modal_title', $modalTitle);
+            setSetting($pdo, 'wa_modal_subtitle', $modalSubtitle);
+            setSetting($pdo, 'wa_modal_label', $modalLabel);
+
+            // Process repeater items
+            $icons = $_POST['tmpl_icon'] ?? [];
+            $titles = $_POST['tmpl_title'] ?? [];
+            $messages = $_POST['tmpl_message'] ?? [];
+
+            $templates = [];
+            if (is_array($titles)) {
+                for ($i = 0; $i < count($titles); $i++) {
+                    $title = trim($titles[$i] ?? '');
+                    if ($title === '') continue; // Skip empty rows
+                    $icon = trim($icons[$i] ?? '💬');
+                    $msg = trim($messages[$i] ?? '');
+                    $templates[] = [
+                        'icon' => $icon !== '' ? $icon : '💬',
+                        'title' => $title,
+                        'message' => $msg
+                    ];
+                }
+            }
+
+            setSetting($pdo, 'wa_templates', json_encode($templates, JSON_UNESCAPED_UNICODE));
+            $_SESSION['flash_success'] = "WhatsApp inquiry widget & templates updated successfully!";
+        } catch (Exception $e) {
+            $_SESSION['flash_error'] = "Error updating WhatsApp settings: " . $e->getMessage();
+        }
+        header("Location: settings.php?tab=whatsapp#tab-whatsapp");
+        exit;
+    }
 }
 
 // =========================================================================
@@ -423,13 +463,28 @@ if (!empty($settings['core_values'])) {
     $coreValues = json_decode($settings['core_values'], true) ?: [];
 }
 
+$waTemplates = [];
+if (!empty($settings['wa_templates'])) {
+    $waTemplates = json_decode($settings['wa_templates'], true);
+}
+if (!is_array($waTemplates) || empty($waTemplates)) {
+    $waTemplates = [
+        ['icon' => '🙏', 'title' => 'Book a Healing Session', 'message' => 'Hello Reiki Bliss! I would like to book a healing session.'],
+        ['icon' => '📚', 'title' => 'Enquire About a Course', 'message' => 'Hello Reiki Bliss! I would like to enquire about your courses.'],
+        ['icon' => '🔮', 'title' => 'Order Birth Chart Bracelet', 'message' => 'Hello Reiki Bliss! I would like to order a Birth Chart Bracelet.'],
+        ['icon' => '✨', 'title' => 'Order Customized Bracelet', 'message' => 'Hello Reiki Bliss! I would like to order a Customized Bracelet.'],
+        ['icon' => '🛍️', 'title' => 'Product / Shop Query', 'message' => 'Hello Reiki Bliss! I have a question regarding your spiritual products/shop.'],
+        ['icon' => '💬', 'title' => 'Something Else', 'message' => 'Hello Reiki Bliss! I have a general query.']
+    ];
+}
+
 $pageTitle = 'Site Settings';
 require_once 'includes/admin-header.php';
 ?>
 
 <?php
 $currentTab = $_GET['tab'] ?? 'general';
-$validTabs = ['general', 'branding', 'about', 'homepage', 'footer', 'account'];
+$validTabs = ['general', 'branding', 'about', 'homepage', 'footer', 'whatsapp', 'account'];
 if (!in_array($currentTab, $validTabs)) {
     $currentTab = 'general';
 }
@@ -459,6 +514,9 @@ if (!in_array($currentTab, $validTabs)) {
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'footer' ? 'active' : '' ?> flex items-center gap-1" data-tab="footer">
             <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer &amp; Legal
+        </button>
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'whatsapp' ? 'active' : '' ?> flex items-center gap-1" data-tab="whatsapp">
+            <i data-lucide="message-square" style="width: 16px; height: 16px;"></i> WhatsApp Widget
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'account' ? 'active' : '' ?> flex items-center gap-1" data-tab="account">
             <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i> Admin Account
@@ -1502,6 +1560,186 @@ if (!in_array($currentTab, $validTabs)) {
             </form>
         </div>
     </div>
+
+    <!-- =====================================================================
+         TAB 6: WHATSAPP WIDGET & TEMPLATES
+         ===================================================================== -->
+    <div class="tab-content <?= $currentTab === 'whatsapp' ? 'active' : '' ?>" id="tab-whatsapp">
+        <form action="settings.php" method="POST" id="waSettingsForm">
+            <input type="hidden" name="tab" value="whatsapp">
+
+            <!-- Card 1: Widget Header Configuration -->
+            <div class="admin-card mb-4">
+                <div class="flex-between mb-3">
+                    <div>
+                        <h3 class="admin-card-title" style="color: var(--gold); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="message-square" style="width: 20px; height: 20px; color: #25D366;"></i>
+                            WhatsApp Floating Widget Configuration
+                        </h3>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">
+                            Configure the greeting text, section header, and status message shown in the visitor popup.
+                        </p>
+                    </div>
+                    <div style="background: rgba(37, 211, 102, 0.12); border: 1px solid rgba(37, 211, 102, 0.3); border-radius: 8px; padding: 6px 14px; font-size: 0.82rem; color: #55ca7b; display: flex; align-items: center; gap: 6px;">
+                        <span>Target Phone:</span>
+                        <strong><?= htmlspecialchars($settings['whatsapp'] ?? '+91 9726581787') ?></strong>
+                        <a href="settings.php?tab=general" style="color: var(--gold); text-decoration: underline; margin-left: 4px;" title="Edit phone number in General Settings">Edit</a>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="waModalTitleInp">Modal Header Title</label>
+                        <input type="text" name="wa_modal_title" id="waModalTitleInp" class="form-control" value="<?= htmlspecialchars($settings['wa_modal_title'] ?? 'How can we help?') ?>" placeholder="e.g. How can we help?">
+                        <span class="form-hint">Main heading displayed in the green-tinted header bar.</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="waModalSubtitleInp">Modal Subtitle / Response Time</label>
+                        <input type="text" name="wa_modal_subtitle" id="waModalSubtitleInp" class="form-control" value="<?= htmlspecialchars($settings['wa_modal_subtitle'] ?? 'Reiki Bliss · Usually replies in hours') ?>" placeholder="e.g. Reiki Bliss · Usually replies in hours">
+                        <span class="form-hint">Status text shown below the modal title.</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="waModalLabelInp">Section Heading Label</label>
+                    <input type="text" name="wa_modal_label" id="waModalLabelInp" class="form-control" value="<?= htmlspecialchars($settings['wa_modal_label'] ?? "WHAT'S THIS ABOUT?") ?>" placeholder="e.g. WHAT'S THIS ABOUT?">
+                    <span class="form-hint">Category label above the list of quick-reply buttons (e.g. WHAT'S THIS ABOUT?).</span>
+                </div>
+            </div>
+
+            <!-- Two-Column Layout: Repeater Editor (Left) & Live Preview (Right) -->
+            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start;">
+                
+                <!-- Left Column: Template Messages Repeater -->
+                <div class="admin-card">
+                    <div class="flex-between mb-3">
+                        <div>
+                            <h3 class="admin-card-title" style="color: var(--gold); font-size: 1.05rem;">
+                                Quick-Reply Template Messages
+                            </h3>
+                            <p class="text-muted" style="font-size: 0.82rem; margin-top: 2px;">
+                                Customize the clickable topic buttons and their pre-filled WhatsApp messages.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Emoji Helpers -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 0.78rem; color: var(--text-muted);">Quick Emojis:</span>
+                        <?php 
+                        $quickEmojis = ['🙏', '📚', '🔮', '✨', '🛍️', '💬', '🧘', '💖', '🌿', '🌟', '🕉️', '🌸', '💎', '🕊️'];
+                        foreach ($quickEmojis as $em): ?>
+                            <button type="button" class="quick-emoji-btn" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.95rem; transition: transform 0.1s;" title="Click to insert <?= $em ?>" data-emoji="<?= $em ?>"><?= $em ?></button>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <!-- Repeater Container -->
+                    <div id="waTemplatesContainer" style="display: flex; flex-direction: column; gap: 14px;">
+                        <?php foreach ($waTemplates as $idx => $tmpl): 
+                            $icon = $tmpl['icon'] ?? '💬';
+                            $title = $tmpl['title'] ?? '';
+                            $msg = $tmpl['message'] ?? '';
+                        ?>
+                        <div class="wa-tmpl-row" style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; position: relative;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <span class="wa-row-index-badge" style="background: rgba(197, 160, 89, 0.15); color: var(--gold); font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">
+                                    OPTION #<?= ($idx + 1) ?>
+                                </span>
+                                <button type="button" class="btn-remove-wa-tmpl" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; border-radius: 6px; padding: 4px 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Remove
+                                </button>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 80px 1fr; gap: 10px; margin-bottom: 10px;">
+                                <div>
+                                    <label class="form-label" style="font-size: 0.76rem;">Icon</label>
+                                    <input type="text" name="tmpl_icon[]" class="form-control wa-tmpl-icon-input" value="<?= htmlspecialchars($icon) ?>" style="text-align: center; font-size: 1.25rem;" maxlength="8" placeholder="🙏">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.76rem;">Button Topic Title</label>
+                                    <input type="text" name="tmpl_title[]" class="form-control wa-tmpl-title-input" value="<?= htmlspecialchars($title) ?>" placeholder="e.g. Book a Healing Session" required>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="form-label" style="font-size: 0.76rem;">Pre-filled WhatsApp Message</label>
+                                <textarea name="tmpl_message[]" class="form-control wa-tmpl-msg-input" rows="2" placeholder="e.g. Hello Reiki Bliss! I would like to book a healing session." style="font-size: 0.85rem; resize: vertical;"><?= htmlspecialchars($msg) ?></textarea>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <!-- Add Button -->
+                    <div style="margin-top: 16px;">
+                        <button type="button" id="addWaTmplBtn" class="btn btn-outline" style="width: 100%; border-style: dashed; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> + Add Another Template Option
+                        </button>
+                    </div>
+
+                    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--card-border);">
+                        <button type="submit" class="btn btn-gold" style="padding: 12px 28px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i> Save WhatsApp Settings
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Live Interactive Preview -->
+                <div style="position: sticky; top: 20px;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Live Website Preview
+                    </div>
+
+                    <!-- Simulated Widget Card (matches screenshot) -->
+                    <div style="background: #111722; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7); overflow: hidden; font-family: 'Inter', sans-serif;">
+                        <!-- Header -->
+                        <div style="background: #19271e; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 38px; height: 38px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(37, 211, 102, 0.4);">
+                                    <svg width="20" height="20" fill="#ffffff" viewBox="0 0 24 24">
+                                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 id="previewWaTitle" style="color: #ffffff; font-size: 0.95rem; font-weight: 700; margin: 0; line-height: 1.2;"><?= htmlspecialchars($settings['wa_modal_title'] ?? 'How can we help?') ?></h4>
+                                    <p id="previewWaSubtitle" style="color: #55ca7b; font-size: 0.72rem; margin: 2px 0 0 0; font-weight: 500;"><?= htmlspecialchars($settings['wa_modal_subtitle'] ?? 'Reiki Bliss · Usually replies in hours') ?></p>
+                                </div>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.7); font-size: 0.8rem;">✕</div>
+                        </div>
+
+                        <!-- Body -->
+                        <div style="padding: 16px;">
+                            <span id="previewWaLabel" style="display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.45); margin-bottom: 12px;"><?= htmlspecialchars($settings['wa_modal_label'] ?? "WHAT'S THIS ABOUT?") ?></span>
+                            
+                            <div id="previewWaOptionsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto;">
+                                <?php foreach ($waTemplates as $tmpl): 
+                                    $icon = $tmpl['icon'] ?? '💬';
+                                    $title = $tmpl['title'] ?? '';
+                                    if (empty($title)) continue;
+                                ?>
+                                <div class="preview-wa-pill-item" style="display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 9px 14px; color: #ffffff; font-size: 0.82rem; font-weight: 500; box-sizing: border-box;">
+                                    <span style="font-size: 1rem;"><?= htmlspecialchars($icon) ?></span>
+                                    <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($title) ?></span>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Trigger Button below -->
+                    <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                        <div style="background: #25D366; color: #ffffff; border-radius: 30px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                            <span>WhatsApp</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -1734,6 +1972,173 @@ for (let s = 1; s <= 4; s++) {
         });
     }
 }
+
+// =========================================================================
+// WhatsApp Settings Live Preview & Repeater Controller
+// =========================================================================
+const waModalTitleInp = document.getElementById('waModalTitleInp');
+const waModalSubtitleInp = document.getElementById('waModalSubtitleInp');
+const waModalLabelInp = document.getElementById('waModalLabelInp');
+
+const previewWaTitle = document.getElementById('previewWaTitle');
+const previewWaSubtitle = document.getElementById('previewWaSubtitle');
+const previewWaLabel = document.getElementById('previewWaLabel');
+const previewWaOptionsList = document.getElementById('previewWaOptionsList');
+const waTemplatesContainer = document.getElementById('waTemplatesContainer');
+const addWaTmplBtn = document.getElementById('addWaTmplBtn');
+
+let lastFocusedIconInp = null;
+
+if (waModalTitleInp && previewWaTitle) {
+    waModalTitleInp.addEventListener('input', () => {
+        previewWaTitle.textContent = waModalTitleInp.value || 'How can we help?';
+    });
+}
+
+if (waModalSubtitleInp && previewWaSubtitle) {
+    waModalSubtitleInp.addEventListener('input', () => {
+        previewWaSubtitle.textContent = waModalSubtitleInp.value || 'Reiki Bliss · Usually replies in hours';
+    });
+}
+
+if (waModalLabelInp && previewWaLabel) {
+    waModalLabelInp.addEventListener('input', () => {
+        previewWaLabel.textContent = waModalLabelInp.value || "WHAT'S THIS ABOUT?";
+    });
+}
+
+function updateWaPreviewList() {
+    if (!previewWaOptionsList || !waTemplatesContainer) return;
+    const rows = waTemplatesContainer.querySelectorAll('.wa-tmpl-row');
+    previewWaOptionsList.innerHTML = '';
+    
+    rows.forEach(row => {
+        const iconInp = row.querySelector('.wa-tmpl-icon-input');
+        const titleInp = row.querySelector('.wa-tmpl-title-input');
+        const icon = (iconInp && iconInp.value.trim()) || '💬';
+        const title = (titleInp && titleInp.value.trim()) || 'Inquiry Option';
+        
+        const pill = document.createElement('div');
+        pill.className = 'preview-wa-pill-item';
+        pill.style.cssText = 'display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 9px 14px; color: #ffffff; font-size: 0.82rem; font-weight: 500; box-sizing: border-box;';
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.style.fontSize = '1rem';
+        iconSpan.textContent = icon;
+        
+        const titleSpan = document.createElement('span');
+        titleSpan.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+        titleSpan.textContent = title;
+        
+        pill.appendChild(iconSpan);
+        pill.appendChild(titleSpan);
+        previewWaOptionsList.appendChild(pill);
+    });
+}
+
+function reindexWaRows() {
+    if (!waTemplatesContainer) return;
+    const rows = waTemplatesContainer.querySelectorAll('.wa-tmpl-row');
+    rows.forEach((row, idx) => {
+        const badge = row.querySelector('.wa-row-index-badge');
+        if (badge) badge.textContent = `OPTION #${idx + 1}`;
+    });
+    updateWaPreviewList();
+}
+
+function bindWaRowEvents(row) {
+    const iconInp = row.querySelector('.wa-tmpl-icon-input');
+    const titleInp = row.querySelector('.wa-tmpl-title-input');
+    const removeBtn = row.querySelector('.btn-remove-wa-tmpl');
+
+    if (iconInp) {
+        iconInp.addEventListener('focus', () => { lastFocusedIconInp = iconInp; });
+        iconInp.addEventListener('input', updateWaPreviewList);
+    }
+    if (titleInp) {
+        titleInp.addEventListener('input', updateWaPreviewList);
+    }
+    if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+            const rows = waTemplatesContainer.querySelectorAll('.wa-tmpl-row');
+            if (rows.length <= 1) {
+                alert('You must have at least one WhatsApp inquiry template.');
+                return;
+            }
+            row.remove();
+            reindexWaRows();
+        });
+    }
+}
+
+if (waTemplatesContainer) {
+    waTemplatesContainer.querySelectorAll('.wa-tmpl-row').forEach(bindWaRowEvents);
+}
+
+if (addWaTmplBtn && waTemplatesContainer) {
+    addWaTmplBtn.addEventListener('click', () => {
+        const rows = waTemplatesContainer.querySelectorAll('.wa-tmpl-row');
+        const nextIndex = rows.length + 1;
+        
+        const newRow = document.createElement('div');
+        newRow.className = 'wa-tmpl-row';
+        newRow.style.cssText = 'background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; position: relative;';
+        newRow.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <span class="wa-row-index-badge" style="background: rgba(197, 160, 89, 0.15); color: var(--gold); font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">
+                    OPTION #${nextIndex}
+                </span>
+                <button type="button" class="btn-remove-wa-tmpl" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; border-radius: 6px; padding: 4px 8px; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Remove
+                </button>
+            </div>
+            <div style="display: grid; grid-template-columns: 80px 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label class="form-label" style="font-size: 0.76rem;">Icon</label>
+                    <input type="text" name="tmpl_icon[]" class="form-control wa-tmpl-icon-input" value="💬" style="text-align: center; font-size: 1.25rem;" maxlength="8" placeholder="💬">
+                </div>
+                <div>
+                    <label class="form-label" style="font-size: 0.76rem;">Button Topic Title</label>
+                    <input type="text" name="tmpl_title[]" class="form-control wa-tmpl-title-input" value="" placeholder="e.g. Session Inquiry" required>
+                </div>
+            </div>
+            <div>
+                <label class="form-label" style="font-size: 0.76rem;">Pre-filled WhatsApp Message</label>
+                <textarea name="tmpl_message[]" class="form-control wa-tmpl-msg-input" rows="2" placeholder="e.g. Hello Reiki Bliss! I would like to inquire about..." style="font-size: 0.85rem; resize: vertical;"></textarea>
+            </div>
+        `;
+
+        waTemplatesContainer.appendChild(newRow);
+        bindWaRowEvents(newRow);
+        reindexWaRows();
+        
+        // Re-render Lucide icons for the new button
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
+
+        const newTitleInp = newRow.querySelector('.wa-tmpl-title-input');
+        if (newTitleInp) newTitleInp.focus();
+    });
+}
+
+// Quick Emoji helpers click handling
+document.querySelectorAll('.quick-emoji-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const em = this.getAttribute('data-emoji') || this.textContent.trim();
+        let targetInp = lastFocusedIconInp;
+        if (!targetInp || !document.contains(targetInp)) {
+            const allIcons = document.querySelectorAll('.wa-tmpl-icon-input');
+            targetInp = allIcons[allIcons.length - 1];
+        }
+        if (targetInp) {
+            targetInp.value = em;
+            targetInp.dispatchEvent(new Event('input', { bubbles: true }));
+            targetInp.focus();
+        }
+    });
+});
 </script>
 
 <?php require_once 'includes/admin-footer.php'; ?>

@@ -147,6 +147,11 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
           <?php endif; ?>
         </a>
       </li>
+      <li>
+        <a href="settings.php?tab=whatsapp" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'whatsapp') ? 'active' : '' ?>">
+          <span class="nav-icon"><i data-lucide="message-square"></i></span> WhatsApp Templates
+        </a>
+      </li>
 
       <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> SETTINGS</div>
       <li>

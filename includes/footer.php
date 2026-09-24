@@ -14,6 +14,26 @@ $footerCtaBtnUrl = !empty($siteSettings['footer_cta_btn_url']) ? $siteSettings['
 
 $footerCopyrightTpl = !empty($siteSettings['footer_copyright']) ? $siteSettings['footer_copyright'] : '&copy; {year} ' . htmlspecialchars(SITE_NAME) . ' Healing Center. All sacred rights reserved.';
 $footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
+
+// Dynamic WhatsApp Modal Settings & Templates
+$footerWaModalTitle = !empty($siteSettings['wa_modal_title']) ? $siteSettings['wa_modal_title'] : 'How can we help?';
+$footerWaModalSubtitle = !empty($siteSettings['wa_modal_subtitle']) ? $siteSettings['wa_modal_subtitle'] : 'Reiki Bliss · Usually replies in hours';
+$footerWaModalLabel = !empty($siteSettings['wa_modal_label']) ? $siteSettings['wa_modal_label'] : "WHAT'S THIS ABOUT?";
+
+$footerWaTemplates = [];
+if (!empty($siteSettings['wa_templates'])) {
+    $footerWaTemplates = json_decode($siteSettings['wa_templates'], true);
+}
+if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
+    $footerWaTemplates = [
+        ['icon' => '🙏', 'title' => 'Book a Healing Session', 'message' => 'Hello Reiki Bliss! I would like to book a healing session.'],
+        ['icon' => '📚', 'title' => 'Enquire About a Course', 'message' => 'Hello Reiki Bliss! I would like to enquire about your courses.'],
+        ['icon' => '🔮', 'title' => 'Order Birth Chart Bracelet', 'message' => 'Hello Reiki Bliss! I would like to order a Birth Chart Bracelet.'],
+        ['icon' => '✨', 'title' => 'Order Customized Bracelet', 'message' => 'Hello Reiki Bliss! I would like to order a Customized Bracelet.'],
+        ['icon' => '🛍️', 'title' => 'Product / Shop Query', 'message' => 'Hello Reiki Bliss! I have a question regarding your spiritual products/shop.'],
+        ['icon' => '💬', 'title' => 'Something Else', 'message' => 'Hello Reiki Bliss! I have a general query.']
+    ];
+}
 ?>
 
 <!-- Footer Section -->
@@ -142,7 +162,7 @@ $footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
 </footer>
 
 <!-- Interactive WhatsApp Inquiry Modal -->
-<div class="wa-modal-wrapper" id="wa-modal-wrapper" aria-hidden="true">
+<div class="wa-modal-wrapper" id="wa-modal-wrapper" aria-hidden="true" data-phone="<?php echo htmlspecialchars($footerCleanWa); ?>">
     <div class="wa-modal-card">
         <!-- Modal Header -->
         <div class="wa-modal-header">
@@ -153,8 +173,8 @@ $footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
                     </svg>
                 </div>
                 <div class="wa-header-text">
-                    <h4 class="wa-modal-title">How can we help?</h4>
-                    <p class="wa-modal-subtitle">Reiki Bliss · Usually replies in hours</p>
+                    <h4 class="wa-modal-title"><?php echo htmlspecialchars($footerWaModalTitle); ?></h4>
+                    <p class="wa-modal-subtitle"><?php echo htmlspecialchars($footerWaModalSubtitle); ?></p>
                 </div>
             </div>
             <button class="wa-modal-close" id="wa-modal-close" aria-label="Close modal">✕</button>
@@ -162,32 +182,19 @@ $footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
 
         <!-- Body Step 1: Select Topic -->
         <div class="wa-modal-body" id="wa-step-1">
-            <span class="wa-section-label">WHAT'S THIS ABOUT?</span>
+            <span class="wa-section-label"><?php echo htmlspecialchars($footerWaModalLabel); ?></span>
             <div class="wa-options-list">
-                <button class="wa-option-item" data-topic="Book a Healing Session">
-                    <span class="wa-option-icon">🙏</span>
-                    <span class="wa-option-text">Book a Healing Session</span>
+                <?php foreach ($footerWaTemplates as $tmpl): 
+                    $tIcon = $tmpl['icon'] ?? '💬';
+                    $tTitle = $tmpl['title'] ?? '';
+                    $tMsg = $tmpl['message'] ?? '';
+                    if (empty($tTitle)) continue;
+                ?>
+                <button class="wa-option-item" data-topic="<?php echo htmlspecialchars($tTitle); ?>" data-message="<?php echo htmlspecialchars($tMsg); ?>">
+                    <span class="wa-option-icon"><?php echo htmlspecialchars($tIcon); ?></span>
+                    <span class="wa-option-text"><?php echo htmlspecialchars($tTitle); ?></span>
                 </button>
-                <button class="wa-option-item" data-topic="Enquire About a Course">
-                    <span class="wa-option-icon">📚</span>
-                    <span class="wa-option-text">Enquire About a Course</span>
-                </button>
-                <button class="wa-option-item" data-topic="Order Birth Chart Bracelet">
-                    <span class="wa-option-icon">🔮</span>
-                    <span class="wa-option-text">Order Birth Chart Bracelet</span>
-                </button>
-                <button class="wa-option-item" data-topic="Order Customized Bracelet">
-                    <span class="wa-option-icon">✨</span>
-                    <span class="wa-option-text">Order Customized Bracelet</span>
-                </button>
-                <button class="wa-option-item" data-topic="Product / Shop Query">
-                    <span class="wa-option-icon">🛍️</span>
-                    <span class="wa-option-text">Product / Shop Query</span>
-                </button>
-                <button class="wa-option-item" data-topic="Something Else">
-                    <span class="wa-option-icon">💬</span>
-                    <span class="wa-option-text">Something Else</span>
-                </button>
+                <?php endforeach; ?>
             </div>
         </div>
 

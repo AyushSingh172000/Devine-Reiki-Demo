@@ -230,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const waCustomMessage = document.getElementById('wa-custom-message');
 
   let selectedWaTopic = '';
+  let selectedWaMessage = '';
 
   const toggleWaModal = (show) => {
     if (waModalWrapper) {
@@ -256,26 +257,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Option selection (Step 1 -> Step 2)
-  waOptionItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const topic = item.getAttribute('data-topic');
-      const icon = item.querySelector('.wa-option-icon')?.innerText || '';
-      selectedWaTopic = topic;
-      
-      if (waPillText) {
-        waPillText.innerText = `${icon} ${topic}`.trim();
-      }
+  // Option selection (Step 1 -> Step 2) with delegation support
+  const handleOptionClick = (item) => {
+    const topic = item.getAttribute('data-topic');
+    const msg = item.getAttribute('data-message') || '';
+    const icon = item.querySelector('.wa-option-icon')?.innerText || '';
+    selectedWaTopic = topic;
+    selectedWaMessage = msg;
+    
+    if (waPillText) {
+      waPillText.innerText = `${icon} ${topic}`.trim();
+    }
 
-      if (waStep1 && waStep2) {
-        waStep1.style.display = 'none';
-        waStep2.style.display = 'block';
-      }
-    });
+    if (waStep1 && waStep2) {
+      waStep1.style.display = 'none';
+      waStep2.style.display = 'block';
+    }
+  };
+
+  waOptionItems.forEach(item => {
+    item.addEventListener('click', () => handleOptionClick(item));
   });
+
+  const waOptionsContainer = document.querySelector('.wa-options-list');
+  if (waOptionsContainer) {
+    waOptionsContainer.addEventListener('click', (e) => {
+      const item = e.target.closest('.wa-option-item');
+      if (item) handleOptionClick(item);
+    });
+  }
 
   const resetToStep1 = () => {
     selectedWaTopic = '';
+    selectedWaMessage = '';
     if (waCustomMessage) waCustomMessage.value = '';
     if (waStep1 && waStep2) {
       waStep2.style.display = 'none';
@@ -296,12 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const extraMsg = waCustomMessage ? waCustomMessage.value.trim() : '';
-      let fullMessage = `Hello Reiki Bliss! I am reaching out regarding: ${selectedWaTopic}.`;
+      let fullMessage = selectedWaMessage ? selectedWaMessage : `Hello Reiki Bliss! I am reaching out regarding: ${selectedWaTopic}.`;
       if (extraMsg) {
         fullMessage += `\n\nNotes / Details: ${extraMsg}`;
       }
 
-      const waPhone = '919971655705';
+      const configuredPhone = waModalWrapper ? waModalWrapper.getAttribute('data-phone') : '';
+      const waPhone = (configuredPhone && configuredPhone.length >= 7) ? configuredPhone : '919726581787';
       const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(fullMessage)}`;
 
       window.open(waUrl, '_blank');
