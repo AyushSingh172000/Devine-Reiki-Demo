@@ -1295,7 +1295,7 @@ if (!in_array($currentTab, $validTabs)) {
                     </div>
 
                     <h2 style="font-family: 'Cinzel', serif, Georgia; font-size: 2rem; color: #fff; margin-bottom: 12px; line-height: 1.2;">
-                        <span id="previewTitle"><?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?></span><br>
+                        <span id="previewTitle" style="color: #ffffff !important;"><?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?></span><br>
                         <span id="previewTitleGold" style="color: #F3C966;"><?= htmlspecialchars($settings['hero_title_gold'] ?? 'Heal. Balance. Transform.') ?></span>
                     </h2>
 
@@ -1307,7 +1307,7 @@ if (!in_array($currentTab, $validTabs)) {
                         <button type="button" class="btn btn-gold" id="previewBtn1" style="pointer-events: none; padding: 8px 20px; font-weight: 700;">
                             <?= htmlspecialchars($settings['hero_cta1_text'] ?? 'Book Free Session') ?> →
                         </button>
-                        <button type="button" class="btn btn-outline" id="previewBtn2" style="pointer-events: none; padding: 8px 20px; color: #fff; border-color: rgba(255,255,255,0.3);">
+                        <button type="button" class="btn" id="previewBtn2" style="pointer-events: none; padding: 8px 20px; background: rgba(255, 255, 255, 0.08) !important; color: #ffffff !important; border: 1.5px solid rgba(255, 255, 255, 0.4) !important;">
                             <?= htmlspecialchars($settings['hero_cta2_text'] ?? 'Explore Courses') ?>
                         </button>
                     </div>

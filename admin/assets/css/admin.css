@@ -102,6 +102,16 @@ h1, h2, h3, h4, h5, h6,
   color: rgba(255, 255, 255, 0.45) !important;
 }
 
+/* Homepage Hero Live Preview Styles */
+#previewBtn2 {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+}
+#previewTitle {
+  color: #ffffff !important;
+}
+
 /* Custom Refined Scrollbar */
 ::-webkit-scrollbar {
   width: 7px;
