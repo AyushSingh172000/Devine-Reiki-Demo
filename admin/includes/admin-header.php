@@ -59,6 +59,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <base href="<?= ADMIN_URL ?>">
     <!-- Admin CSS -->
     <link rel="stylesheet" href="assets/css/admin.css">
     <!-- Lucide Icons -->
@@ -73,14 +74,14 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
   <!-- SIDEBAR -->
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-logo">
-      <a href="index.php">
+      <a href="./">
         <img src="<?= htmlspecialchars($adminLogo) ?>?v=<?= $logoVersion ?>" alt="Reiki Bliss">
       </a>
       <span class="sidebar-label">Admin Panel</span>
     </div>
     <nav class="sidebar-nav">
       <li>
-        <a href="index.php" class="<?= $currentPage === 'index.php' ? 'active' : '' ?>">
+        <a href="./" class="<?= ($currentPage === 'index.php' || $currentPage === '') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
         </a>
       </li>
@@ -88,59 +89,59 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       <div class="sidebar-section-divider"><i data-lucide="layers"></i> CONTENT</div>
       <?php /*
       <li>
-        <a href="gallery.php" class="<?= $currentPage === 'gallery.php' ? 'active' : '' ?>">
+        <a href="gallery" class="<?= ($currentPage === 'gallery.php' || $currentPage === 'gallery') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="images"></i></span> Gallery
         </a>
       </li>
       */ ?>
       <?php /*
       <li>
-        <a href="team.php" class="<?= $currentPage === 'team.php' ? 'active' : '' ?>">
+        <a href="team" class="<?= ($currentPage === 'team.php' || $currentPage === 'team') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="users"></i></span> Team Members
         </a>
       </li>
       */ ?>
       <li>
-        <a href="settings.php?tab=homepage" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'homepage') ? 'active' : '' ?>">
+        <a href="settings?tab=homepage" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'homepage') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="sparkles"></i></span> Homepage Hero
         </a>
       </li>
       <li>
-        <a href="settings.php?tab=about" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'about') ? 'active' : '' ?>">
+        <a href="settings?tab=about" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'about') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="book-open"></i></span> About Us Page
         </a>
       </li>
       <li>
-        <a href="testimonials.php" class="<?= $currentPage === 'testimonials.php' ? 'active' : '' ?>">
+        <a href="testimonials" class="<?= ($currentPage === 'testimonials.php' || $currentPage === 'testimonials') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="message-circle"></i></span> Testimonials
         </a>
       </li>
 
       <div class="sidebar-section-divider"><i data-lucide="store"></i> COMMERCE</div>
       <li>
-        <a href="products.php" class="<?= $currentPage === 'products.php' ? 'active' : '' ?>">
+        <a href="products" class="<?= ($currentPage === 'products.php' || $currentPage === 'products') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="shopping-bag"></i></span> Products
         </a>
       </li>
       <li>
-        <a href="services.php" class="<?= $currentPage === 'services.php' ? 'active' : '' ?>">
+        <a href="services" class="<?= ($currentPage === 'services.php' || $currentPage === 'services') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="clipboard-list"></i></span> Services
         </a>
       </li>
       <li>
-        <a href="courses.php" class="<?= $currentPage === 'courses.php' ? 'active' : '' ?>">
+        <a href="courses" class="<?= ($currentPage === 'courses.php' || $currentPage === 'courses') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="graduation-cap"></i></span> Courses
         </a>
       </li>
       <li>
-        <a href="orders.php" class="<?= $currentPage === 'orders.php' ? 'active' : '' ?>">
+        <a href="orders" class="<?= ($currentPage === 'orders.php' || $currentPage === 'orders') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="package"></i></span> Orders
         </a>
       </li>
 
       <div class="sidebar-section-divider"><i data-lucide="radio"></i> COMMUNICATION</div>
       <li>
-        <a href="inquiries.php" class="<?= $currentPage === 'inquiries.php' ? 'active' : '' ?>">
+        <a href="inquiries" class="<?= ($currentPage === 'inquiries.php' || $currentPage === 'inquiries') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="mail"></i></span> Inquiries
           <?php if ($unreadCount > 0): ?>
             <span class="sidebar-badge"><?= $unreadCount ?></span>
@@ -148,31 +149,31 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
         </a>
       </li>
       <li>
-        <a href="settings.php?tab=whatsapp" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'whatsapp') ? 'active' : '' ?>">
+        <a href="settings?tab=whatsapp" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'whatsapp') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="message-square"></i></span> WhatsApp Templates
         </a>
       </li>
 
       <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> SETTINGS</div>
       <li>
-        <a href="settings.php" class="<?= ($currentPage === 'settings.php' && empty($_GET['tab'])) ? 'active' : '' ?>">
+        <a href="settings" class="<?= ($currentPage === 'settings.php' && empty($_GET['tab'])) ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="settings"></i></span> Site Settings
         </a>
       </li>
       <li>
-        <a href="settings.php?tab=footer" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'footer') ? 'active' : '' ?>">
+        <a href="settings?tab=footer" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'footer') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="panel-bottom"></i></span> Footer &amp; Legal
         </a>
       </li>
       <?php /* Hidden: Logo & Favicon can be managed directly inside Site Settings -> Branding & Assets tab
       <li>
-        <a href="branding.php" class="<?= ($currentPage === 'branding.php' || ($currentPage === 'settings.php' && isset($_GET['tab']) && $_GET['tab'] === 'branding')) ? 'active' : '' ?>">
+        <a href="branding" class="<?= ($currentPage === 'branding.php' || ($currentPage === 'settings.php' && isset($_GET['tab']) && $_GET['tab'] === 'branding')) ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="image"></i></span> Logo &amp; Favicon
         </a>
       </li>
       */ ?>
       <li>
-        <a href="logout.php" class="<?= $currentPage === 'logout.php' ? 'active' : '' ?>">
+        <a href="logout" class="<?= ($currentPage === 'logout.php' || $currentPage === 'logout') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="log-out"></i></span> Logout
         </a>
       </li>
@@ -187,7 +188,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       </button>
       <h1 class="header-title"><?= htmlspecialchars($pageTitle) ?></h1>
       <div class="header-right">
-        <a href="inquiries.php" class="notification-bell" title="<?= $unreadCount ?> unread inquiries">
+        <a href="inquiries" class="notification-bell" title="<?= $unreadCount ?> unread inquiries">
           <i data-lucide="bell"></i>
           <?php if ($unreadCount > 0): ?><span class="notif-badge"><?= $unreadCount ?></span><?php endif; ?>
         </a>
@@ -195,10 +196,10 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
           <span class="user-avatar"><?= $adminInitial ?></span>
           <span class="user-name"><?= htmlspecialchars($adminUser) ?></span>
         </div>
-        <a href="../index.php" target="_blank" class="btn btn-outline btn-sm" title="View Public Website">
+        <a href="../" target="_blank" class="btn btn-outline btn-sm" title="View Public Website">
           <i data-lucide="external-link"></i> <span class="btn-text">View Site</span>
         </a>
-        <a href="logout.php" class="btn btn-outline btn-sm" title="Logout">
+        <a href="logout" class="btn btn-outline btn-sm" title="Logout">
           <i data-lucide="log-out"></i> <span class="btn-text">Logout</span>
         </a>
       </div>

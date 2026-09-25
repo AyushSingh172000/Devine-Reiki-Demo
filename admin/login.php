@@ -12,7 +12,7 @@ require_once __DIR__ . '/auth-rate-limiter.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: index.php');
+    header('Location: ./');
     exit;
 }
 
@@ -107,7 +107,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $_SESSION['admin_id'] = $admin['id'];
                 $_SESSION['admin_email'] = $admin['email'] ?? '';
 
-                header('Location: index.php');
+                header('Location: ./');
                 exit;
             } else {
                 // Failed login attempt: record in rate limiter
@@ -165,6 +165,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <base href="<?= ADMIN_URL ?>">
     <link rel="stylesheet" href="assets/css/admin.css">
     <!-- Lucide Icons -->
     <script src="assets/js/lucide.min.js"></script>
@@ -372,7 +373,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST" autocomplete="off" id="adminLoginForm">
+        <form action="login" method="POST" autocomplete="off" id="adminLoginForm">
             <div class="form-group">
                 <label for="usernameInput" class="form-label">Username</label>
                 <input 
@@ -413,7 +414,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         </form>
 
         <div class="login-footer-nav">
-            <a href="../index.php" class="flex items-center justify-center gap-1">
+            <a href="../" class="flex items-center justify-center gap-1">
                 <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Return to Main Website
             </a>
         </div>

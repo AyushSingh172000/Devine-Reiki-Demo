@@ -92,7 +92,7 @@ require_once 'includes/admin-header.php';
 <!-- 2. SECOND ROW (Grid of 3 Stat Cards) -->
 <div class="grid-3 mb-4">
     <!-- Total Reviews -->
-    <a href="testimonials.php" class="stat-card" style="text-decoration: none; color: inherit;">
+    <a href="testimonials" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
             <span class="stat-number"><?= number_format($totalTestimonials) ?></span>
             <span class="stat-label">Client Reviews</span>
@@ -103,7 +103,7 @@ require_once 'includes/admin-header.php';
     </a>
 
     <!-- Pending Bracelet Orders -->
-    <a href="orders.php?status=pending" class="stat-card" style="text-decoration: none; color: inherit;">
+    <a href="orders?status=pending" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
             <span class="stat-number"><?= number_format($pendingOrders) ?></span>
             <span class="stat-label">Pending Orders</span>
@@ -115,7 +115,7 @@ require_once 'includes/admin-header.php';
 
     <?php /*
     <!-- Total Gallery Images -->
-    <a href="gallery.php" class="stat-card" style="text-decoration: none; color: inherit;">
+    <a href="gallery" class="stat-card" style="text-decoration: none; color: inherit;">
         <div class="stat-info">
             <span class="stat-number"><?= number_format($totalGallery) ?></span>
             <span class="stat-label">Gallery Images</span>
@@ -130,7 +130,7 @@ require_once 'includes/admin-header.php';
 <!-- 3. QUICK ACTIONS ROW -->
 <div class="mb-4">
     <div class="quick-actions-grid">
-        <a href="products.php?action=add" class="quick-action-card">
+        <a href="products?action=add" class="quick-action-card">
             <div class="action-icon"><i data-lucide="shopping-bag"></i></div>
             <div>
                 <div>Add Product</div>
@@ -138,7 +138,7 @@ require_once 'includes/admin-header.php';
             </div>
         </a>
 
-        <a href="services.php?action=add" class="quick-action-card">
+        <a href="services?action=add" class="quick-action-card">
             <div class="action-icon"><i data-lucide="clipboard-list"></i></div>
             <div>
                 <div>Add Service</div>
@@ -146,7 +146,7 @@ require_once 'includes/admin-header.php';
             </div>
         </a>
 
-        <a href="courses.php?action=add" class="quick-action-card">
+        <a href="courses?action=add" class="quick-action-card">
             <div class="action-icon"><i data-lucide="graduation-cap"></i></div>
             <div>
                 <div>Add Course</div>
@@ -154,7 +154,7 @@ require_once 'includes/admin-header.php';
             </div>
         </a>
 
-        <a href="testimonials.php" class="quick-action-card">
+        <a href="testimonials" class="quick-action-card">
             <div class="action-icon"><i data-lucide="message-circle"></i></div>
             <div>
                 <div>Testimonials</div>
@@ -162,7 +162,7 @@ require_once 'includes/admin-header.php';
             </div>
         </a>
 
-        <a href="branding.php" class="quick-action-card">
+        <a href="settings?tab=branding" class="quick-action-card">
             <div class="action-icon"><i data-lucide="image"></i></div>
             <div>
                 <div>Logo &amp; Favicon</div>
@@ -180,7 +180,7 @@ require_once 'includes/admin-header.php';
             <div class="admin-card-title flex items-center gap-2">
                 <i data-lucide="mail"></i> Recent Inquiries
             </div>
-            <a href="inquiries.php" class="btn-outline btn-sm text-gold" style="text-decoration: none;">
+            <a href="inquiries" class="btn-outline btn-sm text-gold" style="text-decoration: none;">
                 View All <i data-lucide="chevron-right" style="width: 14px; height: 14px; margin-right: 0;"></i>
             </a>
         </div>
@@ -244,7 +244,7 @@ require_once 'includes/admin-header.php';
             <div class="admin-card-title flex items-center gap-2">
                 <i data-lucide="package"></i> Recent Bracelet Orders
             </div>
-            <a href="orders.php" class="btn-outline btn-sm text-gold" style="text-decoration: none;">
+            <a href="orders" class="btn-outline btn-sm text-gold" style="text-decoration: none;">
                 View All <i data-lucide="chevron-right" style="width: 14px; height: 14px; margin-right: 0;"></i>
             </a>
         </div>
