@@ -103,24 +103,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const servicesSection = document.getElementById('services');
 
   if (servicesSection) {
-    // Homepage Scrollspy: Follows user scroll position smoothly
-    const homeLinks = document.querySelectorAll('.nav-link[href*="index.php"], .mobile-nav-link[href*="index.php"]');
-    const servicesLinks = document.querySelectorAll('.nav-link[href*="services.php"], .mobile-nav-link[href*="services.php"]');
-    const coursesLinks = document.querySelectorAll('.nav-link[href*="courses.php"], .mobile-nav-link[href*="courses.php"]');
-    const shopLinks = document.querySelectorAll('.nav-link[href*="products.php"], .mobile-nav-link[href*="products.php"]');
+    // Helper to find nav links corresponding to each section (supports clean URLs and .php)
+    const findNavLinks = (identifier) => {
+      return Array.from(navLinks).filter((link) => {
+        const href = (link.getAttribute('href') || '').toLowerCase();
+        const text = (link.textContent || '').trim().toLowerCase();
+        const cleanHref = href.split('?')[0].split('#')[0].replace(/\/+$/, '');
+        const lastSegment = cleanHref.split('/').pop();
+
+        switch (identifier) {
+          case 'home':
+            return (
+              text === 'home' ||
+              lastSegment === 'index.php' ||
+              lastSegment === '' ||
+              cleanHref === window.location.origin ||
+              cleanHref === window.location.pathname.replace(/\/+$/, '')
+            );
+          case 'services':
+            return (
+              text === 'services' ||
+              lastSegment === 'services' ||
+              lastSegment === 'services.php'
+            );
+          case 'courses':
+            return (
+              text === 'courses' ||
+              lastSegment === 'courses' ||
+              lastSegment === 'courses.php'
+            );
+          case 'shop':
+            return (
+              text === 'shop' ||
+              lastSegment === 'products' ||
+              lastSegment === 'products.php' ||
+              lastSegment === 'shop' ||
+              lastSegment === 'shop.php'
+            );
+          default:
+            return false;
+        }
+      });
+    };
+
+    const homeLinks = findNavLinks('home');
+    const servicesLinks = findNavLinks('services');
+    const coursesLinks = findNavLinks('courses');
+    const shopLinks = findNavLinks('shop');
 
     const coursesSection = document.getElementById('courses');
     const productsSection = document.getElementById('products');
 
     const updateScrollspy = () => {
-      const scrollPos = window.scrollY + 200;
+      const scrollPos = window.scrollY + 250;
       let activeSection = 'home';
 
-      if (productsSection && scrollPos >= productsSection.offsetTop) {
+      const productsTop = productsSection ? (productsSection.getBoundingClientRect().top + window.scrollY) : Infinity;
+      const coursesTop = coursesSection ? (coursesSection.getBoundingClientRect().top + window.scrollY) : Infinity;
+      const servicesTop = servicesSection ? (servicesSection.getBoundingClientRect().top + window.scrollY) : Infinity;
+
+      if (scrollPos >= productsTop) {
         activeSection = 'shop';
-      } else if (coursesSection && scrollPos >= coursesSection.offsetTop) {
+      } else if (scrollPos >= coursesTop) {
         activeSection = 'courses';
-      } else if (servicesSection && scrollPos >= servicesSection.offsetTop) {
+      } else if (scrollPos >= servicesTop) {
         activeSection = 'services';
       } else {
         activeSection = 'home';
@@ -152,13 +198,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateScrollspy(); // Run immediately on load
   } else {
-    // Static link highlighting for other dedicated pages
-    const currentPath = window.location.pathname.split('/').pop() || 'index.php';
+    // Static link highlighting for other dedicated pages (supports both clean URLs and .php)
+    const rawCurrent = window.location.pathname.split('/').pop() || 'index';
+    const currentSlug = rawCurrent.replace(/\.php$/, '');
     navLinks.forEach((link) => {
       const href = link.getAttribute('href');
       if (href) {
-        const linkPath = href.split('/').pop().split('?')[0].split('#')[0];
-        if (linkPath === currentPath) {
+        const rawLink = href.split('/').pop().split('?')[0].split('#')[0];
+        const linkSlug = rawLink.replace(/\.php$/, '');
+        if (linkSlug && linkSlug === currentSlug) {
           link.classList.add('active');
         }
       }
