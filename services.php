@@ -74,7 +74,7 @@ include __DIR__ . '/includes/header.php';
                     <div>
                         <span class="featured-label">Featured Service</span>
                         <h2 class="featured-title">
-                            <a href="<?php echo BASE_URL; ?>service-detail.php?slug=<?php echo htmlspecialchars($featuredService['slug']); ?>">
+                            <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($featuredService['slug']); ?>">
                                 <?php echo htmlspecialchars($featuredService['title']); ?>
                             </a>
                         </h2>
@@ -110,7 +110,7 @@ include __DIR__ . '/includes/header.php';
                     <div class="service-info-box">
                         <div>
                             <h3 class="service-item-title">
-                                <a href="<?php echo BASE_URL; ?>service-detail.php?slug=<?php echo htmlspecialchars($service['slug']); ?>">
+                                <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>">
                                     <?php echo htmlspecialchars($service['title']); ?>
                                 </a>
                             </h3>

@@ -65,9 +65,9 @@ include __DIR__ . '/includes/header.php';
 <!-- Breadcrumb Navigation -->
 <div class="container">
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-        <a href="<?php echo BASE_URL; ?>index.php">Home</a>
+        <a href="<?php echo BASE_URL; ?>">Home</a>
         <span class="breadcrumb-separator">›</span>
-        <a href="<?php echo BASE_URL; ?>products.php">Shop</a>
+        <a href="<?php echo BASE_URL; ?>products">Shop</a>
         <span class="breadcrumb-separator">›</span>
         <span><?php echo htmlspecialchars($product['title']); ?></span>
     </nav>
@@ -172,7 +172,7 @@ include __DIR__ . '/includes/header.php';
                 <h3 class="section-heading" style="font-size: 2rem; margin-bottom: 30px;">Related Crystal <em>Products</em></h3>
                 <div class="products-catalog-grid">
                     <?php foreach ($relatedProducts as $rel): ?>
-                        <a href="<?php echo BASE_URL; ?>product-detail.php?slug=<?php echo htmlspecialchars($rel['slug']); ?>" class="product-shop-card">
+                        <a href="<?php echo BASE_URL; ?>product/<?php echo htmlspecialchars($rel['slug']); ?>" class="product-shop-card">
                             <div class="product-img-frame">
                                 <img src="<?php echo htmlspecialchars($rel['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
                                 <?php if (!$rel['in_stock']): ?>

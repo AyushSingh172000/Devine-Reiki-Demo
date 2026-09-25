@@ -56,9 +56,9 @@ include __DIR__ . '/includes/header.php';
 <!-- Breadcrumb Navigation -->
 <div class="container">
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-        <a href="<?php echo BASE_URL; ?>index.php">Home</a>
+        <a href="<?php echo BASE_URL; ?>">Home</a>
         <span class="breadcrumb-separator">›</span>
-        <a href="<?php echo BASE_URL; ?>services.php">Services</a>
+        <a href="<?php echo BASE_URL; ?>services">Services</a>
         <span class="breadcrumb-separator">›</span>
         <span><?php echo htmlspecialchars($service['title']); ?></span>
     </nav>
@@ -123,7 +123,7 @@ include __DIR__ . '/includes/header.php';
                 
                 <?php if (!empty($relatedServices)): ?>
                     <?php foreach ($relatedServices as $rel): ?>
-                        <a href="<?php echo BASE_URL; ?>service-detail.php?slug=<?php echo htmlspecialchars($rel['slug']); ?>" class="related-service-card">
+                        <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($rel['slug']); ?>" class="related-service-card">
                             <div class="related-thumb-box">
                                 <img src="<?php echo htmlspecialchars($rel['image'] ?: 'assets/images/services/reiki-healing.jpg'); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
                             </div>
@@ -140,7 +140,7 @@ include __DIR__ . '/includes/header.php';
                 <?php endif; ?>
 
                 <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center;">
-                    <a href="<?php echo BASE_URL; ?>services.php" class="btn-primary" style="width: 100%; font-size: 0.9rem; padding: 10px;">
+                    <a href="<?php echo BASE_URL; ?>services" class="btn-primary" style="width: 100%; font-size: 0.9rem; padding: 10px;">
                         View All Services →
                     </a>
                 </div>

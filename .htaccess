@@ -16,9 +16,52 @@ RewriteCond %{HTTP:X-Forwarded-Proto} =http [OR]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Hide file extensions and clean URLs
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
+# -------------------------------------------------------------
+# 1. External Redirects: Remove .php from URL in browser address bar
+# -------------------------------------------------------------
+
+# Redirect index.php to directory root (/)
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !/admin/ [NC]
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php([?\s].*)?$ [NC]
+RewriteRule ^index\.php$ %1/ [R=301,L]
+
+# Redirect detail pages with query parameter to clean path (e.g. /service-detail.php?slug=xxx -> /service/xxx)
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !/admin/ [NC]
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/service-detail\.php\?slug=([a-zA-Z0-9_-]+) [NC]
+RewriteRule ^ %1/service/%2? [R=301,L]
+
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !/admin/ [NC]
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/course-detail\.php\?slug=([a-zA-Z0-9_-]+) [NC]
+RewriteRule ^ %1/course/%2? [R=301,L]
+
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !/admin/ [NC]
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/product-detail\.php\?slug=([a-zA-Z0-9_-]+) [NC]
+RewriteRule ^ %1/product/%2? [R=301,L]
+
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !/admin/ [NC]
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/blog-detail\.php\?slug=([a-zA-Z0-9_-]+) [NC]
+RewriteRule ^ %1/blog/%2? [R=301,L]
+
+# Redirect direct requests for any other .php file to clean extensionless URL (e.g. /services.php -> /services)
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !/admin/ [NC]
+RewriteCond %{REQUEST_URI} !/api/ [NC]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^?]+)\.php [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# -------------------------------------------------------------
+# 2. Internal Rewrites: Map clean URLs back to PHP files
+# -------------------------------------------------------------
 
 # Service Detail Clean URLs
 RewriteRule ^service/([a-zA-Z0-9-]+)/?$ service-detail.php?slug=$1 [QSA,L]
@@ -41,8 +84,15 @@ RewriteRule ^blog/?$ blog.php [QSA,L]
 RewriteRule ^about/?$ about.php [QSA,L]
 RewriteRule ^gallery/?$ gallery.php [QSA,L]
 RewriteRule ^contact/?$ contact.php [QSA,L]
+RewriteRule ^privacy/?$ privacy.php [QSA,L]
+RewriteRule ^terms/?$ terms.php [QSA,L]
 RewriteRule ^order-bracelet/?$ order-bracelet.php [QSA,L]
 RewriteRule ^custom-bracelet/?$ order-bracelet.php [QSA,L]
+
+# Generic rule: Map any extensionless path to existing .php file
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
 # Catch-all: If file or directory does not exist, serve custom 404 page
 RewriteCond %{REQUEST_FILENAME} !-d

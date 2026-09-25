@@ -56,9 +56,9 @@ include __DIR__ . '/includes/header.php';
 <!-- Breadcrumb Navigation -->
 <div class="container">
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-        <a href="<?php echo BASE_URL; ?>index.php">Home</a>
+        <a href="<?php echo BASE_URL; ?>">Home</a>
         <span class="breadcrumb-separator">›</span>
-        <a href="<?php echo BASE_URL; ?>courses.php">Courses</a>
+        <a href="<?php echo BASE_URL; ?>courses">Courses</a>
         <span class="breadcrumb-separator">›</span>
         <span><?php echo htmlspecialchars($course['title']); ?></span>
     </nav>
@@ -144,7 +144,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                                 <div class="course-card-footer">
                                     <span class="course-price-text" style="font-size: 1.1rem;"><?php echo htmlspecialchars($rel['price_text']); ?></span>
-                                    <a href="<?php echo BASE_URL; ?>course-detail.php?slug=<?php echo htmlspecialchars($rel['slug']); ?>" class="btn-primary" style="padding: 6px 14px; font-size: 0.82rem;">
+                                    <a href="<?php echo BASE_URL; ?>course/<?php echo htmlspecialchars($rel['slug']); ?>" class="btn-primary" style="padding: 6px 14px; font-size: 0.82rem;">
                                         View Details →
                                     </a>
                                 </div>

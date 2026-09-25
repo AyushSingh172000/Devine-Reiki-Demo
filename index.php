@@ -373,7 +373,7 @@ include __DIR__ . '/includes/header.php';
                 <span class="section-label">Holistic Healing Modalities</span>
                 <h2 class="section-heading">Our Core <em>Services</em></h2>
             </div>
-            <a href="<?php echo BASE_URL; ?>services.php" class="view-all-link">View all services →</a>
+            <a href="<?php echo BASE_URL; ?>services" class="view-all-link">View all services →</a>
         </div>
 
         <!-- Horizontal Scrollable Service Cards -->
@@ -526,7 +526,7 @@ function scrollTestimonials(direction) {
                 <span class="section-label">Certified Energy Training</span>
                 <h2 class="section-heading">Explore Reiki & Healing <em>Courses</em></h2>
             </div>
-            <a href="<?php echo BASE_URL; ?>courses.php" class="view-all-link">View all courses →</a>
+            <a href="<?php echo BASE_URL; ?>courses" class="view-all-link">View all courses →</a>
         </div>
 
         <!-- Horizontal Scrollable Course Cards -->
@@ -545,7 +545,7 @@ function scrollTestimonials(direction) {
                             </div>
                             <div class="card-footer-meta">
                                 <span class="card-price-value"><?php echo htmlspecialchars($course['price_text']); ?></span>
-                                <a href="<?php echo BASE_URL; ?><?php echo !empty($course['slug']) ? 'course-detail.php?slug=' . urlencode($course['slug']) : 'courses.php'; ?>" class="btn-primary" style="padding: 7px 18px; font-size: 0.86rem;">View details →</a>
+                                <a href="<?php echo BASE_URL; ?><?php echo !empty($course['slug']) ? 'course/' . urlencode($course['slug']) : 'courses'; ?>" class="btn-primary" style="padding: 7px 18px; font-size: 0.86rem;">View details →</a>
                             </div>
                         </div>
                     </div>
@@ -567,14 +567,14 @@ function scrollTestimonials(direction) {
                 <span class="section-label">Sacred Crystal Energy</span>
                 <h2 class="section-heading">Featured Reiki Charged <em>Products</em></h2>
             </div>
-            <a href="<?php echo BASE_URL; ?>shop.php" class="view-all-link">View all products →</a>
+            <a href="<?php echo BASE_URL; ?>products" class="view-all-link">View all products →</a>
         </div>
 
         <!-- Horizontal Scrollable Product Cards -->
         <div class="scroll-cards-row products-scroll-row">
             <?php if (!empty($products)): ?>
                 <?php foreach ($products as $prod): ?>
-                    <a href="<?php echo BASE_URL; ?>product-detail.php?slug=<?php echo htmlspecialchars($prod['slug']); ?>" class="product-card-item animate-on-scroll">
+                    <a href="<?php echo BASE_URL; ?>product/<?php echo htmlspecialchars($prod['slug']); ?>" class="product-card-item animate-on-scroll">
                         <div class="product-img-box">
                             <img src="<?php echo htmlspecialchars($prod['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($prod['title']); ?>" loading="lazy">
                             <?php if (!$prod['in_stock']): ?>

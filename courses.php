@@ -56,7 +56,7 @@ include __DIR__ . '/includes/header.php';
                             </div>
                             <div class="course-card-footer">
                                 <span class="course-price-text"><?php echo htmlspecialchars($course['price_text']); ?></span>
-                                <a href="<?php echo BASE_URL; ?>course-detail.php?slug=<?php echo htmlspecialchars($course['slug']); ?>" class="btn-primary" style="padding: 8px 18px; font-size: 0.88rem;">
+                                <a href="<?php echo BASE_URL; ?>course/<?php echo htmlspecialchars($course['slug']); ?>" class="btn-primary" style="padding: 8px 18px; font-size: 0.88rem;">
                                     View Details →
                                 </a>
                             </div>

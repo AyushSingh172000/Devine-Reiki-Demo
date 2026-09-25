@@ -96,13 +96,13 @@ if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
             <div class="footer-col">
                 <h4 class="footer-title">Quick Links</h4>
                 <ul class="footer-links">
-                    <li><a href="<?php echo BASE_URL; ?>index.php">Home</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>about.php">About Us</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>products.php">Crystal Shop</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>courses.php">Reiki Courses</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services.php">Healing Services</a></li>
-                    <?php /* <li><a href="<?php echo BASE_URL; ?>gallery.php">Sanctuary Gallery</a></li> */ ?>
-                    <li><a href="<?php echo BASE_URL; ?>contact.php">Contact Us</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>">Home</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>about">About Us</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>products">Crystal Shop</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>courses">Reiki Courses</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>services">Healing Services</a></li>
+                    <?php /* <li><a href="<?php echo BASE_URL; ?>gallery">Sanctuary Gallery</a></li> */ ?>
+                    <li><a href="<?php echo BASE_URL; ?>contact">Contact Us</a></li>
                 </ul>
             </div>
 
@@ -110,11 +110,11 @@ if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
             <div class="footer-col">
                 <h4 class="footer-title">Our Services</h4>
                 <ul class="footer-links">
-                    <li><a href="<?php echo BASE_URL; ?>services.php#reiki-healing">Reiki Healing Session</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services.php#distance-reiki">Distance Reiki Healing</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services.php#chakra-balancing">Chakra Balancing</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services.php#aura-cleansing">Aura Cleansing & Repair</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services.php#crystal-therapy">Crystal Energy Therapy</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>services#reiki-healing">Reiki Healing Session</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>services#distance-reiki">Distance Reiki Healing</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>services#chakra-balancing">Chakra Balancing</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>services#aura-cleansing">Aura Cleansing & Repair</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>services#crystal-therapy">Crystal Energy Therapy</a></li>
                     <li><a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener">Free Consultation</a></li>
                 </ul>
             </div>
@@ -152,8 +152,8 @@ if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
             <div class="footer-bottom-content">
                 <p><?php echo $footerCopyright; ?> &middot; <a href="<?php echo BASE_URL; ?>admin/" style="color: inherit; opacity: 0.65; text-decoration: none; font-size: 0.9em;" title="Admin Portal">Admin Portal</a></p>
                 <div class="footer-bottom-links">
-                    <a href="<?php echo BASE_URL; ?>privacy.php">Privacy Sanctuary</a>
-                    <a href="<?php echo BASE_URL; ?>terms.php">Terms of Attunement</a>
+                    <a href="<?php echo BASE_URL; ?>privacy">Privacy Sanctuary</a>
+                    <a href="<?php echo BASE_URL; ?>terms">Terms of Attunement</a>
                     <a href="#hero" class="footer-back-top">Back to Top ↑</a>
                 </div>
             </div>

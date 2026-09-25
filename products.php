@@ -112,7 +112,7 @@ include __DIR__ . '/includes/header.php';
         <div class="products-catalog-grid">
             <?php if (!empty($products)): ?>
                 <?php foreach ($products as $prod): ?>
-                    <a href="<?php echo BASE_URL; ?>product-detail.php?slug=<?php echo htmlspecialchars($prod['slug']); ?>" class="product-shop-card animate-on-scroll">
+                    <a href="<?php echo BASE_URL; ?>product/<?php echo htmlspecialchars($prod['slug']); ?>" class="product-shop-card animate-on-scroll">
                         <div class="product-img-frame">
                             <img src="<?php echo htmlspecialchars($prod['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($prod['title']); ?>" loading="lazy">
                             <?php if (!$prod['in_stock']): ?>

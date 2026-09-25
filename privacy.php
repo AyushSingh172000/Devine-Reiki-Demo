@@ -127,7 +127,7 @@ include __DIR__ . '/includes/header.php';
             <h4>Have Questions Regarding Your Privacy?</h4>
             <p>We are here to assist and ensure you feel completely secure and supported on your healing path.</p>
             <div class="legal-support-actions">
-                <a href="<?php echo BASE_URL; ?>contact.php" class="btn-primary" style="padding: 12px 28px; font-size: 0.95rem;">Connect With Us</a>
+                <a href="<?php echo BASE_URL; ?>contact" class="btn-primary" style="padding: 12px 28px; font-size: 0.95rem;">Connect With Us</a>
                 <?php
                 $cleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defined('SITE_WHATSAPP') ? SITE_WHATSAPP : '919726581787'));
                 ?>
