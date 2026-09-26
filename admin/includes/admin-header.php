@@ -86,7 +86,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
         </a>
       </li>
 
-      <div class="sidebar-section-divider"><i data-lucide="layers"></i> CONTENT</div>
+      <div class="sidebar-section-divider"><i data-lucide="layers"></i> PAGES &amp; CONTENT</div>
       <?php /*
       <li>
         <a href="gallery" class="<?= ($currentPage === 'gallery.php' || $currentPage === 'gallery') ? 'active' : '' ?>">
@@ -103,24 +103,24 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       */ ?>
       <li>
         <a href="settings?tab=homepage" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'homepage') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="sparkles"></i></span> Homepage Hero
+          <span class="nav-icon"><i data-lucide="sparkles"></i></span> Home Page
         </a>
       </li>
       <li>
         <a href="settings?tab=about" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'about') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="book-open"></i></span> About Us Page
+          <span class="nav-icon"><i data-lucide="book-open"></i></span> About Us
         </a>
       </li>
       <li>
         <a href="testimonials" class="<?= ($currentPage === 'testimonials.php' || $currentPage === 'testimonials') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="message-circle"></i></span> Testimonials
+          <span class="nav-icon"><i data-lucide="message-circle"></i></span> Client Reviews
         </a>
       </li>
 
-      <div class="sidebar-section-divider"><i data-lucide="store"></i> COMMERCE</div>
+      <div class="sidebar-section-divider"><i data-lucide="store"></i> SERVICES &amp; SHOP</div>
       <li>
         <a href="products" class="<?= ($currentPage === 'products.php' || $currentPage === 'products') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="shopping-bag"></i></span> Products
+          <span class="nav-icon"><i data-lucide="shopping-bag"></i></span> Shop Products
         </a>
       </li>
       <li>
@@ -139,7 +139,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
         </a>
       </li>
 
-      <div class="sidebar-section-divider"><i data-lucide="radio"></i> COMMUNICATION</div>
+      <div class="sidebar-section-divider"><i data-lucide="radio"></i> INQUIRIES &amp; MESSAGES</div>
       <li>
         <a href="inquiries" class="<?= ($currentPage === 'inquiries.php' || $currentPage === 'inquiries') ? 'active' : '' ?>">
           <span class="nav-icon"><i data-lucide="mail"></i></span> Inquiries
@@ -150,7 +150,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       </li>
       <li>
         <a href="settings?tab=whatsapp" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'whatsapp') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="message-square"></i></span> WhatsApp Templates
+          <span class="nav-icon"><i data-lucide="message-square"></i></span> WhatsApp Chat
         </a>
       </li>
 
@@ -162,7 +162,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       </li>
       <li>
         <a href="settings?tab=footer" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'footer') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="panel-bottom"></i></span> Footer &amp; Legal
+          <span class="nav-icon"><i data-lucide="panel-bottom"></i></span> Footer &amp; Legal Pages
         </a>
       </li>
       <?php /* Hidden: Logo & Favicon can be managed directly inside Site Settings -> Branding & Assets tab

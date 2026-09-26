@@ -130,9 +130,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
             if (!isset($_SESSION['flash_error'])) {
                 if (!isset($_SESSION['flash_warning'])) {
-                    $_SESSION['flash_success'] = "Branding assets (Logo, Favicon & Social OG Image) updated successfully! Changes are now live.";
+                    $_SESSION['flash_success'] = "Logo & Favicon updated successfully! Changes are now live.";
                 } else {
-                    $_SESSION['flash_success'] = "Branding assets updated successfully!";
+                    $_SESSION['flash_success'] = "Logo & Favicon updated successfully!";
                 }
             }
         } catch (Exception $e) {
@@ -290,7 +290,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 }
             }
 
-            $_SESSION['flash_success'] = "Homepage Hero & Trust Stats updated successfully! All changes are live.";
+            $_SESSION['flash_success'] = "Home page settings updated successfully! All changes are live.";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Error saving Homepage Hero settings: " . $e->getMessage();
         }
@@ -322,7 +322,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             setSetting($pdo, 'terms_tagline', trim($_POST['terms_tagline'] ?? ''));
             setSetting($pdo, 'terms_content', trim($_POST['terms_content'] ?? ''));
 
-            $_SESSION['flash_success'] = "Footer branding and Legal pages (Privacy & Terms) updated successfully!";
+            $_SESSION['flash_success'] = "Footer & Legal pages updated successfully!";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Error saving Footer & Legal settings: " . $e->getMessage();
         }
@@ -391,7 +391,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $updPass->execute([$hashed, $adminRecord['id']]);
             }
 
-            $_SESSION['flash_success'] = "Admin account security details updated successfully!";
+            $_SESSION['flash_success'] = "Admin account details updated successfully!";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Account update error: " . $e->getMessage();
         }
@@ -431,7 +431,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             }
 
             setSetting($pdo, 'wa_templates', json_encode($templates, JSON_UNESCAPED_UNICODE));
-            $_SESSION['flash_success'] = "WhatsApp inquiry widget & templates updated successfully!";
+            $_SESSION['flash_success'] = "WhatsApp chat settings updated successfully!";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Error updating WhatsApp settings: " . $e->getMessage();
         }
@@ -495,7 +495,7 @@ if (!in_array($currentTab, $validTabs)) {
 <div style="max-width: 960px; margin: 0 auto;">
     <div class="flex-between mb-3">
         <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
-            Global Site Configuration
+            Website Settings
         </h2>
         <span class="text-muted" style="font-size: 0.85rem;">All updates apply site-wide instantly</span>
     </div>
@@ -506,19 +506,19 @@ if (!in_array($currentTab, $validTabs)) {
             <i data-lucide="settings" style="width: 16px; height: 16px;"></i> General Settings
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'branding' ? 'active' : '' ?> flex items-center gap-1" data-tab="branding">
-            <i data-lucide="palette" style="width: 16px; height: 16px;"></i> Branding &amp; Assets
+            <i data-lucide="palette" style="width: 16px; height: 16px;"></i> Logo &amp; Favicon
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'about' ? 'active' : '' ?> flex items-center gap-1" data-tab="about">
-            <i data-lucide="book-open" style="width: 16px; height: 16px;"></i> About Page &amp; Stats
+            <i data-lucide="book-open" style="width: 16px; height: 16px;"></i> About Us Page
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'homepage' ? 'active' : '' ?> flex items-center gap-1" data-tab="homepage">
-            <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Homepage Hero
+            <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Home Page
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'footer' ? 'active' : '' ?> flex items-center gap-1" data-tab="footer">
-            <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer &amp; Legal
+            <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer &amp; Legal Pages
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'whatsapp' ? 'active' : '' ?> flex items-center gap-1" data-tab="whatsapp">
-            <i data-lucide="message-square" style="width: 16px; height: 16px;"></i> WhatsApp Widget
+            <i data-lucide="message-square" style="width: 16px; height: 16px;"></i> WhatsApp Chat
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'account' ? 'active' : '' ?> flex items-center gap-1" data-tab="account">
             <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i> Admin Account
@@ -530,17 +530,17 @@ if (!in_array($currentTab, $validTabs)) {
          ===================================================================== -->
     <div class="tab-content <?= $currentTab === 'general' ? 'active' : '' ?>" id="tab-general">
         <div class="admin-card">
-            <h3 class="admin-card-title mb-3" style="color: var(--gold);">General Contact &amp; Business Information</h3>
+            <h3 class="admin-card-title mb-3" style="color: var(--gold);">Contact &amp; Business Details</h3>
             <form action="settings.php" method="POST">
                 <input type="hidden" name="tab" value="general">
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Site Name</label>
+                        <label class="form-label">Website Name</label>
                         <input type="text" name="site_name" class="form-control" value="<?= htmlspecialchars($settings['site_name'] ?? 'Reiki Bliss') ?>">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Site Tagline / Slogan</label>
+                        <label class="form-label">Website Tagline / Slogan</label>
                         <input type="text" name="site_tagline" class="form-control" value="<?= htmlspecialchars($settings['site_tagline'] ?? 'Authentic Usui Reiki Healing, Energy Alignment & Crystal Therapy') ?>">
                     </div>
                 </div>
@@ -568,23 +568,23 @@ if (!in_array($currentTab, $validTabs)) {
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Physical Center Address</label>
+                    <label class="form-label">Center Address</label>
                     <textarea name="address" class="form-control" rows="2"><?= htmlspecialchars($settings['address'] ?? '108 Healing Touch Way, Spiritual Enclave, New Delhi - 110001') ?></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Google Maps Embed / Location URL</label>
+                    <label class="form-label">Google Maps Link</label>
                     <input type="text" name="maps_url" class="form-control" value="<?= htmlspecialchars($settings['maps_url'] ?? '') ?>" placeholder="https://maps.google.com/...">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Booking Appointment URL (Google Calendar / Calendly)</label>
+                    <label class="form-label">Appointment Booking Calendar Link</label>
                     <input type="text" name="booking_url" class="form-control" value="<?= htmlspecialchars($settings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/...') ?>">
-                    <div class="form-hint">Used for all "Book Session" and "Book Consultation" buttons site-wide.</div>
+                    <div class="form-hint">Used for "Book Session" buttons across the website.</div>
                 </div>
 
                 <h4 style="font-size: 0.95rem; color: var(--gold); margin: 24px 0 14px; border-top: 1px solid var(--card-border); padding-top: 16px;">
-                    Social Media Channels
+                    Social Media Links
                 </h4>
 
                 <div class="form-row" style="grid-template-columns: repeat(3, 1fr);">
@@ -604,7 +604,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-gold">
-                        Save General Settings
+                        Save Settings
                     </button>
                 </div>
             </form>
@@ -618,10 +618,10 @@ if (!in_array($currentTab, $validTabs)) {
         <div class="admin-card">
             <div class="flex-between mb-3" style="border-bottom: 1px solid var(--card-border); padding-bottom: 14px;">
                 <div>
-                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.15rem; font-weight: 700;">Logo &amp; Favicon Management</h3>
-                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">Update brand imagery displayed across the public website, browser tabs, and admin panel.</p>
+                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.15rem; font-weight: 700;">Logo &amp; Favicon Settings</h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">Update the logo and icons shown on the website and browser tabs.</p>
                 </div>
-                <span class="badge badge-gold">Active Branding</span>
+                <span class="badge badge-gold">Active Images</span>
             </div>
 
             <form action="settings.php" method="POST" enctype="multipart/form-data">
@@ -636,7 +636,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <!-- 1. Site Logo -->
                 <div class="form-group mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 24px;">
-                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Main Website &amp; Admin Logo</label>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Main Website Logo</label>
                     <p class="text-muted mb-2" style="font-size: 0.84rem;">Appears in the website navigation bar, admin sidebar, and footer.</p>
                     
                     <div class="flex items-center gap-3" style="flex-wrap: wrap;">
@@ -723,7 +723,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                     <!-- Realistic WhatsApp / Social Link Preview Card -->
                     <div style="background: #eef2f6; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; max-width: 520px;">
-                        <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px;">WhatsApp / Social Link Live Preview</div>
+                        <div style="font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px;">WhatsApp &amp; Social Link Preview</div>
                         <!-- WhatsApp Message Bubble Mockup -->
                         <div style="background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
                             <div style="width: 100%; height: 170px; background: #f8fafc; overflow: hidden; position: relative;">
@@ -750,7 +750,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-gold">
-                        <i data-lucide="check" style="width: 16px; height: 16px;"></i> Save Branding Changes
+                        <i data-lucide="check" style="width: 16px; height: 16px;"></i> Save Logo &amp; Favicon
                     </button>
                 </div>
             </form>
@@ -764,10 +764,10 @@ if (!in_array($currentTab, $validTabs)) {
             <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
                 <div>
                     <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
-                        About Us Page Full Customizer
+                        About Us Page Settings
                     </h3>
                     <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
-                        Manage every section of the public About Us page — from the Hero banner &amp; Impact counters to Founder Anupama Agrawal's biography, philosophy pillars, and core values.
+                        Update content for the About Us page — from the Hero banner &amp; Impact counters to Founder Anupama Agrawal's biography, philosophy pillars, and core values.
                     </p>
                 </div>
                 <a href="../about.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1" style="white-space: nowrap;">
@@ -784,12 +784,12 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Banner &amp; Introduction</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Top Banner &amp; Introduction</h4>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Hero Badge Tagline</label>
+                            <label class="form-label">Top Tagline / Badge</label>
                             <input type="text" name="about_hero_badge" class="form-control" value="<?= htmlspecialchars($settings['about_hero_badge'] ?? 'Est. 2014 · Adajan, Surat') ?>" placeholder="e.g. Est. 2014 · Adajan, Surat">
                             <span class="form-hint">Appears in small pill badge above the main title.</span>
                         </div>
@@ -801,13 +801,13 @@ if (!in_array($currentTab, $validTabs)) {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Hero Main Headline (H1)</label>
+                        <label class="form-label">Main Heading</label>
                         <input type="text" name="about_hero_heading" class="form-control" value="<?= htmlspecialchars($settings['about_hero_heading'] ?? 'A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>') ?>" placeholder="e.g. A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>">
                         <span class="form-hint">Tip: Use <code>&lt;em&gt;text&lt;/em&gt;</code> for cursive gold italic accent, and <code>&lt;br&gt;</code> for line breaks.</span>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Hero Introduction Paragraph</label>
+                        <label class="form-label">Introduction Paragraph</label>
                         <textarea name="about_hero_description" class="form-control" rows="3" placeholder="Introduction text under headline..."><?= htmlspecialchars($settings['about_hero_description'] ?? 'Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach dedicated to authentic energy healing, self-awareness, and holistic inner transformation.') ?></textarea>
                     </div>
                 </div>
@@ -818,7 +818,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Impact Statistics &amp; Scrolling Marquee</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Key Numbers &amp; Experience Highlights</h4>
                     </div>
 
                     <div class="form-row" style="grid-template-columns: repeat(4, 1fr);">
@@ -828,7 +828,7 @@ if (!in_array($currentTab, $validTabs)) {
                             <span class="form-hint">Displayed as: <strong><?= !empty($stats['lives_healed']) ? $stats['lives_healed'] : '30000' ?>+ Healed Clients</strong></span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Years of Practice</label>
+                            <label class="form-label">Years of Experience</label>
                             <input type="number" name="stat_years_experience" class="form-control" value="<?= htmlspecialchars($stats['years_experience'] ?? '25') ?>">
                             <span class="form-hint">Displayed as: <strong><?= !empty($stats['years_experience']) ? $stats['years_experience'] : '25' ?>+ Years Experience</strong></span>
                         </div>
@@ -838,16 +838,16 @@ if (!in_array($currentTab, $validTabs)) {
                             <span class="form-hint">Displayed as: <strong><?= !empty($stats['course_levels']) ? $stats['course_levels'] : '6' ?> Course Levels</strong></span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Sessions Completed</label>
+                            <label class="form-label">Completed Sessions</label>
                             <input type="number" name="stat_sessions_completed" class="form-control" value="<?= htmlspecialchars($stats['sessions_completed'] ?? '25000') ?>">
                             <span class="form-hint">Displayed as: <strong><?= !empty($stats['sessions_completed']) ? $stats['sessions_completed'] : '25000' ?>+ Sessions</strong></span>
                         </div>
                     </div>
 
                     <div class="form-group" style="margin-top: 12px;">
-                        <label class="form-label">Scrolling Marquee Extra Highlight</label>
+                        <label class="form-label">Highlights Tagline</label>
                         <input type="text" name="about_marquee_extra" class="form-control" value="<?= htmlspecialchars($settings['about_marquee_extra'] ?? '100% Authentic Lineage') ?>" placeholder="e.g. 100% Authentic Lineage">
-                        <span class="form-hint">Rotates alongside the numerical stats in the continuous infinite marquee.</span>
+                        <span class="form-hint">Displayed alongside the key numbers on the About Us page.</span>
                     </div>
                 </div>
 
@@ -857,7 +857,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Founder Profile &amp; Biography (Anupama Agrawal)</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Founder Profile (Anupama Agrawal)</h4>
                     </div>
 
                     <div class="form-row">
@@ -878,15 +878,15 @@ if (!in_array($currentTab, $validTabs)) {
 
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
                         <div class="form-group">
-                            <label class="form-label">Founder Full Name</label>
+                            <label class="form-label">Founder Name</label>
                             <input type="text" name="about_founder_name" class="form-control" value="<?= htmlspecialchars($settings['about_founder_name'] ?? 'Anupama Agrawal') ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Founder Title / Credentials</label>
+                            <label class="form-label">Designation / Title</label>
                             <input type="text" name="about_founder_role" class="form-control" value="<?= htmlspecialchars($settings['about_founder_role'] ?? 'Founder, Reiki Grand Master & Spiritual Wellness Coach') ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Photo Badge Pill</label>
+                            <label class="form-label">Photo Badge Text</label>
                             <input type="text" name="about_founder_badge" class="form-control" value="<?= htmlspecialchars($settings['about_founder_badge'] ?? 'Reiki Grand Master') ?>">
                         </div>
                     </div>
@@ -896,7 +896,7 @@ if (!in_array($currentTab, $validTabs)) {
                         $founderImgSrc = !empty($settings['about_founder_image']) ? '../' . ltrim($settings['about_founder_image'], '/') : '../assets/images/team/anupama_mam.jpeg';
                     ?>
                     <div class="form-group mb-3">
-                        <label class="form-label">Founder Portrait Photo</label>
+                        <label class="form-label">Founder Profile Photo</label>
                         <div class="flex items-center gap-3" style="flex-wrap: wrap;">
                             <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0; background: #fff;">
                                 <img id="founderImgPreview" src="<?= htmlspecialchars($founderImgSrc) ?>?v=<?= time() ?>" alt="Founder Photo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/team/anupama_mam.jpeg'">
@@ -934,9 +934,9 @@ if (!in_array($currentTab, $validTabs)) {
                         $founderSpecVal = !empty($settings['about_founder_specialties']) ? $settings['about_founder_specialties'] : $defaultSpecialties;
                     ?>
                     <div class="form-group">
-                        <label class="form-label">Core Healing Modalities &amp; Offerings (Specialty Tags)</label>
+                        <label class="form-label">Specialties &amp; Healing Modalities</label>
                         <input type="text" name="about_founder_specialties" class="form-control" value="<?= htmlspecialchars($founderSpecVal) ?>" placeholder="Reiki Healing, Chakra Balancing, ...">
-                        <span class="form-hint">Comma-separated list. Each specialty is displayed as a badge in the offerings box.</span>
+                        <span class="form-hint">Comma-separated list. Displayed as badges under the founder profile.</span>
                     </div>
                 </div>
 
@@ -946,22 +946,22 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">The Philosophy Behind Reiki Bliss</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Our Philosophy</h4>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Philosophy Section Eyebrow</label>
+                            <label class="form-label">Small Section Tag</label>
                             <input type="text" name="about_philosophy_label" class="form-control" value="<?= htmlspecialchars($settings['about_philosophy_label'] ?? 'Our Philosophy') ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Philosophy Section Title</label>
+                            <label class="form-label">Section Title</label>
                             <input type="text" name="about_philosophy_heading" class="form-control" value="<?= htmlspecialchars($settings['about_philosophy_heading'] ?? 'The Philosophy Behind <em>Reiki Bliss</em>') ?>">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Philosophy Introduction Paragraph</label>
+                        <label class="form-label">Section Description</label>
                         <textarea name="about_philosophy_intro" class="form-control" rows="2"><?= htmlspecialchars($settings['about_philosophy_intro'] ?? 'Anupama believes that meaningful change often begins by turning inward—creating space to understand ourselves, release what no longer serves us and become more intentional about the energy we bring into our lives.') ?></textarea>
                     </div>
 
@@ -998,22 +998,22 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 5</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Our Core Values (What We Stand For)</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Core Values</h4>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Values Section Eyebrow</label>
+                            <label class="form-label">Small Section Tag</label>
                             <input type="text" name="about_values_label" class="form-control" value="<?= htmlspecialchars($settings['about_values_label'] ?? 'What We Stand For') ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Values Section Title</label>
+                            <label class="form-label">Section Title</label>
                             <input type="text" name="about_values_heading" class="form-control" value="<?= htmlspecialchars($settings['about_values_heading'] ?? 'Our Core <em>Values</em>') ?>">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Values Section Tagline</label>
+                        <label class="form-label">Section Description</label>
                         <textarea name="about_values_intro" class="form-control" rows="2"><?= htmlspecialchars($settings['about_values_intro'] ?? 'Principles that guide every healing session, attunement workshop, and crystal recommendation at our center.') ?></textarea>
                     </div>
 
@@ -1043,7 +1043,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
                     <div class="flex-between">
                         <button type="submit" class="btn btn-gold flex items-center gap-2">
-                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save All About Us Changes
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save About Us Changes
                         </button>
                     </div>
                 </div>
@@ -1059,10 +1059,10 @@ if (!in_array($currentTab, $validTabs)) {
             <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
                 <div>
                     <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
-                        Homepage Hero Section &amp; Trust Stats
+                        Home Page Banner &amp; Highlights
                     </h3>
                     <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
-                        Manage the primary hero banner, location badge, headlines with gold highlight, subtext paragraph, CTAs, impact figures, and background slide images.
+                        Manage the main banner, titles, subheading description, key highlight numbers, and background slides on the home page.
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
@@ -1081,36 +1081,36 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Badge &amp; Headlines</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Main Titles &amp; Headings</h4>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Hero Location Badge (Top Tagline Pill)</label>
+                        <label class="form-label">Top Tagline / Location Badge</label>
                         <input type="text" name="hero_badge" id="heroBadgeInput" class="form-control" 
                                value="<?= htmlspecialchars($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016') ?>" 
                                placeholder="e.g. ● ADAJAN, SURAT · EST. 2016">
-                        <div class="form-hint">Displayed inside the glowing pill badge at the very top of the hero section.</div>
+                        <div class="form-hint">Displayed at the top of the home page banner.</div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Hero Main Title (Line 1 - White Text)</label>
+                            <label class="form-label">Main Heading (Line 1)</label>
                             <input type="text" name="hero_title" id="heroTitleInput" class="form-control" 
                                    value="<?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?>" 
                                    placeholder="e.g. Awaken Inner Harmony.">
-                            <div class="form-hint">Primary serif heading displayed in luminous white.</div>
+                            <div class="form-hint">First line of the main heading.</div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Hero Accent Title (Line 2 - Gold Text)</label>
+                            <label class="form-label">Highlighted Heading (Line 2)</label>
                             <input type="text" name="hero_title_gold" id="heroTitleGoldInput" class="form-control" 
                                    value="<?= htmlspecialchars($settings['hero_title_gold'] ?? 'Heal. Balance. Transform.') ?>" 
                                    placeholder="e.g. Heal. Balance. Transform.">
-                            <div class="form-hint">Second line styled with sacred golden gradient aura.</div>
+                            <div class="form-hint">Second line of the heading with gold styling.</div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Hero Subtext Paragraph</label>
+                        <label class="form-label">Subheading / Description</label>
                         <textarea name="hero_subtext" id="heroSubtextInput" class="form-control" rows="3" 
                                   placeholder="e.g. Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more."><?= htmlspecialchars($settings['hero_subtext'] ?? 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.') ?></textarea>
                         <!-- <div class="form-hint">HTML allowed (e.g. <code>&lt;strong&gt;Grand Master Ms Anupama Agrawal&lt;/strong&gt;</code>).</div> -->
@@ -1167,9 +1167,9 @@ if (!in_array($currentTab, $validTabs)) {
                     <div class="flex-between mb-3">
                         <div class="flex items-center gap-2">
                             <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
-                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Trust Counters &amp; Impact Figures</h4>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Key Numbers &amp; Highlights</h4>
                         </div>
-                        <span class="text-muted" style="font-size: 0.8rem;">Controls the 4 golden numbers below the hero buttons</span>
+                        <span class="text-muted" style="font-size: 0.8rem;">Controls the 4 key numbers displayed on the home page</span>
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px;">
@@ -1262,9 +1262,9 @@ if (!in_array($currentTab, $validTabs)) {
                     <div class="flex-between mb-3">
                         <div class="flex items-center gap-2">
                             <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
-                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Hero Background Carousel Slides</h4>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Home Background Slides</h4>
                         </div>
-                        <span class="text-muted" style="font-size: 0.8rem;">Dimmed ambient background loop (1920x1080 recommended)</span>
+                        <span class="text-muted" style="font-size: 0.8rem;">Background image slideshow (1920x1080 recommended)</span>
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
@@ -1339,7 +1339,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
                     <div class="flex-between">
                         <button type="submit" class="btn btn-gold flex items-center gap-2">
-                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Homepage Hero Changes
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Home Page Changes
                         </button>
                     </div>
                 </div>
@@ -1355,10 +1355,10 @@ if (!in_array($currentTab, $validTabs)) {
             <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
                 <div>
                     <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
-                        Footer &amp; Legal Pages Customizer
+                        Footer &amp; Legal Pages
                     </h3>
                     <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
-                        Manage the global website footer description, consultation CTA banner, and full legal agreements (Terms of Attunement &amp; Privacy Sanctuary).
+                        Manage the website footer description, consultation booking banner, and legal pages (Privacy Policy and Terms &amp; Conditions).
                     </p>
                 </div>
                 <div class="flex items-center gap-2">
@@ -1380,7 +1380,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Footer Brand Bio &amp; Copyright</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Footer Description &amp; Copyright</h4>
                     </div>
 
                     <?php 
@@ -1388,13 +1388,13 @@ if (!in_array($currentTab, $validTabs)) {
                         $footerDescVal = !empty($settings['footer_about_text']) ? $settings['footer_about_text'] : $defaultFooterDesc;
                     ?>
                     <div class="form-group">
-                        <label class="form-label">Footer Brand Bio / Description (Under Logo)</label>
+                        <label class="form-label">Footer Description (Under Logo)</label>
                         <textarea name="footer_about_text" class="form-control" rows="3" placeholder="Enter short bio under footer logo..."><?= htmlspecialchars($footerDescVal) ?></textarea>
-                        <span class="form-hint">Displayed in Column 1 directly under the Reiki Bliss logo and tagline. Supports <code>&lt;strong&gt;</code> bold styling.</span>
+                        <span class="form-hint">Displayed in the footer under the Reiki Bliss logo. Supports <code>&lt;strong&gt;</code> bold styling.</span>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Bottom Bar Copyright Notice</label>
+                        <label class="form-label">Copyright Notice</label>
                         <input type="text" name="footer_copyright" class="form-control" value="<?= htmlspecialchars($settings['footer_copyright'] ?? '© {year} Reiki Bliss Healing Center. All sacred rights reserved.') ?>" placeholder="e.g. © {year} Reiki Bliss Healing Center. All sacred rights reserved.">
                         <span class="form-hint">Use <code>{year}</code> to automatically insert the current year (e.g. 2026).</span>
                     </div>
@@ -1406,33 +1406,33 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Footer Booking CTA Banner</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Free Consultation / Booking Banner</h4>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">CTA Eyebrow Tag</label>
+                            <label class="form-label">Small Tag / Badge</label>
                             <input type="text" name="footer_cta_tag" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_tag'] ?? 'FIRST SESSION IS FREE') ?>" placeholder="e.g. FIRST SESSION IS FREE">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">CTA Main Heading</label>
+                            <label class="form-label">Banner Main Heading</label>
                             <input type="text" name="footer_cta_title" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_title'] ?? 'Begin Your <em>Healing Journey</em> Today') ?>" placeholder="e.g. Begin Your <em>Healing Journey</em> Today">
                             <span class="form-hint">Supports <code>&lt;em&gt;</code> gold cursive accent.</span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">CTA Subtext Paragraph</label>
+                        <label class="form-label">Banner Subtext / Description</label>
                         <textarea name="footer_cta_desc" class="form-control" rows="2" placeholder="Subtext..."><?= htmlspecialchars($settings['footer_cta_desc'] ?? 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.') ?></textarea>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">CTA Button Label</label>
+                            <label class="form-label">Button Label</label>
                             <input type="text" name="footer_cta_btn_text" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_btn_text'] ?? 'Book Free Session →') ?>" placeholder="e.g. Book Free Session →">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">CTA Button Link URL</label>
+                            <label class="form-label">Button Link URL</label>
                             <input type="text" name="footer_cta_btn_url" class="form-control" value="<?= htmlspecialchars($settings['footer_cta_btn_url'] ?? '') ?>" placeholder="Leave blank to use primary booking calendar URL">
                         </div>
                     </div>
@@ -1444,7 +1444,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Privacy Sanctuary Policy Page (privacy.php)</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Privacy Policy Page</h4>
                     </div>
 
                     <div class="form-row">
@@ -1453,7 +1453,7 @@ if (!in_array($currentTab, $validTabs)) {
                             <input type="text" name="privacy_title" class="form-control" value="<?= htmlspecialchars($settings['privacy_title'] ?? 'Privacy Sanctuary Policy') ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Page Subtitle / Spiritual Commitment</label>
+                            <label class="form-label">Page Subtitle</label>
                             <input type="text" name="privacy_tagline" class="form-control" value="<?= htmlspecialchars($settings['privacy_tagline'] ?? 'Our sacred commitment to honoring your personal information, confidentiality, and spiritual trust.') ?>">
                         </div>
                     </div>
@@ -1463,7 +1463,7 @@ if (!in_array($currentTab, $validTabs)) {
                         $privacyVal = !empty($settings['privacy_content']) ? $settings['privacy_content'] : $defaultPrivacyContent;
                     ?>
                     <div class="form-group">
-                        <label class="form-label">Privacy Policy Full Text / Sections</label>
+                        <label class="form-label">Privacy Policy Content</label>
                         <textarea name="privacy_content" class="form-control" rows="12" style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"><?= htmlspecialchars($privacyVal) ?></textarea>
                         <span class="form-hint">Supports Markdown headings (<code>### Section Title</code>), bullet points (<code>- Item</code>), and clean multi-paragraph formatting.</span>
                     </div>
@@ -1475,7 +1475,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Terms of Attunement &amp; Conditions (terms.php)</h4>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Terms &amp; Conditions Page</h4>
                     </div>
 
                     <div class="form-row">
@@ -1484,7 +1484,7 @@ if (!in_array($currentTab, $validTabs)) {
                             <input type="text" name="terms_title" class="form-control" value="<?= htmlspecialchars($settings['terms_title'] ?? 'Terms of Attunement & Healing Agreement') ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Page Subtitle / Principles</label>
+                            <label class="form-label">Page Subtitle</label>
                             <input type="text" name="terms_tagline" class="form-control" value="<?= htmlspecialchars($settings['terms_tagline'] ?? 'Clear guidelines for healing sessions, certified attunement courses, and consecrated crystal products.') ?>">
                         </div>
                     </div>
@@ -1494,7 +1494,7 @@ if (!in_array($currentTab, $validTabs)) {
                         $termsVal = !empty($settings['terms_content']) ? $settings['terms_content'] : $defaultTermsContent;
                     ?>
                     <div class="form-group">
-                        <label class="form-label">Terms of Attunement Full Agreement / Sections</label>
+                        <label class="form-label">Terms &amp; Conditions Content</label>
                         <textarea name="terms_content" class="form-control" rows="12" style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"><?= htmlspecialchars($termsVal) ?></textarea>
                         <span class="form-hint">Supports Markdown headings (<code>### Section Title</code>), bullet points (<code>- Item</code>), and clean multi-paragraph formatting.</span>
                     </div>
@@ -1502,9 +1502,9 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
                     <div class="flex-between">
-                        <span class="text-muted" style="font-size: 0.85rem;">Click save to publish all footer, privacy, and terms updates live.</span>
+                        <span class="text-muted" style="font-size: 0.85rem;">Click save to publish all footer and policy page changes.</span>
                         <button type="submit" class="btn btn-gold flex items-center gap-2">
-                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Footer &amp; Legal Changes
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Changes
                         </button>
                     </div>
                 </div>
@@ -1517,7 +1517,7 @@ if (!in_array($currentTab, $validTabs)) {
          ===================================================================== -->
     <div class="tab-content <?= $currentTab === 'account' ? 'active' : '' ?>" id="tab-account">
         <div class="admin-card">
-            <h3 class="admin-card-title mb-3" style="color: var(--gold);">Administrator Credentials &amp; Password</h3>
+            <h3 class="admin-card-title mb-3" style="color: var(--gold);">Admin Account &amp; Password</h3>
             <form action="settings.php" method="POST">
                 <input type="hidden" name="tab" value="account">
 
@@ -1527,7 +1527,7 @@ if (!in_array($currentTab, $validTabs)) {
                 </div>
 
                 <div class="form-group">
-                    <label for="newUsernameInput" class="form-label">Change Username (Optional)</label>
+                    <label for="newUsernameInput" class="form-label">New Username (Optional)</label>
                     <input type="text" id="newUsernameInput" name="new_username" class="form-control" placeholder="Leave unchanged to keep current username" value="<?= htmlspecialchars($currentAdminUser) ?>">
                 </div>
 
@@ -1558,7 +1558,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-gold">
-                        Update Account
+                        Save Account Changes
                     </button>
                 </div>
             </form>
@@ -1578,7 +1578,7 @@ if (!in_array($currentTab, $validTabs)) {
                     <div>
                         <h3 class="admin-card-title" style="color: var(--gold); display: flex; align-items: center; gap: 8px;">
                             <i data-lucide="message-square" style="width: 20px; height: 20px; color: #25D366;"></i>
-                            WhatsApp Floating Widget Configuration
+                            WhatsApp Chat Settings
                         </h3>
                         <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">
                             Configure the greeting text, section header, and status message shown in the visitor popup.
@@ -1593,21 +1593,21 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="waModalTitleInp">Modal Header Title</label>
+                        <label class="form-label" for="waModalTitleInp">Chat Window Title</label>
                         <input type="text" name="wa_modal_title" id="waModalTitleInp" class="form-control" value="<?= htmlspecialchars($settings['wa_modal_title'] ?? 'How can we help?') ?>" placeholder="e.g. How can we help?">
-                        <span class="form-hint">Main heading displayed in the green-tinted header bar.</span>
+                        <span class="form-hint">Heading displayed at the top of the chat popup.</span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="waModalSubtitleInp">Modal Subtitle / Response Time</label>
+                        <label class="form-label" for="waModalSubtitleInp">Subtitle / Response Time</label>
                         <input type="text" name="wa_modal_subtitle" id="waModalSubtitleInp" class="form-control" value="<?= htmlspecialchars($settings['wa_modal_subtitle'] ?? 'Reiki Bliss · Usually replies in hours') ?>" placeholder="e.g. Reiki Bliss · Usually replies in hours">
-                        <span class="form-hint">Status text shown below the modal title.</span>
+                        <span class="form-hint">Status line shown below the chat title.</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="waModalLabelInp">Section Heading Label</label>
+                    <label class="form-label" for="waModalLabelInp">Quick Options Title</label>
                     <input type="text" name="wa_modal_label" id="waModalLabelInp" class="form-control" value="<?= htmlspecialchars($settings['wa_modal_label'] ?? "WHAT'S THIS ABOUT?") ?>" placeholder="e.g. WHAT'S THIS ABOUT?">
-                    <span class="form-hint">Category label above the list of quick-reply buttons (e.g. WHAT'S THIS ABOUT?).</span>
+                    <span class="form-hint">Label above the list of quick reply buttons.</span>
                 </div>
             </div>
 
@@ -1619,10 +1619,10 @@ if (!in_array($currentTab, $validTabs)) {
                     <div class="flex-between mb-3">
                         <div>
                             <h3 class="admin-card-title" style="color: var(--gold); font-size: 1.05rem;">
-                                Quick-Reply Template Messages
+                                Quick Message Options
                             </h3>
                             <p class="text-muted" style="font-size: 0.82rem; margin-top: 2px;">
-                                Customize the clickable topic buttons and their pre-filled WhatsApp messages.
+                                Customize the clickable buttons and their pre-filled WhatsApp messages for visitors.
                             </p>
                         </div>
                     </div>
@@ -1660,7 +1660,7 @@ if (!in_array($currentTab, $validTabs)) {
                                     <input type="text" name="tmpl_icon[]" class="form-control wa-tmpl-icon-input" value="<?= htmlspecialchars($icon) ?>" style="text-align: center; font-size: 1.25rem;" maxlength="8" placeholder="🙏">
                                 </div>
                                 <div>
-                                    <label class="form-label" style="font-size: 0.76rem;">Button Topic Title</label>
+                                    <label class="form-label" style="font-size: 0.76rem;">Option Title</label>
                                     <input type="text" name="tmpl_title[]" class="form-control wa-tmpl-title-input" value="<?= htmlspecialchars($title) ?>" placeholder="e.g. Book a Healing Session" required>
                                 </div>
                             </div>
@@ -2119,7 +2119,7 @@ if (addWaTmplBtn && waTemplatesContainer) {
                     <input type="text" name="tmpl_icon[]" class="form-control wa-tmpl-icon-input" value="💬" style="text-align: center; font-size: 1.25rem;" maxlength="8" placeholder="💬">
                 </div>
                 <div>
-                    <label class="form-label" style="font-size: 0.76rem;">Button Topic Title</label>
+                    <label class="form-label" style="font-size: 0.76rem;">Option Title</label>
                     <input type="text" name="tmpl_title[]" class="form-control wa-tmpl-title-input" value="" placeholder="e.g. Session Inquiry" required>
                 </div>
             </div>

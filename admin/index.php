@@ -134,7 +134,7 @@ require_once 'includes/admin-header.php';
             <div class="action-icon"><i data-lucide="shopping-bag"></i></div>
             <div>
                 <div>Add Product</div>
-                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New crystal / item</small>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New crystal or bracelet</small>
             </div>
         </a>
 
@@ -142,7 +142,7 @@ require_once 'includes/admin-header.php';
             <div class="action-icon"><i data-lucide="clipboard-list"></i></div>
             <div>
                 <div>Add Service</div>
-                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New healing therapy</small>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New healing service</small>
             </div>
         </a>
 
@@ -150,15 +150,15 @@ require_once 'includes/admin-header.php';
             <div class="action-icon"><i data-lucide="graduation-cap"></i></div>
             <div>
                 <div>Add Course</div>
-                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New training program</small>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">New certification course</small>
             </div>
         </a>
 
         <a href="testimonials" class="quick-action-card">
             <div class="action-icon"><i data-lucide="message-circle"></i></div>
             <div>
-                <div>Testimonials</div>
-                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">Moderate &amp; view</small>
+                <div>Client Reviews</div>
+                <small class="text-muted" style="font-weight: normal; font-size: 0.78rem;">View &amp; manage</small>
             </div>
         </a>
 
