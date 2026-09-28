@@ -34,6 +34,24 @@ if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
         ['icon' => '💬', 'title' => 'Something Else', 'message' => 'Hello Reiki Bliss! I have a general query.']
     ];
 }
+
+// Fetch active services dynamically from database (managed via Admin / Super Admin Panel)
+if (!isset($pdo) || !($pdo instanceof PDO)) {
+    $pdo = require __DIR__ . '/../config/db.php';
+}
+
+$footerServices = [];
+if (isset($pdo) && ($pdo instanceof PDO)) {
+    try {
+        $fSrvStmt = $pdo->query("SELECT id, title, slug FROM services WHERE is_active = 1 ORDER BY sort_order ASC");
+        if ($fSrvStmt) {
+            $footerServices = $fSrvStmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (PDOException $e) {
+        error_log("Footer services query error: " . $e->getMessage());
+        $footerServices = [];
+    }
+}
 ?>
 
 <!-- Footer Section -->
@@ -101,16 +119,22 @@ if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
                 </ul>
             </div>
 
-            <!-- Column 3: Our Services -->
+            <!-- Column 3: Our Services (Dynamically Loaded from Admin Panel) -->
             <div class="footer-col">
                 <h4 class="footer-title">Our Services</h4>
                 <ul class="footer-links">
-                    <li><a href="<?php echo BASE_URL; ?>services#reiki-healing">Reiki Healing Session</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services#distance-reiki">Distance Reiki Healing</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services#chakra-balancing">Chakra Balancing</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services#aura-cleansing">Aura Cleansing & Repair</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>services#crystal-therapy">Crystal Energy Therapy</a></li>
-                    <li><a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener">Free Consultation</a></li>
+                    <?php if (!empty($footerServices)): ?>
+                        <?php foreach ($footerServices as $fSrv): ?>
+                            <li>
+                                <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($fSrv['slug']); ?>">
+                                    <?php echo htmlspecialchars($fSrv['title']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li><a href="<?php echo BASE_URL; ?>services">All Healing Services</a></li>
+                        <li><a href="<?php echo htmlspecialchars($footerBookingUrl); ?>" target="_blank" rel="noopener">Free Consultation</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
 
