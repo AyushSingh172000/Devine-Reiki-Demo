@@ -10,10 +10,15 @@ if (($secAlign ?? 'center') === 'left') {
 <section class="testimonials-section" id="testimonials">
     <div class="container">
         <div class="testimonials-header-wrap animate-on-scroll">
+<?php
+$testimBadge = isset($getSecContent) ? $getSecContent('testimonials', 'badge', '• STORIES OF HEALING') : '• STORIES OF HEALING';
+$testimTitle = isset($getSecContent) ? $getSecContent('testimonials', 'title', 'What Our Students &amp; Clients <em>Say</em>') : 'What Our Students &amp; Clients <em>Say</em>';
+$testimDesc  = isset($getSecContent) ? $getSecContent('testimonials', 'desc', 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.') : 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.';
+?>
             <div class="testimonials-header-center" <?php echo $testimHeaderStyle; ?>>
-                <span class="section-label">• STORIES OF HEALING</span>
-                <h2 class="section-heading">What Our Students &amp; Clients <em>Say</em></h2>
-                <p>Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.</p>
+                <span class="section-label"><?php echo htmlspecialchars($testimBadge); ?></span>
+                <h2 class="section-heading"><?php echo $testimTitle; ?></h2>
+                <p><?php echo htmlspecialchars($testimDesc); ?></p>
             </div>
             <div class="testimonials-nav-btns">
                 <button type="button" class="testimonial-nav-btn prev-btn" id="testimonialPrevBtn" onclick="scrollTestimonials('prev')" aria-label="Previous Testimonials">

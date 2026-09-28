@@ -14,10 +14,18 @@ $serviceBookingUrl = $disableBookings ? 'https://wa.me/' . preg_replace('/[^0-9]
 <section class="services-section" id="services">
     <div id="chakras" style="position: relative; top: -80px; visibility: hidden;"></div>
     <div class="container">
+<?php
+$servicesBadge = isset($getSecContent) ? $getSecContent('services', 'badge', 'Holistic Healing Modalities') : 'Holistic Healing Modalities';
+$servicesTitle = isset($getSecContent) ? $getSecContent('services', 'title', 'Our Core <em>Services</em>') : 'Our Core <em>Services</em>';
+$servicesDesc  = isset($getSecContent) ? $getSecContent('services', 'desc', '') : '';
+?>
         <div class="section-header-flex animate-on-scroll" <?php echo $alignStyle; ?>>
             <div>
-                <span class="section-label">Holistic Healing Modalities</span>
-                <h2 class="section-heading">Our Core <em>Services</em></h2>
+                <span class="section-label"><?php echo htmlspecialchars($servicesBadge); ?></span>
+                <h2 class="section-heading"><?php echo $servicesTitle; ?></h2>
+                <?php if (!empty($servicesDesc)): ?>
+                    <p class="section-subtext" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;"><?php echo htmlspecialchars($servicesDesc); ?></p>
+                <?php endif; ?>
             </div>
             <a href="<?php echo BASE_URL; ?>services" class="view-all-link">View all services →</a>
         </div>

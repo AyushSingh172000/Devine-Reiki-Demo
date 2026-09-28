@@ -2,9 +2,13 @@
 // Section: Healing Journey CTA Banner (Adjustable via Super Admin)
 $GLOBALS['cta_banner_rendered'] = true;
 
-$ctaTag = !empty($siteSettings['footer_cta_tag']) ? $siteSettings['footer_cta_tag'] : 'FIRST SESSION IS FREE';
-$ctaTitle = !empty($siteSettings['footer_cta_title']) ? $siteSettings['footer_cta_title'] : 'Begin Your <em>Healing Journey</em> Today';
-$ctaDesc = !empty($siteSettings['footer_cta_desc']) ? $siteSettings['footer_cta_desc'] : 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.';
+$defaultTag = !empty($siteSettings['footer_cta_tag']) ? $siteSettings['footer_cta_tag'] : 'FIRST SESSION IS FREE';
+$defaultTitle = !empty($siteSettings['footer_cta_title']) ? $siteSettings['footer_cta_title'] : 'Begin Your <em>Healing Journey</em> Today';
+$defaultDesc = !empty($siteSettings['footer_cta_desc']) ? $siteSettings['footer_cta_desc'] : 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.';
+
+$ctaTag   = isset($getSecContent) ? $getSecContent('cta_banner', 'badge', $defaultTag) : $defaultTag;
+$ctaTitle = isset($getSecContent) ? $getSecContent('cta_banner', 'title', $defaultTitle) : $defaultTitle;
+$ctaDesc  = isset($getSecContent) ? $getSecContent('cta_banner', 'desc', $defaultDesc) : $defaultDesc;
 $ctaBtnText = !empty($siteSettings['footer_cta_btn_text']) ? $siteSettings['footer_cta_btn_text'] : 'Book Free Session →';
 
 $bookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');

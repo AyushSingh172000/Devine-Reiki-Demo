@@ -354,6 +354,21 @@ if (!empty($siteSettings['superadmin_homepage_layout'])) {
     }
 }
 
+// Build lookup map for Super Admin section content overrides
+$secContentMap = [];
+foreach ($activeHomepageLayout as $sec) {
+    if (!empty($sec['id'])) {
+        $secContentMap[$sec['id']] = $sec;
+    }
+}
+
+$getSecContent = function($secId, $field, $default = '') use ($secContentMap) {
+    if (!empty($secContentMap[$secId][$field]) && trim((string)$secContentMap[$secId][$field]) !== '') {
+        return $secContentMap[$secId][$field];
+    }
+    return $default;
+};
+
 // Render dynamic sections in Super Admin designated order
 foreach ($activeHomepageLayout as $sectionItem) {
     if (empty($sectionItem['visible'])) continue;

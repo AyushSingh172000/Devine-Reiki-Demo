@@ -1,5 +1,8 @@
 <?php
 // Section 1: Hero Banner & Trust Stats
+$currentHeroBadge = isset($getSecContent) ? $getSecContent('hero', 'badge', $heroBadge) : $heroBadge;
+$currentHeroTitle = isset($getSecContent) ? $getSecContent('hero', 'title', $heroTitleHtml) : $heroTitleHtml;
+$currentHeroSubtext = isset($getSecContent) ? $getSecContent('hero', 'desc', $heroSubtext) : $heroSubtext;
 ?>
 <section class="hero-section hero-section-centered" id="hero">
     <!-- Scrolling Background Posters (Full Banner Size Scrolling Right to Left) -->
@@ -23,15 +26,15 @@
 
     <div class="container hero-container-center animate-on-scroll">
         <span class="hero-location-badge">
-            <?php echo htmlspecialchars($heroBadge); ?>
+            <?php echo htmlspecialchars($currentHeroBadge); ?>
         </span>
 
         <h1 class="hero-title">
-            <?php echo $heroTitleHtml; ?>
+            <?php echo $currentHeroTitle; ?>
         </h1>
 
         <div class="hero-subtext">
-            <?php echo $heroSubtext; ?>
+            <?php echo $currentHeroSubtext; ?>
         </div>
 
         <div class="hero-ctas">

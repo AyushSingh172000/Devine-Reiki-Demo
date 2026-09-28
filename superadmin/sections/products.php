@@ -11,10 +11,18 @@ $hidePrices = !empty($saToggles['hide_prices']);
 ?>
 <section class="products-section" id="products">
     <div class="container">
+<?php
+$productsBadge = isset($getSecContent) ? $getSecContent('products', 'badge', 'Sacred Crystal Energy') : 'Sacred Crystal Energy';
+$productsTitle = isset($getSecContent) ? $getSecContent('products', 'title', 'Featured Reiki Charged <em>Products</em>') : 'Featured Reiki Charged <em>Products</em>';
+$productsDesc  = isset($getSecContent) ? $getSecContent('products', 'desc', '') : '';
+?>
         <div class="section-header-flex animate-on-scroll" <?php echo $productsAlignStyle; ?>>
             <div>
-                <span class="section-label">Sacred Crystal Energy</span>
-                <h2 class="section-heading">Featured Reiki Charged <em>Products</em></h2>
+                <span class="section-label"><?php echo htmlspecialchars($productsBadge); ?></span>
+                <h2 class="section-heading"><?php echo $productsTitle; ?></h2>
+                <?php if (!empty($productsDesc)): ?>
+                    <p class="section-subtext" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;"><?php echo htmlspecialchars($productsDesc); ?></p>
+                <?php endif; ?>
             </div>
             <a href="<?php echo BASE_URL; ?>products" class="view-all-link">View all products →</a>
         </div>
