@@ -1118,9 +1118,14 @@ if (!in_array($currentTab, $validTabs)) {
                 </div>
 
                 <!-- -------------------------------------------------------------
-                     SECTION 2: CALL-TO-ACTION BUTTONS (COMMENTED OUT)
+                     SECTION 2: CALL-TO-ACTION BUTTONS (SUPER ADMIN GOVERNED)
                      ------------------------------------------------------------- -->
-                <?php /* SECTION 2 COMMENTED OUT AS REQUESTED:
+                <?php
+                // Check Super Admin permission for Hero CTA buttons visibility
+                $saPerms = !empty($siteSettings['superadmin_admin_permissions']) ? json_decode($siteSettings['superadmin_admin_permissions'], true) : [];
+                $canManageHeroCtas = !empty($saPerms['show_hero_ctas']);
+                if ($canManageHeroCtas): 
+                ?>
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex items-center gap-2 mb-3">
                         <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
@@ -1158,7 +1163,7 @@ if (!in_array($currentTab, $validTabs)) {
                         </div>
                     </div>
                 </div>
-                */ ?>
+                <?php endif; ?>
 
                 <!-- -------------------------------------------------------------
                      SECTION 3: HERO TRUST COUNTERS & IMPACT FIGURES
@@ -1166,7 +1171,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex-between mb-3">
                         <div class="flex items-center gap-2">
-                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;"><?= $canManageHeroCtas ? 'SECTION 3' : 'SECTION 2' ?></span>
                             <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Key Numbers &amp; Highlights</h4>
                         </div>
                         <span class="text-muted" style="font-size: 0.8rem;">Controls the 4 key numbers displayed on the home page</span>
@@ -1261,7 +1266,7 @@ if (!in_array($currentTab, $validTabs)) {
                 <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                     <div class="flex-between mb-3">
                         <div class="flex items-center gap-2">
-                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;"><?= $canManageHeroCtas ? 'SECTION 4' : 'SECTION 3' ?></span>
                             <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Home Background Slides</h4>
                         </div>
                         <span class="text-muted" style="font-size: 0.8rem;">Background image slideshow (1920x1080 recommended)</span>

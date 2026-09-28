@@ -43,6 +43,43 @@ $logoVersion = file_exists(__DIR__ . '/../../' . $rawLogo) ? filemtime(__DIR__ .
 
 $adminUser = $_SESSION['admin_user'] ?? ($_SESSION['admin_username'] ?? 'Admin');
 $adminInitial = strtoupper(substr($adminUser, 0, 1));
+
+// Super Admin Permission Matrix
+$saPerms = !empty($siteSettings['superadmin_admin_permissions']) ? json_decode($siteSettings['superadmin_admin_permissions'], true) : [];
+$saAllowedMenus = $saPerms['allowed_menus'] ?? null;
+$isMenuAllowed = function($menuKey) use ($saAllowedMenus) {
+    if ($saAllowedMenus === null) return true;
+    return in_array($menuKey, $saAllowedMenus);
+};
+
+// Super Admin Dynamic Sidebar Names & Screenshot Defaults
+$customSidebarLabels = !empty($siteSettings['superadmin_sidebar_names']) ? json_decode($siteSettings['superadmin_sidebar_names'], true) : [];
+$defaultSidebarLabels = [
+    'brand_title'           => 'ADMIN PANEL',
+    'menu_dashboard'        => 'Dashboard',
+    'section_content'       => 'CONTENT',
+    'menu_homepage_hero'    => 'Homepage Hero',
+    'menu_about_us'         => 'About Us Page',
+    'menu_testimonials'     => 'Testimonials',
+    'section_commerce'      => 'COMMERCE',
+    'menu_products'         => 'Products',
+    'menu_services'         => 'Services',
+    'menu_courses'          => 'Courses',
+    'menu_orders'           => 'Orders',
+    'section_communication' => 'COMMUNICATION',
+    'menu_inquiries'        => 'Inquiries',
+    'menu_whatsapp'         => 'WhatsApp Templates',
+    'section_settings'      => 'SETTINGS',
+    'menu_settings'         => 'Site Settings',
+    'menu_footer'           => 'Footer & Legal',
+    'menu_logout'           => 'Logout',
+];
+$sbLabel = function($key) use ($customSidebarLabels, $defaultSidebarLabels) {
+    if (isset($customSidebarLabels[$key]) && trim((string)$customSidebarLabels[$key]) !== '') {
+        return htmlspecialchars(trim((string)$customSidebarLabels[$key]));
+    }
+    return htmlspecialchars($defaultSidebarLabels[$key] ?? $key);
+};
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,16 +114,16 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       <a href="./">
         <img src="<?= htmlspecialchars($adminLogo) ?>?v=<?= $logoVersion ?>" alt="Reiki Bliss">
       </a>
-      <span class="sidebar-label">Admin Panel</span>
+      <span class="sidebar-label"><?= $sbLabel('brand_title') ?></span>
     </div>
     <nav class="sidebar-nav">
       <li>
         <a href="./" class="<?= ($currentPage === 'index.php' || $currentPage === '') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
+          <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> <?= $sbLabel('menu_dashboard') ?>
         </a>
       </li>
 
-      <div class="sidebar-section-divider"><i data-lucide="layers"></i> PAGES &amp; CONTENT</div>
+      <div class="sidebar-section-divider"><i data-lucide="layers"></i> <?= $sbLabel('section_content') ?></div>
       <?php /*
       <li>
         <a href="gallery" class="<?= ($currentPage === 'gallery.php' || $currentPage === 'gallery') ? 'active' : '' ?>">
@@ -103,68 +140,89 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       */ ?>
       <li>
         <a href="settings?tab=homepage" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'homepage') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="sparkles"></i></span> Home Page
+          <span class="nav-icon"><i data-lucide="sparkles"></i></span> <?= $sbLabel('menu_homepage_hero') ?>
         </a>
       </li>
       <li>
         <a href="settings?tab=about" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'about') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="book-open"></i></span> About Us
+          <span class="nav-icon"><i data-lucide="book-open"></i></span> <?= $sbLabel('menu_about_us') ?>
         </a>
       </li>
+      <?php if ($isMenuAllowed('testimonials')): ?>
       <li>
         <a href="testimonials" class="<?= ($currentPage === 'testimonials.php' || $currentPage === 'testimonials') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="message-circle"></i></span> Client Reviews
+          <span class="nav-icon"><i data-lucide="message-circle"></i></span> <?= $sbLabel('menu_testimonials') ?>
         </a>
       </li>
+      <?php endif; ?>
 
-      <div class="sidebar-section-divider"><i data-lucide="store"></i> SERVICES &amp; SHOP</div>
+      <div class="sidebar-section-divider"><i data-lucide="store"></i> <?= $sbLabel('section_commerce') ?></div>
+      <?php if ($isMenuAllowed('products')): ?>
       <li>
         <a href="products" class="<?= ($currentPage === 'products.php' || $currentPage === 'products') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="shopping-bag"></i></span> Shop Products
+          <span class="nav-icon"><i data-lucide="shopping-bag"></i></span> <?= $sbLabel('menu_products') ?>
         </a>
       </li>
+      <?php endif; ?>
+
+      <?php if ($isMenuAllowed('services')): ?>
       <li>
         <a href="services" class="<?= ($currentPage === 'services.php' || $currentPage === 'services') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="clipboard-list"></i></span> Services
+          <span class="nav-icon"><i data-lucide="clipboard-list"></i></span> <?= $sbLabel('menu_services') ?>
         </a>
       </li>
+      <?php endif; ?>
+
+      <?php if ($isMenuAllowed('courses')): ?>
       <li>
         <a href="courses" class="<?= ($currentPage === 'courses.php' || $currentPage === 'courses') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="graduation-cap"></i></span> Courses
+          <span class="nav-icon"><i data-lucide="graduation-cap"></i></span> <?= $sbLabel('menu_courses') ?>
         </a>
       </li>
+      <?php endif; ?>
+
       <li>
         <a href="orders" class="<?= ($currentPage === 'orders.php' || $currentPage === 'orders') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="package"></i></span> Orders
+          <span class="nav-icon"><i data-lucide="package"></i></span> <?= $sbLabel('menu_orders') ?>
         </a>
       </li>
 
-      <div class="sidebar-section-divider"><i data-lucide="radio"></i> INQUIRIES &amp; MESSAGES</div>
+      <div class="sidebar-section-divider"><i data-lucide="radio"></i> <?= $sbLabel('section_communication') ?></div>
+      <?php if ($isMenuAllowed('inquiries')): ?>
       <li>
         <a href="inquiries" class="<?= ($currentPage === 'inquiries.php' || $currentPage === 'inquiries') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="mail"></i></span> Inquiries
+          <span class="nav-icon"><i data-lucide="mail"></i></span> <?= $sbLabel('menu_inquiries') ?>
           <?php if ($unreadCount > 0): ?>
             <span class="sidebar-badge"><?= $unreadCount ?></span>
           <?php endif; ?>
         </a>
       </li>
+      <?php endif; ?>
+
+      <?php if ($isMenuAllowed('whatsapp')): ?>
       <li>
         <a href="settings?tab=whatsapp" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'whatsapp') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="message-square"></i></span> WhatsApp Chat
+          <span class="nav-icon"><i data-lucide="message-square"></i></span> <?= $sbLabel('menu_whatsapp') ?>
         </a>
       </li>
+      <?php endif; ?>
 
-      <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> SETTINGS</div>
+      <div class="sidebar-section-divider"><i data-lucide="sliders-horizontal"></i> <?= $sbLabel('section_settings') ?></div>
+      <?php if ($isMenuAllowed('settings')): ?>
       <li>
         <a href="settings" class="<?= ($currentPage === 'settings.php' && empty($_GET['tab'])) ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="settings"></i></span> Site Settings
+          <span class="nav-icon"><i data-lucide="settings"></i></span> <?= $sbLabel('menu_settings') ?>
         </a>
       </li>
+      <?php endif; ?>
+
+      <?php if ($isMenuAllowed('footer')): ?>
       <li>
         <a href="settings?tab=footer" class="<?= ($currentPage === 'settings.php' && ($_GET['tab'] ?? '') === 'footer') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="panel-bottom"></i></span> Footer &amp; Legal Pages
+          <span class="nav-icon"><i data-lucide="panel-bottom"></i></span> <?= $sbLabel('menu_footer') ?>
         </a>
       </li>
+      <?php endif; ?>
       <?php /* Hidden: Logo & Favicon can be managed directly inside Site Settings -> Branding & Assets tab
       <li>
         <a href="branding" class="<?= ($currentPage === 'branding.php' || ($currentPage === 'settings.php' && isset($_GET['tab']) && $_GET['tab'] === 'branding')) ? 'active' : '' ?>">
@@ -174,7 +232,7 @@ $adminInitial = strtoupper(substr($adminUser, 0, 1));
       */ ?>
       <li>
         <a href="logout" class="<?= ($currentPage === 'logout.php' || $currentPage === 'logout') ? 'active' : '' ?>">
-          <span class="nav-icon"><i data-lucide="log-out"></i></span> Logout
+          <span class="nav-icon"><i data-lucide="log-out"></i></span> <?= $sbLabel('menu_logout') ?>
         </a>
       </li>
     </nav>
