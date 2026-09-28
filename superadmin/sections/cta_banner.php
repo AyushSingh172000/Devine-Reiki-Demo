@@ -13,12 +13,34 @@ $bookingUrl    = !empty($siteSettings['booking_url']) ? $siteSettings['booking_u
 $defaultBtnUrl = !empty($siteSettings['footer_cta_btn_url']) ? $siteSettings['footer_cta_btn_url'] : $bookingUrl;
 
 // Super Admin Dynamic Overrides from Homepage Manager
-$ctaTag     = isset($getSecContent) ? $getSecContent('cta_banner', 'badge', $defaultTag) : $defaultTag;
-$ctaTitle   = isset($getSecContent) ? $getSecContent('cta_banner', 'title', $defaultTitle) : $defaultTitle;
-$ctaDesc    = isset($getSecContent) ? $getSecContent('cta_banner', 'desc', $defaultDesc) : $defaultDesc;
-$ctaBgImage = isset($getSecContent) ? $getSecContent('cta_banner', 'bg_image', $defaultBgImage) : $defaultBgImage;
-$ctaBtnText = isset($getSecContent) ? $getSecContent('cta_banner', 'btn_text', $defaultBtnText) : $defaultBtnText;
-$ctaBtnUrl  = isset($getSecContent) ? $getSecContent('cta_banner', 'btn_url', $defaultBtnUrl) : $defaultBtnUrl;
+if (isset($getSecContent)) {
+    $ctaTag     = $getSecContent('cta_banner', 'badge', $defaultTag);
+    $ctaTitle   = $getSecContent('cta_banner', 'title', $defaultTitle);
+    $ctaDesc    = $getSecContent('cta_banner', 'desc', $defaultDesc);
+    $ctaBgImage = $getSecContent('cta_banner', 'bg_image', $defaultBgImage);
+    $ctaBtnText = $getSecContent('cta_banner', 'btn_text', $defaultBtnText);
+    $ctaBtnUrl  = $getSecContent('cta_banner', 'btn_url', $defaultBtnUrl);
+} else {
+    $layoutArr = !empty($siteSettings['superadmin_homepage_layout']) ? json_decode($siteSettings['superadmin_homepage_layout'], true) : [];
+    $ctaSecData = [];
+    if (is_array($layoutArr)) {
+        foreach ($layoutArr as $sec) {
+            if (!empty($sec['id']) && $sec['id'] === 'cta_banner') {
+                $ctaSecData = $sec;
+                break;
+            }
+        }
+    }
+    $ctaTag     = !empty($ctaSecData['badge']) ? $ctaSecData['badge'] : $defaultTag;
+    $ctaTitle   = !empty($ctaSecData['title']) ? $ctaSecData['title'] : $defaultTitle;
+    $ctaDesc    = !empty($ctaSecData['desc']) ? $ctaSecData['desc'] : $defaultDesc;
+    $ctaBgImage = !empty($ctaSecData['bg_image']) ? $ctaSecData['bg_image'] : $defaultBgImage;
+    $ctaBtnText = !empty($ctaSecData['btn_text']) ? $ctaSecData['btn_text'] : $defaultBtnText;
+    $ctaBtnUrl  = !empty($ctaSecData['btn_url']) ? $ctaSecData['btn_url'] : $defaultBtnUrl;
+    if (!isset($secAlign) && !empty($ctaSecData['align'])) {
+        $secAlign = $ctaSecData['align'];
+    }
+}
 
 if (empty($ctaBgImage)) {
     $ctaBgImage = 'assets/images/cta-bg.jpg';

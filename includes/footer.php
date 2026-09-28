@@ -47,18 +47,11 @@ if (!is_array($footerWaTemplates) || empty($footerWaTemplates)) {
     </div>
 
     <div class="container footer-content-container">
-        <!-- CTA Banner (Suppressed on Homepage where it is governed dynamically by Super Admin Section Architecture) -->
+        <!-- CTA Banner (Unified Boxed Banner controlled by Super Admin) -->
         <?php if (empty($GLOBALS['cta_banner_rendered']) && empty($hideFooterCtaBanner)): ?>
-        <div class="footer-cta-banner">
-            <div class="footer-cta-text">
-                <span class="footer-cta-tag"><?php echo htmlspecialchars($footerCtaTag); ?></span>
-                <h3><?php echo $footerCtaTitle; ?></h3>
-                <p><?php echo htmlspecialchars($footerCtaDesc); ?></p>
+            <div style="margin-bottom: 35px;">
+                <?php include __DIR__ . '/../superadmin/sections/cta_banner.php'; ?>
             </div>
-            <div class="footer-cta-action">
-                <a href="<?php echo htmlspecialchars($footerCtaBtnUrl); ?>" target="_blank" rel="noopener" class="btn-gold"><?php echo htmlspecialchars($footerCtaBtnText); ?></a>
-            </div>
-        </div>
         <?php endif; ?>
 
         <!-- Main 4-Column Footer Grid -->
