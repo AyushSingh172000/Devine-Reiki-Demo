@@ -335,7 +335,8 @@ $defaultHomepageLayout = [
     ['id' => 'testimonials', 'name' => 'Testimonials & Student Reviews', 'visible' => true, 'align' => 'center'],
     ['id' => 'courses', 'name' => 'Reiki & Energy Courses', 'visible' => true, 'align' => 'left'],
     ['id' => 'products', 'name' => 'Featured Products & Crystals', 'visible' => true, 'align' => 'left'],
-    ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => true, 'align' => 'left']
+    ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => true, 'align' => 'left'],
+    ['id' => 'cta_banner', 'name' => 'Healing Journey CTA Banner', 'visible' => true, 'align' => 'left']
 ];
 
 $activeHomepageLayout = $defaultHomepageLayout;
@@ -343,6 +344,13 @@ if (!empty($siteSettings['superadmin_homepage_layout'])) {
     $customLayout = json_decode($siteSettings['superadmin_homepage_layout'], true);
     if (is_array($customLayout) && !empty($customLayout)) {
         $activeHomepageLayout = $customLayout;
+        // Auto-merge newly registered sections if not yet in saved database layout
+        $existingIds = array_column($activeHomepageLayout, 'id');
+        foreach ($defaultHomepageLayout as $defSec) {
+            if (!in_array($defSec['id'], $existingIds)) {
+                $activeHomepageLayout[] = $defSec;
+            }
+        }
     }
 }
 
@@ -359,5 +367,8 @@ foreach ($activeHomepageLayout as $sectionItem) {
 }
 ?>
 
-<!-- Include Footer Component -->
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<!-- Include Footer Component (CTA Banner on homepage is now dynamically handled above) -->
+<?php 
+$hideFooterCtaBanner = true;
+include __DIR__ . '/includes/footer.php'; 
+?>

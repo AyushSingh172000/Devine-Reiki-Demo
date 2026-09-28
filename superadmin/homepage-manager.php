@@ -50,6 +50,13 @@ $sectionDefinitions = [
         'allow_align' => true,
         'default_align' => 'left'
     ],
+    'cta_banner' => [
+        'name' => 'Healing Journey CTA Banner',
+        'desc' => 'Light luxury card with "First Session is Free", headline, description, and "Book Free Session" action button.',
+        'badge' => 'CTA BANNER',
+        'allow_align' => true,
+        'default_align' => 'left'
+    ],
 ];
 
 // Handle Reset Action
@@ -60,7 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         ['id' => 'testimonials', 'name' => 'Testimonials & Client Stories', 'visible' => true, 'align' => 'center'],
         ['id' => 'courses', 'name' => 'Certified Energy Courses', 'visible' => true, 'align' => 'left'],
         ['id' => 'products', 'name' => 'Sacred Products & Bracelets', 'visible' => true, 'align' => 'left'],
-        ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => true, 'align' => 'left']
+        ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => true, 'align' => 'left'],
+        ['id' => 'cta_banner', 'name' => 'Healing Journey CTA Banner', 'visible' => true, 'align' => 'left']
     ];
 
     try {
