@@ -70,13 +70,16 @@ $sectionDefinitions = [
     ],
     'cta_banner' => [
         'name' => 'Healing Journey CTA Banner',
-        'desc' => 'Light luxury card with "First Session is Free", headline, description, and "Book Free Session" action button.',
+        'desc' => 'Atmospheric healing banner with "First Session is Free", headline, description, background image, and golden "Book Free Session" action button.',
         'badge' => 'CTA BANNER',
         'allow_align' => true,
-        'default_align' => 'left',
+        'default_align' => 'center',
         'default_tag' => 'FIRST SESSION IS FREE',
         'default_title' => 'Begin Your <em>Healing Journey</em> Today',
-        'default_desc' => 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.'
+        'default_desc' => 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.',
+        'default_bg_image' => 'assets/images/cta-bg.jpg',
+        'default_btn_text' => 'Book Free Session →',
+        'default_btn_url' => !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : '#booking'
     ],
 ];
 
@@ -84,7 +87,7 @@ $sectionDefinitions = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'reset_default') {
     $defaultLayout = [];
     foreach ($sectionDefinitions as $id => $meta) {
-        $defaultLayout[] = [
+        $secItem = [
             'id' => $id,
             'name' => $meta['name'],
             'visible' => true,
@@ -93,13 +96,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             'title' => $meta['default_title'],
             'desc' => $meta['default_desc']
         ];
+        if (!empty($meta['default_bg_image'])) {
+            $secItem['bg_image'] = $meta['default_bg_image'];
+        }
+        if (!empty($meta['default_btn_text'])) {
+            $secItem['btn_text'] = $meta['default_btn_text'];
+        }
+        if (!empty($meta['default_btn_url'])) {
+            $secItem['btn_url'] = $meta['default_btn_url'];
+        }
+        $defaultLayout[] = $secItem;
     }
 
     try {
         $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
         $stmt->execute(['superadmin_homepage_layout', json_encode($defaultLayout)]);
         $siteSettings['superadmin_homepage_layout'] = json_encode($defaultLayout);
-        $successMsg = "Homepage layout architecture, headings, and descriptions successfully reset to factory defaults!";
+        $successMsg = "Homepage layout architecture, headings, descriptions, and CTA settings successfully reset to factory defaults!";
     } catch (\PDOException $e) {
         $errorMsg = "Database error: " . $e->getMessage();
     }
@@ -113,6 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $badges = $_POST['badge'] ?? [];
     $titles = $_POST['title'] ?? [];
     $descs = $_POST['desc'] ?? [];
+    $bgImages = $_POST['bg_image'] ?? [];
+    $btnTexts = $_POST['btn_text'] ?? [];
+    $btnUrls = $_POST['btn_url'] ?? [];
 
     $newLayout = [];
     foreach ($sectionIds as $idx => $id) {
@@ -128,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $title = isset($titles[$id]) ? trim(strip_tags($titles[$id], '<em><strong><span><br><b><i>')) : '';
         $desc = isset($descs[$id]) ? trim(strip_tags($descs[$id], '<em><strong><span><br><b><i>')) : '';
 
-        $newLayout[] = [
+        $secItem = [
             'id' => $id,
             'name' => $sectionDefinitions[$id]['name'],
             'visible' => $isVisible,
@@ -137,6 +153,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             'title' => $title,
             'desc' => $desc
         ];
+
+        if ($id === 'cta_banner') {
+            $secItem['bg_image'] = isset($bgImages[$id]) && trim($bgImages[$id]) !== '' ? trim(strip_tags($bgImages[$id])) : ($sectionDefinitions[$id]['default_bg_image'] ?? 'assets/images/cta-bg.jpg');
+            $secItem['btn_text'] = isset($btnTexts[$id]) && trim($btnTexts[$id]) !== '' ? trim(strip_tags($btnTexts[$id])) : ($sectionDefinitions[$id]['default_btn_text'] ?? 'Book Free Session →');
+            $secItem['btn_url'] = isset($btnUrls[$id]) ? trim(strip_tags($btnUrls[$id])) : '';
+        }
+
+        $newLayout[] = $secItem;
     }
 
     try {
@@ -328,6 +352,41 @@ include __DIR__ . '/includes/superadmin-header.php';
                             </label>
                             <textarea name="desc[<?= htmlspecialchars($id) ?>]" class="sa-input" rows="2" style="font-size: 0.82rem; padding: 6px 10px; resize: vertical;" placeholder="<?= htmlspecialchars($meta['default_desc'] ?? '') ?>"><?= htmlspecialchars($activeDesc) ?></textarea>
                         </div>
+
+                        <?php if ($id === 'cta_banner'): 
+                            $activeBgImage = $sec['bg_image'] ?? ($meta['default_bg_image'] ?? 'assets/images/cta-bg.jpg');
+                            $activeBtnText = $sec['btn_text'] ?? ($meta['default_btn_text'] ?? 'Book Free Session →');
+                            $activeBtnUrl  = $sec['btn_url'] ?? ($meta['default_btn_url'] ?? (!empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : '#'));
+                        ?>
+                            <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; padding-top: 12px; margin-top: 4px; border-top: 1px dashed rgba(200, 155, 60, 0.25);">
+                                <div>
+                                    <label style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700; color: var(--sa-gold); text-transform: uppercase; margin-bottom: 5px;">
+                                        <span>Background Image URL / Path</span>
+                                        <span style="font-size: 0.68rem; color: var(--sa-text-dim); font-weight: 500;">Spiritual Hands Aura BG</span>
+                                    </label>
+                                    <input type="text" name="bg_image[<?= htmlspecialchars($id) ?>]" value="<?= htmlspecialchars($activeBgImage) ?>" class="sa-input" style="font-size: 0.82rem; padding: 6px 10px;" placeholder="assets/images/cta-bg.jpg">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+                                        <span style="font-size: 0.7rem; color: var(--sa-text-dim);">Live BG Preview:</span>
+                                        <img src="../<?= htmlspecialchars($activeBgImage) ?>" alt="CTA BG Preview" style="height: 34px; width: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--sa-border-gold);" onerror="this.style.display='none'">
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div>
+                                        <label style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700; color: var(--sa-gold); text-transform: uppercase; margin-bottom: 5px;">
+                                            <span>Golden Button Text</span>
+                                        </label>
+                                        <input type="text" name="btn_text[<?= htmlspecialchars($id) ?>]" value="<?= htmlspecialchars($activeBtnText) ?>" class="sa-input" style="font-size: 0.82rem; padding: 6px 10px;" placeholder="Book Free Session →">
+                                    </div>
+                                    <div>
+                                        <label style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700; color: var(--sa-gold); text-transform: uppercase; margin-bottom: 5px;">
+                                            <span>Button Destination URL</span>
+                                        </label>
+                                        <input type="text" name="btn_url[<?= htmlspecialchars($id) ?>]" value="<?= htmlspecialchars($activeBtnUrl) ?>" class="sa-input" style="font-size: 0.82rem; padding: 6px 10px;" placeholder="<?= htmlspecialchars(!empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : '#') ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

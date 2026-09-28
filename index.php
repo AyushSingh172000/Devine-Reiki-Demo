@@ -336,7 +336,7 @@ $defaultHomepageLayout = [
     ['id' => 'courses', 'name' => 'Reiki & Energy Courses', 'visible' => true, 'align' => 'left'],
     ['id' => 'products', 'name' => 'Featured Products & Crystals', 'visible' => true, 'align' => 'left'],
     ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => true, 'align' => 'left'],
-    ['id' => 'cta_banner', 'name' => 'Healing Journey CTA Banner', 'visible' => true, 'align' => 'left']
+    ['id' => 'cta_banner', 'name' => 'Healing Journey CTA Banner', 'visible' => true, 'align' => 'center']
 ];
 
 $activeHomepageLayout = $defaultHomepageLayout;
