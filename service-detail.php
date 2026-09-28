@@ -44,10 +44,21 @@ try {
     error_log("Database error fetching related services: " . $e->getMessage());
 }
 
+// Helper to guarantee absolute asset URL for rewritten routes
+$getAssetUrl = function($path, $fallback = 'assets/images/services/reiki-healing.jpg') {
+    $img = !empty($path) ? $path : $fallback;
+    if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+        return $img;
+    }
+    return BASE_URL . ltrim($img, '/');
+};
+
+$heroImgUrl = $getAssetUrl($service['image'] ?? '');
+
 // Page Metadata
 $pageTitle = htmlspecialchars($service['title']) . " | Divine Reiki & Energy Healing Center";
 $pageDescription = htmlspecialchars($service['short_description']);
-$pageOgImage = !empty($service['image']) ? $service['image'] : null;
+$pageOgImage = $heroImgUrl;
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
@@ -73,22 +84,38 @@ include __DIR__ . '/includes/header.php';
             <article class="service-detail-main animate-on-scroll">
                 <!-- Hero Image -->
                 <div class="service-main-hero-img">
-                    <img src="<?php echo htmlspecialchars($service['image'] ?: 'assets/images/services/reiki-healing.jpg'); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" loading="lazy">
+                    <img src="<?php echo htmlspecialchars($heroImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
                 </div>
 
                 <!-- Title & Meta Header -->
                 <h1 class="service-detail-title"><?php echo htmlspecialchars($service['title']); ?></h1>
                 
                 <div class="service-header-meta">
-                    <div>
-                        <?php if ($service['is_free'] || $service['price'] === null): ?>
-                            <span class="service-meta-price" style="color: var(--soft-green-text);">Free Session</span>
+                    <div class="service-meta-price-box">
+                        <span class="service-meta-sublabel">Energy Exchange</span>
+                        <?php if ($service['is_free'] || $service['price'] === null || (float)$service['price'] <= 0): ?>
+                            <span class="service-meta-price" style="color: var(--soft-green-text, #16a34a);">Free Session</span>
                         <?php else: ?>
-                            <span class="service-meta-price">₹<?php echo number_format($service['price'], 2); ?></span>
+                            <span class="service-meta-price">₹<?php echo number_format($service['price'], 0); ?></span>
                         <?php endif; ?>
                     </div>
-                    <div class="service-meta-duration">
-                        ⏱️ Duration: <strong><?php echo htmlspecialchars($service['duration_minutes']); ?> Minutes</strong>
+                    
+                    <div class="service-meta-badges-group">
+                        <div class="service-meta-pill duration-pill">
+                            <span class="service-pill-icon">⏱️</span>
+                            <div class="service-pill-text">
+                                <span class="service-pill-label">Duration</span>
+                                <strong><?php echo htmlspecialchars($service['duration_minutes']); ?> Minutes</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="service-meta-pill mode-pill">
+                            <span class="service-pill-icon">🌐</span>
+                            <div class="service-pill-text">
+                                <span class="service-pill-label">Mode</span>
+                                <strong><?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -111,7 +138,7 @@ include __DIR__ . '/includes/header.php';
                 </div>
 
                 <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-                    <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold" style="font-size: 1.1rem; padding: 14px 36px;">
+                    <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold" style="font-size: 1.1rem; padding: 14px 36px; display: inline-flex; align-items: center; gap: 8px;">
                         Book Session Now →
                     </a>
                 </div>
@@ -123,15 +150,22 @@ include __DIR__ . '/includes/header.php';
                 
                 <?php if (!empty($relatedServices)): ?>
                     <?php foreach ($relatedServices as $rel): ?>
+                        <?php $relImgUrl = $getAssetUrl($rel['image'] ?? ''); ?>
                         <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($rel['slug']); ?>" class="related-service-card">
                             <div class="related-thumb-box">
-                                <img src="<?php echo htmlspecialchars($rel['image'] ?: 'assets/images/services/reiki-healing.jpg'); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
+                                <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
                             </div>
-                            <div>
+                            <div class="related-info-box" style="flex: 1; min-width: 0;">
                                 <h4 class="related-title"><?php echo htmlspecialchars($rel['title']); ?></h4>
-                                <span class="related-price">
-                                    <?php echo ($rel['is_free'] || $rel['price'] === null) ? 'Free' : '₹' . number_format($rel['price'], 2); ?>
-                                </span>
+                                <div class="related-meta-flex">
+                                    <span class="related-price">
+                                        <?php echo ($rel['is_free'] || $rel['price'] === null || (float)$rel['price'] <= 0) ? 'Free' : '₹' . number_format($rel['price'], 0); ?>
+                                    </span>
+                                    <span class="related-sep">•</span>
+                                    <span class="related-meta-tag">⏱️ <?php echo htmlspecialchars($rel['duration_minutes']); ?>m</span>
+                                    <span class="related-sep">•</span>
+                                    <span class="related-meta-tag">🌐 <?php echo htmlspecialchars($rel['mode'] ?? 'Online'); ?></span>
+                                </div>
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -140,7 +174,7 @@ include __DIR__ . '/includes/header.php';
                 <?php endif; ?>
 
                 <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-color); text-align: center;">
-                    <a href="<?php echo BASE_URL; ?>services" class="btn-primary" style="width: 100%; font-size: 0.9rem; padding: 10px;">
+                    <a href="<?php echo BASE_URL; ?>services" class="btn-gold" style="width: 100%; font-size: 0.95rem; padding: 12px; display: block; text-align: center; justify-content: center; box-sizing: border-box; text-decoration: none;">
                         View All Services →
                     </a>
                 </div>

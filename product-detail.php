@@ -34,10 +34,21 @@ if (!$product) {
     exit;
 }
 
+// Helper to guarantee absolute asset URL for rewritten routes
+$getAssetUrl = function($path, $fallback = 'assets/images/products/amethyst-bracelet.jpg') {
+    $img = !empty($path) ? $path : $fallback;
+    if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+        return $img;
+    }
+    return BASE_URL . ltrim($img, '/');
+};
+
 // Additional images parsing
-$mainImage = $product['image'] ?: 'assets/images/products/amethyst-bracelet.jpg';
+$rawMainImage = $product['image'] ?: 'assets/images/products/amethyst-bracelet.jpg';
+$mainImage = $getAssetUrl($rawMainImage);
 $additionalImages = is_string($product['additional_images']) ? json_decode($product['additional_images'], true) : $product['additional_images'];
-$galleryImages = array_unique(array_filter(array_merge([$mainImage], is_array($additionalImages) ? $additionalImages : [])));
+$rawGallery = array_unique(array_filter(array_merge([$rawMainImage], is_array($additionalImages) ? $additionalImages : [])));
+$galleryImages = array_map($getAssetUrl, $rawGallery);
 
 // Fetch related products
 $relatedProducts = [];
@@ -172,9 +183,10 @@ include __DIR__ . '/includes/header.php';
                 <h3 class="section-heading" style="font-size: 2rem; margin-bottom: 30px;">Related Crystal <em>Products</em></h3>
                 <div class="products-catalog-grid">
                     <?php foreach ($relatedProducts as $rel): ?>
+                        <?php $relImgUrl = $getAssetUrl($rel['image'] ?? ''); ?>
                         <a href="<?php echo BASE_URL; ?>product/<?php echo htmlspecialchars($rel['slug']); ?>" class="product-shop-card">
                             <div class="product-img-frame">
-                                <img src="<?php echo htmlspecialchars($rel['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
+                                <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/products/amethyst-bracelet.jpg';" loading="lazy">
                                 <?php if (!$rel['in_stock']): ?>
                                     <span class="badge badge-danger shop-badge-pos">Out of Stock</span>
                                 <?php elseif ($rel['discount_percent'] > 0): ?>

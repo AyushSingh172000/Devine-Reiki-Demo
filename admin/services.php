@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_service'])) {
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $price = $isFree ? null : (is_numeric($_POST['price'] ?? null) ? (float)$_POST['price'] : null);
     $duration = (int)($_POST['duration_minutes'] ?? 60);
+    $mode = trim($_POST['mode'] ?? 'Online');
     $sortOrder = (int)($_POST['sort_order'] ?? 0);
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $currentImage = $_POST['current_image'] ?? '';
@@ -101,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_service'])) {
                     full_description = ?, 
                     price = ?, 
                     duration_minutes = ?, 
+                    mode = ?, 
                     image = ?, 
                     sort_order = ?, 
                     is_free = ?, 
@@ -108,15 +110,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_service'])) {
                     updated_at = NOW() 
                     WHERE id = ?";
                 $stmt = $pdo->prepare($updateSql);
-                $stmt->execute([$title, $slug, $shortDesc, $fullDesc, $price, $duration, $currentImage, $sortOrder, $isFree, $isActive, $editId]);
+                $stmt->execute([$title, $slug, $shortDesc, $fullDesc, $price, $duration, $mode, $currentImage, $sortOrder, $isFree, $isActive, $editId]);
                 $_SESSION['flash_success'] = "Service updated successfully!";
             } else {
                 // INSERT
                 $insertSql = "INSERT INTO services 
-                    (title, slug, short_description, full_description, price, duration_minutes, image, sort_order, is_free, is_active, created_at) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                    (title, slug, short_description, full_description, price, duration_minutes, mode, image, sort_order, is_free, is_active, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                 $stmt = $pdo->prepare($insertSql);
-                $stmt->execute([$title, $slug, $shortDesc, $fullDesc, $price, $duration, $currentImage, $sortOrder, $isFree, $isActive]);
+                $stmt->execute([$title, $slug, $shortDesc, $fullDesc, $price, $duration, $mode, $currentImage, $sortOrder, $isFree, $isActive]);
                 $_SESSION['flash_success'] = "New service created successfully!";
             }
             header("Location: services.php");
@@ -214,15 +216,15 @@ require_once 'includes/admin-header.php';
             <div class="form-group">
                 <div class="flex-between">
                     <label for="shortDesc" class="form-label">Short Description</label>
-                    <span class="char-counter-text" id="shortDescCounter">0 / 200</span>
+                    <span class="char-counter-text" id="shortDescCounter">0 / 400</span>
                 </div>
                 <textarea 
                     id="shortDesc" 
                     name="short_description" 
                     class="form-control" 
                     rows="3" 
-                    maxlength="200"
-                    placeholder="Brief overview summarizing the healing benefits (max 200 chars)..."
+                    maxlength="400"
+                    placeholder="Brief overview summarizing the healing benefits (max 400 chars)..."
                 ><?= htmlspecialchars($_POST['short_description'] ?? ($editItem['short_description'] ?? '')) ?></textarea>
             </div>
 
@@ -249,7 +251,7 @@ require_once 'includes/admin-header.php';
                 <!-- Price & Is Free -->
                 <div class="form-group">
                     <div class="flex-between mb-1">
-                        <label for="servicePrice" class="form-label" style="margin-bottom: 0;">Price (₹)</label>
+                        <label for="servicePrice" class="form-label" style="margin-bottom: 0;">Energy Exchange / Price (₹)</label>
                         <label class="switch-toggle-label" style="font-size: 0.82rem;">
                             <input 
                                 type="checkbox" 
@@ -258,7 +260,7 @@ require_once 'includes/admin-header.php';
                                 value="1" 
                                 <?= (isset($_POST['is_free']) || (!empty($editItem['is_free']))) ? 'checked' : '' ?>
                             >
-                            <span class="text-gold">Mark as Free Session</span>
+                            <span class="text-gold">Free Session</span>
                         </label>
                     </div>
                     <input 
@@ -267,7 +269,7 @@ require_once 'includes/admin-header.php';
                         id="servicePrice" 
                         name="price" 
                         class="form-control" 
-                        placeholder="e.g. 1500.00"
+                        placeholder="e.g. 500.00"
                         value="<?= htmlspecialchars($_POST['price'] ?? ($editItem['price'] ?? '')) ?>"
                     >
                 </div>
@@ -280,9 +282,21 @@ require_once 'includes/admin-header.php';
                         id="serviceDuration" 
                         name="duration_minutes" 
                         class="form-control" 
-                        placeholder="60"
-                        value="<?= htmlspecialchars($_POST['duration_minutes'] ?? ($editItem['duration_minutes'] ?? '60')) ?>"
+                        placeholder="21"
+                        value="<?= htmlspecialchars($_POST['duration_minutes'] ?? ($editItem['duration_minutes'] ?? '21')) ?>"
                     >
+                </div>
+
+                <!-- Mode -->
+                <div class="form-group">
+                    <label for="serviceMode" class="form-label">Mode</label>
+                    <?php $activeMode = $_POST['mode'] ?? ($editItem['mode'] ?? 'Online'); ?>
+                    <select id="serviceMode" name="mode" class="form-control">
+                        <option value="Online" <?= ($activeMode === 'Online') ? 'selected' : '' ?>>Online</option>
+                        <option value="In-Person" <?= ($activeMode === 'In-Person') ? 'selected' : '' ?>>In-Person</option>
+                        <option value="Online & In-Person" <?= ($activeMode === 'Online & In-Person') ? 'selected' : '' ?>>Online &amp; In-Person</option>
+                        <option value="Distance Healing" <?= ($activeMode === 'Distance Healing') ? 'selected' : '' ?>>Distance Healing</option>
+                    </select>
                 </div>
             </div>
 
@@ -505,6 +519,7 @@ try {
                         <th style="min-width: 200px;">Title</th>
                         <th style="width: 120px;">Price</th>
                         <th style="width: 110px;">Duration</th>
+                        <th style="width: 100px;">Mode</th>
                         <th style="width: 90px;">Free?</th>
                         <th style="width: 100px;">Status</th>
                         <th style="width: 80px; text-align: center;">Order</th>
@@ -537,6 +552,9 @@ try {
                             </td>
                             <td class="text-muted">
                                 <?= (int)$srv['duration_minutes'] ?> mins
+                            </td>
+                            <td>
+                                <span class="badge" style="background: rgba(200, 155, 60, 0.12); color: #c89b3c; border: 1px solid rgba(200, 155, 60, 0.28); font-size: 0.76rem;"><?= htmlspecialchars($srv['mode'] ?? 'Online') ?></span>
                             </td>
                             <td>
                                 <?php if ($isFree): ?>

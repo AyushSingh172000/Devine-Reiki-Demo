@@ -44,10 +44,21 @@ try {
     error_log("Database error fetching related courses: " . $e->getMessage());
 }
 
+// Helper to guarantee absolute asset URL for rewritten routes
+$getAssetUrl = function($path, $fallback = 'assets/images/courses/reiki-level-1.jpg') {
+    $img = !empty($path) ? $path : $fallback;
+    if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+        return $img;
+    }
+    return BASE_URL . ltrim($img, '/');
+};
+
+$heroImgUrl = $getAssetUrl($course['image'] ?? '');
+
 // Page Metadata
 $pageTitle = htmlspecialchars($course['title']) . " | Divine Reiki Certification";
 $pageDescription = htmlspecialchars($course['short_description']);
-$pageOgImage = !empty($course['image']) ? $course['image'] : null;
+$pageOgImage = $heroImgUrl;
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
@@ -73,7 +84,7 @@ include __DIR__ . '/includes/header.php';
             <article class="course-detail-main animate-on-scroll">
                 <!-- Hero Image -->
                 <div class="course-main-hero-img">
-                    <img src="<?php echo htmlspecialchars($course['image'] ?: 'assets/images/courses/reiki-level-1.jpg'); ?>" alt="<?php echo htmlspecialchars($course['title']); ?>" loading="lazy">
+                    <img src="<?php echo htmlspecialchars($heroImgUrl); ?>" alt="<?php echo htmlspecialchars($course['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/courses/reiki-level-1.jpg';" loading="lazy">
                 </div>
 
                 <span class="badge badge-gold" style="margin-bottom: 12px; font-size: 0.82rem;">Certified Training</span>
@@ -133,9 +144,10 @@ include __DIR__ . '/includes/header.php';
                 <h3 class="section-heading" style="font-size: 2rem; margin-bottom: 30px;">Related Certification <em>Courses</em></h3>
                 <div class="courses-cards-grid">
                     <?php foreach ($relatedCourses as $rel): ?>
+                        <?php $relImgUrl = $getAssetUrl($rel['image'] ?? ''); ?>
                         <div class="course-item-card">
                             <div class="course-img-box">
-                                <img src="<?php echo htmlspecialchars($rel['image'] ?: 'assets/images/courses/reiki-level-1.jpg'); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
+                                <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/courses/reiki-level-1.jpg';" loading="lazy">
                             </div>
                             <div class="course-info-body">
                                 <div>
@@ -144,7 +156,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                                 <div class="course-card-footer">
                                     <span class="course-price-text" style="font-size: 1.1rem;"><?php echo htmlspecialchars($rel['price_text']); ?></span>
-                                    <a href="<?php echo BASE_URL; ?>course/<?php echo htmlspecialchars($rel['slug']); ?>" class="btn-primary" style="padding: 6px 14px; font-size: 0.82rem;">
+                                    <a href="<?php echo BASE_URL; ?>course/<?php echo htmlspecialchars($rel['slug']); ?>" class="btn-gold" style="padding: 6px 14px; font-size: 0.82rem; text-decoration: none;">
                                         View Details →
                                     </a>
                                 </div>

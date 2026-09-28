@@ -55,6 +55,11 @@ $adminUsername = htmlspecialchars($superAdminUser['username'] ?? 'superadmin');
                 <span>Homepage Sections</span>
             </a>
 
+            <a href="services.php" class="sa-nav-item <?= $currentPage === 'services.php' ? 'active' : '' ?>">
+                <i data-lucide="sparkles"></i>
+                <span>Services Manager</span>
+            </a>
+
             <div class="sa-nav-section-title">
                 <i data-lucide="shield-alert" style="width: 14px; height: 14px;"></i>
                 Governance &amp; Access

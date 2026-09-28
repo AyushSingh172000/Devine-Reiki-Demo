@@ -59,53 +59,19 @@ include __DIR__ . '/includes/header.php';
 <section class="services-listing-section" id="services-grid-section">
     <div class="container">
 
-        <!-- Featured First Service (Larger Hero Card) -->
-        <?php if ($featuredService): ?>
-            <div class="featured-service-card animate-on-scroll service-card-filterable" data-is-free="<?php echo $featuredService['is_free']; ?>">
-                <div class="featured-img-box">
-                    <img src="<?php echo htmlspecialchars($featuredService['image'] ?: 'assets/images/services/reiki-healing.jpg'); ?>" alt="<?php echo htmlspecialchars($featuredService['title']); ?>" loading="lazy">
-                    <?php if ($featuredService['is_free']): ?>
-                        <span class="badge badge-green featured-badge-tag">FREE SESSION</span>
-                    <?php else: ?>
-                        <span class="badge badge-gold featured-badge-tag">FEATURED MODALITY</span>
-                    <?php endif; ?>
-                </div>
-                <div class="featured-content-box">
-                    <div>
-                        <span class="featured-label">Featured Service</span>
-                        <h2 class="featured-title">
-                            <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($featuredService['slug']); ?>">
-                                <?php echo htmlspecialchars($featuredService['title']); ?>
-                            </a>
-                        </h2>
-                        <p class="featured-desc"><?php echo htmlspecialchars($featuredService['short_description']); ?></p>
-                        <p style="font-size: 0.94rem; color: var(--muted-gray); line-height: 1.6;">
-                            <?php echo htmlspecialchars(substr($featuredService['full_description'], 0, 180)) . '...'; ?>
-                        </p>
-                    </div>
-                    <div class="featured-meta-row">
-                        <div>
-                            <?php if ($featuredService['is_free'] || $featuredService['price'] === null): ?>
-                                <span class="featured-price" style="color: var(--soft-green-text);">Free Consultation</span>
-                            <?php else: ?>
-                                <span class="featured-price">₹<?php echo number_format($featuredService['price'], 2); ?></span>
-                            <?php endif; ?>
-                            <span class="featured-duration"> · <?php echo htmlspecialchars($featuredService['duration_minutes']); ?> mins session</span>
-                        </div>
-                        <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary">
-                            Book Session →
-                        </a>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
-        <!-- 2-Column Grid List of Remaining Services -->
+        <!-- 2-Column Grid List of All Services -->
         <div class="services-grid-list">
-            <?php foreach ($otherServices as $service): ?>
+            <?php foreach ($services as $service): ?>
+                <?php 
+                $sImg = !empty($service['image']) ? $service['image'] : 'assets/images/services/reiki-healing.jpg';
+                $sImgUrl = (strpos($sImg, 'http://') === 0 || strpos($sImg, 'https://') === 0) ? $sImg : BASE_URL . ltrim($sImg, '/');
+                ?>
                 <div class="service-item-card animate-on-scroll service-card-filterable" data-is-free="<?php echo $service['is_free']; ?>">
                     <div class="service-thumb-box">
-                        <img src="<?php echo htmlspecialchars($service['image'] ?: 'assets/images/services/reiki-healing.jpg'); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" loading="lazy">
+                        <img src="<?php echo htmlspecialchars($sImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
+                        <?php if ($service['is_free']): ?>
+                            <span class="badge badge-green" style="position: absolute; top: 12px; left: 12px; font-size: 0.72rem; padding: 3px 8px; border-radius: 4px; font-weight: 700;">FREE</span>
+                        <?php endif; ?>
                     </div>
                     <div class="service-info-box">
                         <div>
@@ -118,14 +84,19 @@ include __DIR__ . '/includes/header.php';
                         </div>
                         <div class="service-item-meta">
                             <div>
-                                <?php if ($service['is_free'] || $service['price'] === null): ?>
-                                    <span class="service-item-price" style="color: var(--soft-green-text);">Free</span>
-                                <?php else: ?>
-                                    <span class="service-item-price">₹<?php echo number_format($service['price'], 2); ?></span>
-                                <?php endif; ?>
-                                <span style="font-size: 0.82rem; color: var(--muted-gray);"> (<?php echo htmlspecialchars($service['duration_minutes']); ?> mins)</span>
+                                <div style="display: flex; align-items: baseline; gap: 8px;">
+                                    <?php if ($service['is_free'] || (float)$service['price'] <= 0): ?>
+                                        <span class="service-item-price" style="color: var(--soft-green-text, #16a34a);">Free</span>
+                                    <?php else: ?>
+                                        <span class="service-item-price">₹<?php echo number_format($service['price'], 0); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+                                    <span style="font-size: 0.74rem; font-weight: 600; background: rgba(200, 155, 60, 0.12); color: #8a6714; padding: 2px 8px; border-radius: 4px;">⏱️ <?php echo htmlspecialchars($service['duration_minutes']); ?> mins</span>
+                                    <span style="font-size: 0.74rem; font-weight: 600; background: rgba(45, 27, 105, 0.08); color: var(--primary-purple); padding: 2px 8px; border-radius: 4px;">🌐 Mode: <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
+                                </div>
                             </div>
-                            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-primary" style="padding: 8px 18px; font-size: 0.86rem;">
+                            <a href="<?php echo BOOKING_URL; ?>" target="_blank" rel="noopener" class="btn-gold" style="padding: 8px 18px; font-size: 0.86rem; align-self: flex-end;">
                                 Book Session →
                             </a>
                         </div>

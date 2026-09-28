@@ -37,29 +37,39 @@ $servicesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px aut
         <div class="scroll-cards-row">
             <?php if (!empty($services)): ?>
                 <?php foreach ($services as $service): ?>
+                    <?php 
+                    $sImg = !empty($service['image']) ? $service['image'] : 'assets/images/services/reiki-healing.jpg';
+                    $sImgUrl = (strpos($sImg, 'http://') === 0 || strpos($sImg, 'https://') === 0) ? $sImg : BASE_URL . ltrim($sImg, '/');
+                    ?>
                     <div class="scroll-card">
                         <div class="card-img-box">
-                            <img src="<?php echo htmlspecialchars($service['image'] ?: 'assets/images/services/reiki-healing.jpg'); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" loading="lazy">
+                            <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>">
+                                <img src="<?php echo htmlspecialchars($sImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
+                            </a>
                             <?php if ($service['is_free']): ?>
-                                <span class="badge badge-green card-badge-pos">FREE SESSION</span>
+                                <span class="badge badge-green card-badge-pos">FREE • <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
                             <?php else: ?>
-                                <span class="badge card-badge-pos"><?php echo htmlspecialchars($service['duration_minutes']); ?> mins</span>
+                                <span class="badge card-badge-pos"><?php echo htmlspecialchars($service['duration_minutes']); ?> mins • <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
                             <?php endif; ?>
                         </div>
                         <div class="card-body-content">
                             <div>
                                 <span class="card-repeat-title"><?php echo htmlspecialchars($service['title']); ?></span>
-                                <h3 class="card-main-title"><?php echo htmlspecialchars($service['title']); ?></h3>
+                                <h3 class="card-main-title">
+                                    <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>" style="color: inherit; text-decoration: none;">
+                                        <?php echo htmlspecialchars($service['title']); ?>
+                                    </a>
+                                </h3>
                                 <p class="card-desc-text"><?php echo htmlspecialchars($service['short_description']); ?></p>
                             </div>
                             <div class="card-footer-meta">
                                 <div>
                                     <?php if ($hidePrices): ?>
                                         <span class="card-price-value" style="font-size: 0.85rem; color: var(--gold);">Contact for Price</span>
-                                    <?php elseif ($service['is_free'] || $service['price'] === null): ?>
+                                    <?php elseif ($service['is_free'] || $service['price'] === null || (float)$service['price'] <= 0): ?>
                                         <span class="card-price-value" style="color: var(--soft-green-text);">Free</span>
                                     <?php else: ?>
-                                        <span class="card-price-value">₹<?php echo number_format($service['price'], 2); ?></span>
+                                        <span class="card-price-value">₹<?php echo number_format($service['price'], 0); ?></span>
                                     <?php endif; ?>
                                 </div>
                                 <a href="<?php echo htmlspecialchars($serviceBookingUrl); ?>" target="_blank" rel="noopener" class="btn-primary btn-book-nav">Book Session →</a>
