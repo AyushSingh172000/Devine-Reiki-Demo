@@ -15,16 +15,19 @@ $serviceBookingUrl = $disableBookings ? 'https://wa.me/' . preg_replace('/[^0-9]
     <div id="chakras" style="position: relative; top: -80px; visibility: hidden;"></div>
     <div class="container">
 <?php
+$defaultServicesDesc = 'Experience personalized Reiki healing, chakra alignment, and aura cleansing guided by Grandmaster Anupama Agrawal to restore physical vitality and spiritual harmony.';
 $servicesBadge = isset($getSecContent) ? $getSecContent('services', 'badge', 'Holistic Healing Modalities') : 'Holistic Healing Modalities';
 $servicesTitle = isset($getSecContent) ? $getSecContent('services', 'title', 'Our Core <em>Services</em>') : 'Our Core <em>Services</em>';
-$servicesDesc  = isset($getSecContent) ? $getSecContent('services', 'desc', '') : '';
+$servicesDesc  = isset($getSecContent) ? $getSecContent('services', 'desc', $defaultServicesDesc) : $defaultServicesDesc;
+
+$servicesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto 0;' : ((($secAlign ?? 'left') === 'right') ? 'margin: 8px 0 0 auto;' : 'margin-top: 8px;');
 ?>
         <div class="section-header-flex animate-on-scroll" <?php echo $alignStyle; ?>>
             <div>
                 <span class="section-label"><?php echo htmlspecialchars($servicesBadge); ?></span>
                 <h2 class="section-heading"><?php echo $servicesTitle; ?></h2>
                 <?php if (!empty($servicesDesc)): ?>
-                    <p class="section-subtext" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;"><?php echo htmlspecialchars($servicesDesc); ?></p>
+                    <p class="section-subtext" style="color: var(--text-muted, #555D6E); font-size: 0.98rem; line-height: 1.6; max-width: 680px; <?php echo $servicesSubtextMargin; ?> margin-bottom: 0;"><?php echo htmlspecialchars($servicesDesc); ?></p>
                 <?php endif; ?>
             </div>
             <a href="<?php echo BASE_URL; ?>services" class="view-all-link">View all services →</a>

@@ -12,16 +12,19 @@ $hidePrices = !empty($saToggles['hide_prices']);
 <section class="products-section" id="products">
     <div class="container">
 <?php
+$defaultProductsDesc = 'Energized astrological bracelets, natural healing crystals, and sacred gemstone artifacts charged with high-frequency Reiki symbols to amplify protection, prosperity, and peace.';
 $productsBadge = isset($getSecContent) ? $getSecContent('products', 'badge', 'Sacred Crystal Energy') : 'Sacred Crystal Energy';
 $productsTitle = isset($getSecContent) ? $getSecContent('products', 'title', 'Featured Reiki Charged <em>Products</em>') : 'Featured Reiki Charged <em>Products</em>';
-$productsDesc  = isset($getSecContent) ? $getSecContent('products', 'desc', '') : '';
+$productsDesc  = isset($getSecContent) ? $getSecContent('products', 'desc', $defaultProductsDesc) : $defaultProductsDesc;
+
+$productsSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto 0;' : ((($secAlign ?? 'left') === 'right') ? 'margin: 8px 0 0 auto;' : 'margin-top: 8px;');
 ?>
         <div class="section-header-flex animate-on-scroll" <?php echo $productsAlignStyle; ?>>
             <div>
                 <span class="section-label"><?php echo htmlspecialchars($productsBadge); ?></span>
                 <h2 class="section-heading"><?php echo $productsTitle; ?></h2>
                 <?php if (!empty($productsDesc)): ?>
-                    <p class="section-subtext" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;"><?php echo htmlspecialchars($productsDesc); ?></p>
+                    <p class="section-subtext" style="color: var(--text-muted, #555D6E); font-size: 0.98rem; line-height: 1.6; max-width: 680px; <?php echo $productsSubtextMargin; ?> margin-bottom: 0;"><?php echo htmlspecialchars($productsDesc); ?></p>
                 <?php endif; ?>
             </div>
             <a href="<?php echo BASE_URL; ?>products" class="view-all-link">View all products →</a>

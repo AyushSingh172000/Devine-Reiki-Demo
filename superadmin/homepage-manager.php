@@ -26,7 +26,7 @@ $sectionDefinitions = [
         'default_align' => 'left',
         'default_tag' => 'Holistic Healing Modalities',
         'default_title' => 'Our Core <em>Services</em>',
-        'default_desc' => 'Experience personalized Reiki and energy alignment tailored to your spiritual journey.'
+        'default_desc' => 'Experience personalized Reiki healing, chakra alignment, and aura cleansing guided by Grandmaster Anupama Agrawal to restore physical vitality and spiritual harmony.'
     ],
     'testimonials' => [
         'name' => 'Testimonials & Client Stories',
@@ -46,7 +46,7 @@ $sectionDefinitions = [
         'default_align' => 'left',
         'default_tag' => 'Certified Energy Training',
         'default_title' => 'Explore Reiki &amp; Healing <em>Courses</em>',
-        'default_desc' => 'Master attunements and certified healing courses designed to awaken your inner healing power.'
+        'default_desc' => 'Become a certified Reiki healer yourself. Structured curriculum with authentic attunement (Diksha), physical manual, lifetime mentorship, and recognized certificates.'
     ],
     'products' => [
         'name' => 'Sacred Products & Bracelets',
@@ -56,7 +56,7 @@ $sectionDefinitions = [
         'default_align' => 'left',
         'default_tag' => 'Sacred Crystal Energy',
         'default_title' => 'Featured Reiki Charged <em>Products</em>',
-        'default_desc' => 'Energized astrological bracelets, natural crystals, and sacred gemstone artifacts charged with high-frequency Reiki symbols.'
+        'default_desc' => 'Energized astrological bracelets, natural healing crystals, and sacred gemstone artifacts charged with high-frequency Reiki symbols to amplify protection, prosperity, and peace.'
     ],
     'reels' => [
         'name' => 'Instagram Reels Showcase',

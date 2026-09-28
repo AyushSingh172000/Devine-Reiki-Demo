@@ -12,16 +12,19 @@ $hidePrices = !empty($saToggles['hide_prices']);
 <section class="courses-section" id="courses">
     <div class="container">
 <?php
+$defaultCoursesDesc = 'Become a certified Reiki healer yourself. Structured curriculum with authentic attunement (Diksha), physical manual, lifetime mentorship, and recognized certificates.';
 $coursesBadge = isset($getSecContent) ? $getSecContent('courses', 'badge', 'Certified Energy Training') : 'Certified Energy Training';
 $coursesTitle = isset($getSecContent) ? $getSecContent('courses', 'title', 'Explore Reiki &amp; Healing <em>Courses</em>') : 'Explore Reiki &amp; Healing <em>Courses</em>';
-$coursesDesc  = isset($getSecContent) ? $getSecContent('courses', 'desc', '') : '';
+$coursesDesc  = isset($getSecContent) ? $getSecContent('courses', 'desc', $defaultCoursesDesc) : $defaultCoursesDesc;
+
+$coursesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto 0;' : ((($secAlign ?? 'left') === 'right') ? 'margin: 8px 0 0 auto;' : 'margin-top: 8px;');
 ?>
         <div class="section-header-flex animate-on-scroll" <?php echo $coursesAlignStyle; ?>>
             <div>
                 <span class="section-label"><?php echo htmlspecialchars($coursesBadge); ?></span>
                 <h2 class="section-heading"><?php echo $coursesTitle; ?></h2>
                 <?php if (!empty($coursesDesc)): ?>
-                    <p class="section-subtext" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;"><?php echo htmlspecialchars($coursesDesc); ?></p>
+                    <p class="section-subtext" style="color: var(--text-muted, #555D6E); font-size: 0.98rem; line-height: 1.6; max-width: 680px; <?php echo $coursesSubtextMargin; ?> margin-bottom: 0;"><?php echo htmlspecialchars($coursesDesc); ?></p>
                 <?php endif; ?>
             </div>
             <a href="<?php echo BASE_URL; ?>courses" class="view-all-link">View all courses →</a>
