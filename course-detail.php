@@ -217,14 +217,6 @@ include __DIR__ . '/includes/header.php';
                 </div>
                 <?php endif; ?>
 
-                <ul class="course-sidebar-features">
-                    <li><span style="color: var(--accent-gold-dark);">✓</span> Recognized Practitioner Certificate</li>
-                    <li><span style="color: var(--accent-gold-dark);">✓</span> Sacred Attunement Ceremony</li>
-                    <li><span style="color: var(--accent-gold-dark);">✓</span> Lifetime Training Manual & Material</li>
-                    <li><span style="color: var(--accent-gold-dark);">✓</span> Direct Mentorship from Grand Masters</li>
-                    <li><span style="color: var(--accent-gold-dark);">✓</span> Post-Course Practice Support</li>
-                </ul>
-
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <a href="<?php echo BASE_URL; ?>contact.php?course=<?php echo urlencode($course['slug']); ?>#enquire" class="btn-gold w-full text-center" style="padding: 12px; font-size: 1rem;">
                         Enquire Now →
