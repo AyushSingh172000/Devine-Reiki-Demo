@@ -10,9 +10,9 @@
    -------------------------------------------------------------------------- */
 .hero-section {
   position: relative;
-  margin-top: -75px;
-  min-height: 90vh;
-  padding: 160px 0 80px;
+  margin-top: 0;
+  min-height: 100vh;
+  padding: 140px 0 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -244,6 +244,10 @@
 
 /* Responsive queries for Centered Hero */
 @media (max-width: 860px) {
+  .hero-section {
+    padding: 120px 0 60px;
+    min-height: auto;
+  }
   .hero-title {
     font-size: 2.85rem;
   }

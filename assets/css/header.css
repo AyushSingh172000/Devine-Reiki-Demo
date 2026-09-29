@@ -423,3 +423,148 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   Homepage Transparent Navbar (Seamless Hero Mix - Target Design Reference)
+   ========================================================================== */
+.site-header.header-transparent {
+  background: transparent;
+}
+
+.site-header.header-transparent .navbar {
+  background: linear-gradient(180deg, rgba(8, 10, 14, 0.72) 0%, rgba(8, 10, 14, 0.22) 60%, transparent 100%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  padding: 16px 0;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, padding 0.3s ease;
+}
+
+/* Scrolled state on Homepage: Smooth Luxury Dark Glass */
+.site-header.header-transparent .navbar.scrolled,
+.site-header.header-transparent.scrolled .navbar {
+  background: rgba(12, 14, 20, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(200, 155, 60, 0.22);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  padding: 10px 0;
+}
+
+/* Brand Logo on Transparent Header */
+.site-header.header-transparent .logo-title {
+  color: #FFFFFF;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+}
+
+.site-header.header-transparent .logo-subtitle {
+  color: #F3C966;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+.site-header.header-transparent .brand-logo-img {
+  border-color: rgba(243, 201, 102, 0.7);
+  box-shadow: 0 0 14px rgba(243, 201, 102, 0.35);
+}
+
+/* Navigation Links on Transparent Header */
+.site-header.header-transparent .nav-link {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.site-header.header-transparent .nav-link:hover,
+.site-header.header-transparent .nav-link.active {
+  color: #F3C966;
+}
+
+.site-header.header-transparent .nav-link::after {
+  background-color: #F3C966;
+  box-shadow: 0 0 8px rgba(243, 201, 102, 0.6);
+}
+
+.site-header.header-transparent .dropdown-arrow {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Dropdown Menu on Transparent Header */
+.site-header.header-transparent .dropdown-menu {
+  background-color: rgba(18, 16, 14, 0.96);
+  border: 1px solid rgba(200, 155, 60, 0.25);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.site-header.header-transparent .dropdown-menu li a {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.site-header.header-transparent .dropdown-menu li a:hover {
+  background-color: rgba(243, 201, 102, 0.12);
+  color: #F3C966;
+}
+
+/* CTA "Book Session" Button (Screenshot 2 Warm Amber-Gold Pill) */
+.site-header.header-transparent .btn-book-nav {
+  background: linear-gradient(135deg, #E69526 0%, #C8780A 100%);
+  color: #FFFFFF !important;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 18px rgba(217, 119, 6, 0.45);
+  transition: all 0.3s ease;
+}
+
+.site-header.header-transparent .btn-book-nav:hover {
+  background: linear-gradient(135deg, #F5A623 0%, #D4840F 100%);
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 24px rgba(230, 149, 38, 0.65);
+  transform: translateY(-2px);
+}
+
+/* Hamburger for Mobile on Transparent Header */
+.site-header.header-transparent .hamburger-bar {
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.site-header.header-transparent .hamburger-toggle.active .hamburger-bar {
+  background-color: #FFFFFF;
+}
+
+.site-header.header-transparent .btn-header-sound,
+.site-header.header-transparent .header-aesthetic-icon {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* Mobile Nav Drawer for Homepage */
+body.is-homepage .mobile-nav-overlay {
+  background-color: rgba(12, 14, 20, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+body.is-homepage .mobile-nav-link {
+  color: #FFFFFF;
+}
+
+body.is-homepage .mobile-nav-link:hover,
+body.is-homepage .mobile-nav-link.active {
+  color: #F3C966;
+}
+
+body.is-homepage .mobile-submenu {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(200, 155, 60, 0.2);
+}
+
+body.is-homepage .mobile-submenu a {
+  color: rgba(255, 255, 255, 0.8);
+}
+

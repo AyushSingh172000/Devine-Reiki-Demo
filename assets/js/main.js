@@ -6,16 +6,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Navbar Scroll Effect
   const navbar = document.getElementById('navbar');
+  const siteHeader = document.getElementById('site-header');
   const handleScroll = () => {
+    const isScrolled = window.scrollY > 40;
     if (navbar) {
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
+      navbar.classList.toggle('scrolled', isScrolled);
+    }
+    if (siteHeader) {
+      siteHeader.classList.toggle('scrolled', isScrolled);
     }
   };
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll(); // Trigger once on load
 
   // 2. Mobile Menu Toggle

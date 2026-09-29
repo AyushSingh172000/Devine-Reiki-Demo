@@ -257,12 +257,13 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
         window.BOOKING_URL = <?php echo json_encode(defined('BOOKING_URL') ? BOOKING_URL : ''); ?>;
     </script>
 </head>
-<body>
+<?php $isHome = ($currentPage == 'index.php' || $currentPage == ''); ?>
+<body class="<?php echo $isHome ? 'is-homepage' : 'is-innerpage'; ?>">
 
 <!-- Header & Navigation Bar -->
-<header class="site-header" id="site-header">
+<header class="site-header <?php echo $isHome ? 'header-transparent' : ''; ?>" id="site-header">
     <!-- Main Navbar -->
-    <nav class="navbar" id="navbar">
+    <nav class="navbar <?php echo $isHome ? 'navbar-transparent' : ''; ?>" id="navbar">
         <div class="container navbar-container">
             <!-- Brand Logo -->
             <a href="<?php echo BASE_URL; ?>" class="navbar-logo">
