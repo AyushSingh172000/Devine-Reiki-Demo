@@ -58,29 +58,31 @@ include __DIR__ . '/includes/header.php';
                                     <span class="badge badge-gold" style="margin-bottom: 10px; display: inline-block;">Level <?php echo ($index + 1); ?></span>
                                 <?php endif; ?>
                                 <h3 class="course-item-title"><?php echo htmlspecialchars($course['title']); ?></h3>
-                                <p class="course-item-desc"><?php echo htmlspecialchars($course['short_description']); ?></p>
+                                <?php if (!empty($course['short_description'])): ?>
+                                    <p class="course-item-desc"><?php echo htmlspecialchars($course['short_description']); ?></p>
+                                <?php endif; ?>
 
                                 <?php if (!empty($course['duration']) || !empty($course['mode']) || !empty($course['language'])): ?>
-                                    <div class="course-meta-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 0.8rem; color: #555D6E;">
+                                    <div class="course-meta-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 20px 0; font-size: 0.8rem; color: #555D6E;">
                                         <?php if (!empty($course['duration'])): ?>
-                                            <span style="background: rgba(200, 155, 60, 0.08); border: 1px solid rgba(200, 155, 60, 0.2); padding: 3px 8px; border-radius: 6px; font-weight: 500;">
+                                            <span style="background: rgba(200, 155, 60, 0.08); border: 1px solid rgba(200, 155, 60, 0.2); padding: 4px 9px; border-radius: 6px; font-weight: 500;">
                                                 ⏱️ <?php echo htmlspecialchars($course['duration']); ?>
                                             </span>
                                         <?php endif; ?>
                                         <?php if (!empty($course['mode'])): ?>
-                                            <span style="background: rgba(200, 155, 60, 0.08); border: 1px solid rgba(200, 155, 60, 0.2); padding: 3px 8px; border-radius: 6px; font-weight: 500;">
+                                            <span style="background: rgba(200, 155, 60, 0.08); border: 1px solid rgba(200, 155, 60, 0.2); padding: 4px 9px; border-radius: 6px; font-weight: 500;">
                                                 🌐 <?php echo htmlspecialchars($course['mode']); ?>
                                             </span>
                                         <?php endif; ?>
                                         <?php if (!empty($course['language'])): ?>
-                                            <span style="background: rgba(200, 155, 60, 0.08); border: 1px solid rgba(200, 155, 60, 0.2); padding: 3px 8px; border-radius: 6px; font-weight: 500;">
+                                            <span style="background: rgba(200, 155, 60, 0.08); border: 1px solid rgba(200, 155, 60, 0.2); padding: 4px 9px; border-radius: 6px; font-weight: 500;">
                                                 🗣️ <?php echo htmlspecialchars($course['language']); ?>
                                             </span>
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="course-card-footer">
+                            <div class="course-card-footer" style="margin-top: 18px; padding-top: 16px; border-top: 1px solid #EAE5DB;">
                                 <span class="course-price-text"><?php echo htmlspecialchars(!empty($course['energy_exchange']) ? $course['energy_exchange'] : $course['price_text']); ?></span>
                                 <a href="<?php echo BASE_URL; ?>course/<?php echo htmlspecialchars($course['slug']); ?>" class="btn-primary" style="padding: 8px 18px; font-size: 0.88rem;">
                                     View Details →

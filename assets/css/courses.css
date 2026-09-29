@@ -136,7 +136,28 @@
   font-size: 0.94rem;
   color: var(--muted-gray);
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+}
+
+.course-meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  margin-bottom: 22px;
+}
+
+.course-meta-tags span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(200, 155, 60, 0.08);
+  border: 1px solid rgba(200, 155, 60, 0.22);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #4A505C;
 }
 
 .course-card-footer {

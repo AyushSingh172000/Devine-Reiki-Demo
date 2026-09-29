@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_course'])) {
         $slug = generateSlug($slug);
     }
 
+    $shortDesc = trim($_POST['short_description'] ?? '');
     $fullDesc = trim($_POST['full_description'] ?? '');
     $duration = trim($_POST['duration'] ?? '');
     $mode = trim($_POST['mode'] ?? '');
