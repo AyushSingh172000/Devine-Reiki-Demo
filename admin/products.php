@@ -9,7 +9,76 @@ $search = trim($_GET['search'] ?? '');
 $categoryFilter = trim($_GET['category'] ?? 'All');
 $error = '';
 
-$categories = ['Bracelets', 'Pendulums', 'Stones', 'Hangings', 'Other'];
+// Helper: Ensure product_categories table exists & seeded
+function ensureProductCategoriesTable(PDO $pdo): void {
+    try {
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS product_categories (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100) NOT NULL UNIQUE,
+                slug VARCHAR(100) NOT NULL UNIQUE,
+                sort_order INT DEFAULT 0,
+                is_active TINYINT(1) DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ");
+        
+        $cnt = (int)$pdo->query("SELECT COUNT(*) FROM product_categories")->fetchColumn();
+        if ($cnt === 0) {
+            $defaults = ['Bracelets', 'Pendulums', 'Stones', 'Hangings', 'Chakra Bracelets', 'Crystal Bracelets', 'Protection Bracelets', 'Other'];
+            $existing = $pdo->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != ''")->fetchAll(PDO::FETCH_COLUMN);
+            $all = array_unique(array_merge($defaults, $existing));
+            $stmt = $pdo->prepare("INSERT IGNORE INTO product_categories (name, slug, sort_order, is_active) VALUES (?, ?, ?, 1)");
+            $ord = 1;
+            foreach ($all as $c) {
+                $c = trim($c);
+                if (empty($c)) continue;
+                $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $c));
+                $slug = trim($slug, '-');
+                $stmt->execute([$c, $slug, $ord++]);
+            }
+        }
+    } catch (PDOException $e) {
+        error_log("Categories migration error: " . $e->getMessage());
+    }
+}
+
+ensureProductCategoriesTable($pdo);
+
+// AJAX: Quick add category from Product Add/Edit form
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action']) && $_POST['ajax_action'] === 'quick_add_category') {
+    $catName = trim($_POST['category_name'] ?? '');
+    if (!empty($catName)) {
+        $catSlug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $catName));
+        $catSlug = trim($catSlug, '-');
+        try {
+            $stmt = $pdo->prepare("INSERT INTO product_categories (name, slug, sort_order, is_active) VALUES (?, ?, 0, 1) ON DUPLICATE KEY UPDATE is_active = 1");
+            $stmt->execute([$catName, $catSlug]);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'name' => $catName, 'slug' => $catSlug]);
+            exit;
+        } catch (PDOException $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            exit;
+        }
+    }
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'Category name cannot be empty']);
+    exit;
+}
+
+// Fetch categories dynamically from Category Master
+$categories = [];
+try {
+    $catStmt = $pdo->query("SELECT name FROM product_categories WHERE is_active = 1 ORDER BY sort_order ASC, name ASC");
+    $categories = $catStmt->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {}
+
+if (empty($categories)) {
+    $categories = ['Bracelets', 'Pendulums', 'Stones', 'Hangings', 'Chakra Bracelets', 'Crystal Bracelets', 'Protection Bracelets', 'Other'];
+}
 
 // =========================================================================
 // 1. HANDLE POST ACTIONS (Delete, Insert, Update)
@@ -62,7 +131,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
         $slug = generateSlug($slug);
     }
 
-    $category = in_array($_POST['category'] ?? '', $categories) ? $_POST['category'] : 'Bracelets';
+    $category = trim($_POST['category'] ?? '');
+    if (empty($category)) {
+        $category = 'Bracelets';
+    } else {
+        // Auto-register in product_categories master if not already present
+        if (!in_array($category, $categories)) {
+            try {
+                $newSlug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $category));
+                $newSlug = trim($newSlug, '-');
+                $insCat = $pdo->prepare("INSERT IGNORE INTO product_categories (name, slug, sort_order, is_active) VALUES (?, ?, 0, 1)");
+                $insCat->execute([$category, $newSlug]);
+                $categories[] = $category;
+            } catch (PDOException $e) {}
+        }
+    }
     $shortDesc = trim($_POST['short_description'] ?? '');
     $fullDesc = trim($_POST['full_description'] ?? '');
     $price = (float)($_POST['price'] ?? 0);
@@ -297,14 +380,23 @@ require_once 'includes/admin-header.php';
             <div class="form-row">
                 <!-- Category -->
                 <div class="form-group">
-                    <label for="productCategory" class="form-label">Category <span class="text-danger">*</span></label>
+                    <div class="flex items-center justify-between" style="margin-bottom: 6px;">
+                        <label for="productCategory" class="form-label" style="margin-bottom: 0;">Category <span class="text-danger">*</span></label>
+                        <a href="product-categories" class="text-muted flex items-center gap-1" style="font-size: 0.76rem; text-decoration: none; color: var(--gold-dark);" title="Manage Categories Master">
+                            <i data-lucide="external-link" style="width: 12px; height: 12px;"></i> Manage Master
+                        </a>
+                    </div>
                     <select id="productCategory" name="category" class="form-control" required>
                         <?php 
                             $currentCat = $_POST['category'] ?? ($editItem['category'] ?? 'Bracelets');
-                            foreach ($categories as $cat): 
+                            $displayCategories = $categories;
+                            if (!empty($currentCat) && !in_array($currentCat, $displayCategories)) {
+                                array_unshift($displayCategories, $currentCat);
+                            }
+                            foreach ($displayCategories as $cat): 
                         ?>
-                            <option value="<?= $cat ?>" <?= $currentCat === $cat ? 'selected' : '' ?>>
-                                <?= $cat ?>
+                            <option value="<?= htmlspecialchars($cat) ?>" <?= $currentCat === $cat ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cat) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -916,9 +1008,14 @@ try {
         </form>
     </div>
 
-    <a href="products.php?action=add" class="btn btn-gold flex items-center gap-1">
-        <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add New Product
-    </a>
+    <div class="flex items-center gap-2">
+        <a href="product-categories" class="btn btn-outline flex items-center gap-1" title="Manage Product Categories Master">
+            <i data-lucide="tags" style="width: 15px; height: 15px;"></i> Category Master
+        </a>
+        <a href="products.php?action=add" class="btn btn-gold flex items-center gap-1">
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add New Product
+        </a>
+    </div>
 </div>
 
 <div class="admin-card" style="padding: 16px 20px;">
@@ -1042,7 +1139,7 @@ try {
                                     <a href="products.php?action=edit&id=<?= $prod['id'] ?>" class="btn btn-purple btn-sm flex items-center gap-1" title="Edit Product">
                                         <i data-lucide="pencil" style="width: 13px; height: 13px;"></i> Edit
                                     </a>
-                                    <form action="products.php" method="POST" class="delete-form" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    <form action="products.php" method="POST" class="delete-form" style="display: inline;" data-item-name="<?= htmlspecialchars($prod['title']) ?>">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= $prod['id'] ?>">
                                         <button type="submit" class="btn btn-danger btn-sm flex items-center gap-1" title="Delete Product">

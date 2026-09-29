@@ -536,10 +536,13 @@ function initConfirmDelete() {
     e.preventDefault();
     pendingDeleteForm = form;
 
+    const customMsg = form.getAttribute('data-confirm-message');
     const itemName = form.getAttribute('data-item-name') || form.querySelector('[data-item-name]')?.textContent || '';
     const msg = document.getElementById('confirmDeleteMessage');
     if (msg) {
-      if (itemName) {
+      if (customMsg) {
+        msg.innerHTML = customMsg;
+      } else if (itemName) {
         msg.innerHTML = `Are you sure you want to delete <strong style="color: var(--gold, #b38b2d); font-weight: 700;">"${escapeHtml(itemName)}"</strong>? This action cannot be undone.`;
       } else {
         msg.textContent = 'Are you sure you want to permanently delete this item? This action cannot be undone.';

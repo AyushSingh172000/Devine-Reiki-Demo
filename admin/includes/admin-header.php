@@ -163,6 +163,11 @@ $sbLabel = function($key) use ($customSidebarLabels, $defaultSidebarLabels) {
           <span class="nav-icon"><i data-lucide="shopping-bag"></i></span> <?= $sbLabel('menu_products') ?>
         </a>
       </li>
+      <li>
+        <a href="product-categories" class="<?= ($currentPage === 'product-categories.php' || $currentPage === 'product-categories') ? 'active' : '' ?>">
+          <span class="nav-icon"><i data-lucide="tags"></i></span> Categories
+        </a>
+      </li>
       <?php endif; ?>
 
       <?php if ($isMenuAllowed('services')): ?>

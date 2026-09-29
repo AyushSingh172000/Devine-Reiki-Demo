@@ -16,13 +16,35 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
+// Fetch Active Categories from Category Master
+$activeCategories = [];
+try {
+    $catQuery = $pdo->query("SELECT name, slug FROM product_categories WHERE is_active = 1 ORDER BY sort_order ASC, name ASC");
+    $activeCategories = $catQuery->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {}
+
+if (empty($activeCategories)) {
+    try {
+        $distCats = $pdo->query("SELECT DISTINCT category FROM products WHERE is_active = 1 AND category IS NOT NULL AND category != ''")->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($distCats as $dc) {
+            $activeCategories[] = [
+                'name' => $dc, 
+                'slug' => strtolower(preg_replace('/[^a-z0-9]+/i', '-', trim($dc)))
+            ];
+        }
+    } catch (PDOException $e) {}
+}
+
 // Build Query
 $whereClause = "WHERE is_active = 1";
 $params = [];
 
 if ($category !== 'all' && !empty($category)) {
-    $whereClause .= " AND category LIKE ?";
-    $params[] = '%' . $category . '%';
+    $catClean = str_replace('-', ' ', $category);
+    $whereClause .= " AND (category = ? OR category LIKE ? OR LOWER(REPLACE(category, ' ', '-')) = ?)";
+    $params[] = $category;
+    $params[] = '%' . $catClean . '%';
+    $params[] = strtolower($category);
 }
 
 // Sorting Order
@@ -88,10 +110,18 @@ include __DIR__ . '/includes/header.php';
             <!-- Category Filter Pills -->
             <div class="category-pill-group">
                 <a href="?category=all&sort=<?php echo urlencode($sort); ?>" class="category-pill <?php echo ($category === 'all') ? 'active' : ''; ?>">All Products</a>
-                <a href="?category=bracelets&sort=<?php echo urlencode($sort); ?>" class="category-pill <?php echo ($category === 'bracelets') ? 'active' : ''; ?>">Bracelets</a>
-                <a href="?category=pendulums&sort=<?php echo urlencode($sort); ?>" class="category-pill <?php echo ($category === 'pendulums') ? 'active' : ''; ?>">Pendulums</a>
-                <a href="?category=stones&sort=<?php echo urlencode($sort); ?>" class="category-pill <?php echo ($category === 'stones') ? 'active' : ''; ?>">Stones</a>
-                <a href="?category=hangings&sort=<?php echo urlencode($sort); ?>" class="category-pill <?php echo ($category === 'hangings') ? 'active' : ''; ?>">Hangings</a>
+                <?php foreach ($activeCategories as $catItem): 
+                    $catSlug = !empty($catItem['slug']) ? $catItem['slug'] : strtolower(preg_replace('/[^a-z0-9]+/i', '-', $catItem['name']));
+                    $isCurrentActive = (
+                        strtolower($category) === strtolower($catSlug) || 
+                        strtolower($category) === strtolower($catItem['name']) || 
+                        str_replace('-', ' ', strtolower($category)) === strtolower($catItem['name'])
+                    );
+                ?>
+                    <a href="?category=<?php echo urlencode($catSlug); ?>&sort=<?php echo urlencode($sort); ?>" class="category-pill <?php echo $isCurrentActive ? 'active' : ''; ?>">
+                        <?php echo htmlspecialchars($catItem['name']); ?>
+                    </a>
+                <?php endforeach; ?>
             </div>
 
             <!-- Sort Dropdown Form -->
