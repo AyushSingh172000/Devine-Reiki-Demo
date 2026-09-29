@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_service'])) {
     $mode = trim($_POST['mode'] ?? 'Online');
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $price = $isFree ? 0.00 : (is_numeric($_POST['price'] ?? null) ? (float)$_POST['price'] : 0.00);
-    $imagePath = trim($_POST['image'] ?? 'assets/images/services/reiki-healing.jpg');
+    $imagePath = trim($_POST['image'] ?? '');
     $sortOrder = (int)($_POST['sort_order'] ?? 0);
     $isActive = isset($_POST['is_active']) ? 1 : 0;
 
@@ -304,12 +304,19 @@ include __DIR__ . '/includes/superadmin-header.php';
                 </thead>
                 <tbody>
                     <?php foreach ($servicesList as $srv): 
-                        $thumb = !empty($srv['image']) ? '../' . ltrim($srv['image'], '/') : '../assets/images/services/reiki-healing.jpg';
+                        $hasImage = !empty($srv['image']);
+                        $thumb = $hasImage ? '../' . ltrim($srv['image'], '/') : '';
                         $isFree = !empty($srv['is_free']);
                     ?>
                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.86rem;">
                             <td style="padding: 12px 14px;">
-                                <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($srv['title']) ?>" style="width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--sa-border-gold);" onerror="this.src='../assets/images/services/reiki-healing.jpg'">
+                                <?php if ($hasImage): ?>
+                                    <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($srv['title']) ?>" style="width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--sa-border-gold);" onerror="this.src='../assets/images/logo.png'">
+                                <?php else: ?>
+                                    <div style="width: 44px; height: 44px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px dashed var(--sa-border-gold); display: inline-flex; align-items: center; justify-content: center; color: var(--sa-text-muted);" title="No image">
+                                        <i data-lucide="image-off" style="width: 16px; height: 16px; opacity: 0.6;"></i>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td style="padding: 12px 14px;">
                                 <strong style="color: #ffffff;"><?= htmlspecialchars($srv['title']) ?></strong>

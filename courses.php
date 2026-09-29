@@ -44,13 +44,19 @@ include __DIR__ . '/includes/header.php';
         <div class="courses-cards-grid">
             <?php if (!empty($courses)): ?>
                 <?php foreach ($courses as $index => $course): ?>
+                    <?php $hasCourseImg = !empty($course['image']); ?>
                     <div class="course-item-card animate-on-scroll">
+                        <?php if ($hasCourseImg): ?>
                         <div class="course-img-box">
-                            <img src="<?php echo htmlspecialchars($course['image'] ?: 'assets/images/courses/reiki-level-1.jpg'); ?>" alt="<?php echo htmlspecialchars($course['title']); ?>" loading="lazy">
+                            <img src="<?php echo htmlspecialchars($course['image']); ?>" alt="<?php echo htmlspecialchars($course['title']); ?>" loading="lazy">
                             <span class="badge badge-gold course-level-badge">Level <?php echo ($index + 1); ?></span>
                         </div>
+                        <?php endif; ?>
                         <div class="course-info-body">
                             <div>
+                                <?php if (!$hasCourseImg): ?>
+                                    <span class="badge badge-gold" style="margin-bottom: 10px; display: inline-block;">Level <?php echo ($index + 1); ?></span>
+                                <?php endif; ?>
                                 <h3 class="course-item-title"><?php echo htmlspecialchars($course['title']); ?></h3>
                                 <p class="course-item-desc"><?php echo htmlspecialchars($course['short_description']); ?></p>
                             </div>

@@ -5,20 +5,20 @@ $footerLogoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSett
 $footerBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
 $footerCleanWa = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? (defined('SITE_WHATSAPP') ? SITE_WHATSAPP : '919726581787'));
 
-$footerAboutText = !empty($siteSettings['footer_about_text']) ? $siteSettings['footer_about_text'] : 'Guided by <strong>Anupama Agrawal</strong> (Reiki Grand Master) dedicated to authentic healing, chakra alignment, and empowered living.';
-$footerCtaTag = !empty($siteSettings['footer_cta_tag']) ? $siteSettings['footer_cta_tag'] : 'FIRST SESSION IS FREE';
-$footerCtaTitle = !empty($siteSettings['footer_cta_title']) ? $siteSettings['footer_cta_title'] : 'Begin Your <em>Healing Journey</em> Today';
-$footerCtaDesc = !empty($siteSettings['footer_cta_desc']) ? $siteSettings['footer_cta_desc'] : 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.';
-$footerCtaBtnText = !empty($siteSettings['footer_cta_btn_text']) ? $siteSettings['footer_cta_btn_text'] : 'Book Free Session →';
+$footerAboutText = array_key_exists('footer_about_text', $siteSettings) ? trim((string)$siteSettings['footer_about_text']) : 'Guided by <strong>Anupama Agrawal</strong> (Reiki Grand Master) dedicated to authentic healing, chakra alignment, and empowered living.';
+$footerCtaTag = array_key_exists('footer_cta_tag', $siteSettings) ? trim((string)$siteSettings['footer_cta_tag']) : 'FIRST SESSION IS FREE';
+$footerCtaTitle = array_key_exists('footer_cta_title', $siteSettings) ? trim((string)$siteSettings['footer_cta_title']) : 'Begin Your <em>Healing Journey</em> Today';
+$footerCtaDesc = array_key_exists('footer_cta_desc', $siteSettings) ? trim((string)$siteSettings['footer_cta_desc']) : 'Take the first step. Meet Ms Anupama Agrawal and discover which modality resonates with your soul.';
+$footerCtaBtnText = array_key_exists('footer_cta_btn_text', $siteSettings) ? trim((string)$siteSettings['footer_cta_btn_text']) : 'Book Free Session →';
 $footerCtaBtnUrl = !empty($siteSettings['footer_cta_btn_url']) ? $siteSettings['footer_cta_btn_url'] : $footerBookingUrl;
 
-$footerCopyrightTpl = !empty($siteSettings['footer_copyright']) ? $siteSettings['footer_copyright'] : '&copy; {year} ' . htmlspecialchars(SITE_NAME) . ' Healing Center. All sacred rights reserved.';
+$footerCopyrightTpl = array_key_exists('footer_copyright', $siteSettings) ? trim((string)$siteSettings['footer_copyright']) : '&copy; {year} ' . htmlspecialchars(SITE_NAME) . ' Healing Center. All sacred rights reserved.';
 $footerCopyright = str_replace('{year}', date('Y'), $footerCopyrightTpl);
 
 // Dynamic WhatsApp Modal Settings & Templates
-$footerWaModalTitle = !empty($siteSettings['wa_modal_title']) ? $siteSettings['wa_modal_title'] : 'How can we help?';
-$footerWaModalSubtitle = !empty($siteSettings['wa_modal_subtitle']) ? $siteSettings['wa_modal_subtitle'] : 'Reiki Bliss · Usually replies in hours';
-$footerWaModalLabel = !empty($siteSettings['wa_modal_label']) ? $siteSettings['wa_modal_label'] : "WHAT'S THIS ABOUT?";
+$footerWaModalTitle = array_key_exists('wa_modal_title', $siteSettings) && trim((string)$siteSettings['wa_modal_title']) !== '' ? $siteSettings['wa_modal_title'] : 'How can we help?';
+$footerWaModalSubtitle = array_key_exists('wa_modal_subtitle', $siteSettings) && trim((string)$siteSettings['wa_modal_subtitle']) !== '' ? $siteSettings['wa_modal_subtitle'] : 'Reiki Bliss · Usually replies in hours';
+$footerWaModalLabel = array_key_exists('wa_modal_label', $siteSettings) && trim((string)$siteSettings['wa_modal_label']) !== '' ? $siteSettings['wa_modal_label'] : "WHAT'S THIS ABOUT?";
 
 $footerWaTemplates = [];
 if (!empty($siteSettings['wa_templates'])) {
@@ -83,9 +83,11 @@ if (isset($pdo) && ($pdo instanceof PDO)) {
                         <span class="logo-subtitle"><?php echo htmlspecialchars(SITE_TAGLINE); ?></span>
                     </span>
                 </a>
+                <?php if (!empty(trim(strip_tags((string)$footerAboutText)))): ?>
                 <p class="footer-tagline">
                     <?php echo $footerAboutText; ?>
                 </p>
+                <?php endif; ?>
                 <div class="footer-socials">
                     <?php if (!empty(FACEBOOK_URL)): ?>
                     <a href="<?php echo htmlspecialchars(FACEBOOK_URL); ?>" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon">

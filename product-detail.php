@@ -44,10 +44,11 @@ $getAssetUrl = function($path, $fallback = 'assets/images/products/amethyst-brac
 };
 
 // Additional images parsing
-$rawMainImage = $product['image'] ?: 'assets/images/products/amethyst-bracelet.jpg';
-$mainImage = $getAssetUrl($rawMainImage);
+$hasProductImg = !empty($product['image']);
+$rawMainImage = $hasProductImg ? $product['image'] : '';
+$mainImage = $hasProductImg ? $getAssetUrl($rawMainImage) : '';
 $additionalImages = is_string($product['additional_images']) ? json_decode($product['additional_images'], true) : $product['additional_images'];
-$rawGallery = array_unique(array_filter(array_merge([$rawMainImage], is_array($additionalImages) ? $additionalImages : [])));
+$rawGallery = array_unique(array_filter(array_merge($hasProductImg ? [$rawMainImage] : [], is_array($additionalImages) ? $additionalImages : [])));
 $galleryImages = array_map($getAssetUrl, $rawGallery);
 
 // Fetch related products
@@ -92,7 +93,14 @@ include __DIR__ . '/includes/header.php';
             <!-- Left Column: Image Gallery -->
             <div class="gallery-container">
                 <div class="main-img-box" style="position: relative;">
-                    <img id="main-product-display" src="<?php echo htmlspecialchars($mainImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" loading="lazy">
+                    <?php if (!empty($mainImage)): ?>
+                        <img id="main-product-display" src="<?php echo htmlspecialchars($mainImage); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" loading="lazy">
+                    <?php else: ?>
+                        <div style="width: 100%; height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(201,168,76,0.05), rgba(99,102,241,0.05)); border-radius: 16px; border: 1px dashed var(--border-gold, #c89b3c);">
+                            <span style="font-size: 3.5rem; margin-bottom: 8px;">💎</span>
+                            <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 500;">Reiki Charged Sacred Crystal</span>
+                        </div>
+                    <?php endif; ?>
                     <?php if (!$product['in_stock']): ?>
                         <span class="badge badge-danger" style="position: absolute; top: 16px; left: 16px; font-size: 0.85rem; padding: 6px 14px; box-shadow: 0 4px 12px rgba(220,38,38,0.25); z-index: 2;">Out of Stock</span>
                     <?php endif; ?>
@@ -183,10 +191,19 @@ include __DIR__ . '/includes/header.php';
                 <h3 class="section-heading" style="font-size: 2rem; margin-bottom: 30px;">Related Crystal <em>Products</em></h3>
                 <div class="products-catalog-grid">
                     <?php foreach ($relatedProducts as $rel): ?>
-                        <?php $relImgUrl = $getAssetUrl($rel['image'] ?? ''); ?>
+                        <?php 
+                        $hasRelImg = !empty($rel['image']);
+                        $relImgUrl = $hasRelImg ? $getAssetUrl($rel['image']) : ''; 
+                        ?>
                         <a href="<?php echo BASE_URL; ?>product/<?php echo htmlspecialchars($rel['slug']); ?>" class="product-shop-card">
                             <div class="product-img-frame">
-                                <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/products/amethyst-bracelet.jpg';" loading="lazy">
+                                <?php if ($hasRelImg): ?>
+                                    <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
+                                <?php else: ?>
+                                    <div style="width: 100%; height: 100%; min-height: 200px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(99,102,241,0.06));">
+                                        <span style="font-size: 2.2rem; opacity: 0.8;">💎</span>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (!$rel['in_stock']): ?>
                                     <span class="badge badge-danger shop-badge-pos">Out of Stock</span>
                                 <?php elseif ($rel['discount_percent'] > 0): ?>

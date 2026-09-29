@@ -57,12 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_service'])) {
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $currentImage = $_POST['current_image'] ?? '';
 
-    // Remove current image if requested
-    if (isset($_POST['remove_image']) && $_POST['remove_image'] == '1') {
+    // Remove current image if requested or if cleared
+    if ((isset($_POST['remove_image']) && $_POST['remove_image'] == '1') || empty($currentImage)) {
         if (!empty($currentImage)) {
             deleteImage($currentImage);
-            $currentImage = null;
         }
+        $currentImage = null;
     }
 
     // Handle New Image Upload
@@ -529,15 +529,22 @@ try {
                 <tbody>
                     <?php foreach ($servicesList as $srv): ?>
                         <?php 
-                            $thumb = !empty($srv['image']) 
+                            $hasImage = !empty($srv['image']);
+                            $thumb = $hasImage 
                                 ? (strpos($srv['image'], 'assets/') === 0 || strpos($srv['image'], 'uploads/') === 0 ? '../' . $srv['image'] : $srv['image']) 
-                                : '../assets/images/services/reiki-healing.jpg';
+                                : '';
                             $isFree = !empty($srv['is_free']);
                             $isActive = !empty($srv['is_active']);
                         ?>
                         <tr>
                             <td style="text-align: center;">
-                                <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($srv['title']) ?>" class="thumbnail-50" onerror="this.src='../assets/images/logo.png'">
+                                <?php if ($hasImage): ?>
+                                    <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($srv['title']) ?>" class="thumbnail-50" onerror="this.src='../assets/images/logo.png'">
+                                <?php else: ?>
+                                    <div style="width: 44px; height: 44px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px dashed var(--card-border); display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.72rem;" title="No image">
+                                        <i data-lucide="image-off" style="width: 16px; height: 16px; opacity: 0.6;"></i>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <strong style="color: var(--text-primary);"><?= htmlspecialchars($srv['title']) ?></strong>

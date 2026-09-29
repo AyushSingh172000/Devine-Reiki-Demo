@@ -12,18 +12,25 @@ $hidePrices = !empty($saToggles['hide_prices']);
 <section class="courses-section" id="courses">
     <div class="container">
 <?php
-$defaultCoursesDesc = 'Become a certified Reiki healer yourself. Structured curriculum with authentic attunement (Diksha), physical manual, lifetime mentorship, and recognized certificates.';
-$coursesBadge = isset($getSecContent) ? $getSecContent('courses', 'badge', 'Certified Energy Training') : 'Certified Energy Training';
-$coursesTitle = isset($getSecContent) ? $getSecContent('courses', 'title', 'Explore Reiki &amp; Healing <em>Courses</em>') : 'Explore Reiki &amp; Healing <em>Courses</em>';
+$defaultCoursesBadge = array_key_exists('home_courses_badge', $siteSettings) ? trim((string)$siteSettings['home_courses_badge']) : 'Certified Energy Training';
+$defaultCoursesTitle = array_key_exists('home_courses_title', $siteSettings) ? trim((string)$siteSettings['home_courses_title']) : 'Explore Reiki &amp; Healing <em>Courses</em>';
+$defaultCoursesDesc  = array_key_exists('home_courses_desc', $siteSettings) ? trim((string)$siteSettings['home_courses_desc']) : 'Become a certified Reiki healer yourself. Structured curriculum with authentic attunement (Diksha), physical manual, lifetime mentorship, and recognized certificates.';
+
+$coursesBadge = isset($getSecContent) ? $getSecContent('courses', 'badge', $defaultCoursesBadge) : $defaultCoursesBadge;
+$coursesTitle = isset($getSecContent) ? $getSecContent('courses', 'title', $defaultCoursesTitle) : $defaultCoursesTitle;
 $coursesDesc  = isset($getSecContent) ? $getSecContent('courses', 'desc', $defaultCoursesDesc) : $defaultCoursesDesc;
 
 $coursesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto 0;' : ((($secAlign ?? 'left') === 'right') ? 'margin: 8px 0 0 auto;' : 'margin-top: 8px;');
 ?>
         <div class="section-header-flex animate-on-scroll" <?php echo $coursesAlignStyle; ?>>
             <div>
+                <?php if (!empty(trim((string)$coursesBadge))): ?>
                 <span class="section-label"><?php echo htmlspecialchars($coursesBadge); ?></span>
+                <?php endif; ?>
+                <?php if (!empty(trim(strip_tags((string)$coursesTitle)))): ?>
                 <h2 class="section-heading"><?php echo $coursesTitle; ?></h2>
-                <?php if (!empty($coursesDesc)): ?>
+                <?php endif; ?>
+                <?php if (!empty(trim(strip_tags((string)$coursesDesc)))): ?>
                     <p class="section-subtext" style="color: var(--text-muted, #555D6E); font-size: 0.98rem; line-height: 1.6; max-width: 680px; <?php echo $coursesSubtextMargin; ?> margin-bottom: 0;"><?php echo htmlspecialchars($coursesDesc); ?></p>
                 <?php endif; ?>
             </div>
@@ -34,11 +41,14 @@ $coursesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto
         <div class="scroll-cards-row">
             <?php if (!empty($courses)): ?>
                 <?php foreach ($courses as $course): ?>
+                    <?php $hasCourseImg = !empty($course['image']); ?>
                     <div class="scroll-card">
+                        <?php if ($hasCourseImg): ?>
                         <div class="card-img-box">
-                            <img src="<?php echo htmlspecialchars($course['image'] ?: 'assets/images/courses/reiki-level-1.jpg'); ?>" alt="<?php echo htmlspecialchars($course['title']); ?>" loading="lazy">
+                            <img src="<?php echo htmlspecialchars($course['image']); ?>" alt="<?php echo htmlspecialchars($course['title']); ?>" loading="lazy">
                         </div>
-                        <div class="card-body-content">
+                        <?php endif; ?>
+                        <div class="card-body-content" style="<?php echo !$hasCourseImg ? 'padding-top: 24px;' : ''; ?>">
                             <div>
                                 <span class="card-repeat-title"><?php echo htmlspecialchars($course['title']); ?></span>
                                 <h3 class="card-main-title"><?php echo htmlspecialchars($course['title']); ?></h3>

@@ -114,7 +114,13 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($products as $prod): ?>
                     <a href="<?php echo BASE_URL; ?>product/<?php echo htmlspecialchars($prod['slug']); ?>" class="product-shop-card animate-on-scroll">
                         <div class="product-img-frame">
-                            <img src="<?php echo htmlspecialchars($prod['image'] ?: 'assets/images/products/amethyst-bracelet.jpg'); ?>" alt="<?php echo htmlspecialchars($prod['title']); ?>" loading="lazy">
+                            <?php if (!empty($prod['image'])): ?>
+                                <img src="<?php echo htmlspecialchars($prod['image']); ?>" alt="<?php echo htmlspecialchars($prod['title']); ?>" loading="lazy">
+                            <?php else: ?>
+                                <div style="width: 100%; height: 100%; min-height: 220px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(99,102,241,0.06));">
+                                    <span style="font-size: 2.5rem; opacity: 0.8;">💎</span>
+                                </div>
+                            <?php endif; ?>
                             <?php if (!$prod['in_stock']): ?>
                                 <span class="badge badge-danger shop-badge-pos">Out of Stock</span>
                             <?php elseif ($prod['discount_percent'] > 0): ?>

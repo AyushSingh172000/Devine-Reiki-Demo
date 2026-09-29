@@ -15,18 +15,25 @@ $serviceBookingUrl = $disableBookings ? 'https://wa.me/' . preg_replace('/[^0-9]
     <div id="chakras" style="position: relative; top: -80px; visibility: hidden;"></div>
     <div class="container">
 <?php
-$defaultServicesDesc = 'Experience personalized Reiki healing, chakra alignment, and aura cleansing guided by Grandmaster Anupama Agrawal to restore physical vitality and spiritual harmony.';
-$servicesBadge = isset($getSecContent) ? $getSecContent('services', 'badge', 'Holistic Healing Modalities') : 'Holistic Healing Modalities';
-$servicesTitle = isset($getSecContent) ? $getSecContent('services', 'title', 'Our Core <em>Services</em>') : 'Our Core <em>Services</em>';
+$defaultServicesBadge = array_key_exists('home_services_badge', $siteSettings) ? trim((string)$siteSettings['home_services_badge']) : 'Holistic Healing Modalities';
+$defaultServicesTitle = array_key_exists('home_services_title', $siteSettings) ? trim((string)$siteSettings['home_services_title']) : 'Our Core <em>Services</em>';
+$defaultServicesDesc  = array_key_exists('home_services_desc', $siteSettings) ? trim((string)$siteSettings['home_services_desc']) : 'Experience personalized Reiki healing, chakra alignment, and aura cleansing guided by Grandmaster Anupama Agrawal to restore physical vitality and spiritual harmony.';
+
+$servicesBadge = isset($getSecContent) ? $getSecContent('services', 'badge', $defaultServicesBadge) : $defaultServicesBadge;
+$servicesTitle = isset($getSecContent) ? $getSecContent('services', 'title', $defaultServicesTitle) : $defaultServicesTitle;
 $servicesDesc  = isset($getSecContent) ? $getSecContent('services', 'desc', $defaultServicesDesc) : $defaultServicesDesc;
 
 $servicesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto 0;' : ((($secAlign ?? 'left') === 'right') ? 'margin: 8px 0 0 auto;' : 'margin-top: 8px;');
 ?>
         <div class="section-header-flex animate-on-scroll" <?php echo $alignStyle; ?>>
             <div>
+                <?php if (!empty(trim((string)$servicesBadge))): ?>
                 <span class="section-label"><?php echo htmlspecialchars($servicesBadge); ?></span>
+                <?php endif; ?>
+                <?php if (!empty(trim(strip_tags((string)$servicesTitle)))): ?>
                 <h2 class="section-heading"><?php echo $servicesTitle; ?></h2>
-                <?php if (!empty($servicesDesc)): ?>
+                <?php endif; ?>
+                <?php if (!empty(trim(strip_tags((string)$servicesDesc)))): ?>
                     <p class="section-subtext" style="color: var(--text-muted, #555D6E); font-size: 0.98rem; line-height: 1.6; max-width: 680px; <?php echo $servicesSubtextMargin; ?> margin-bottom: 0;"><?php echo htmlspecialchars($servicesDesc); ?></p>
                 <?php endif; ?>
             </div>
@@ -38,13 +45,14 @@ $servicesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px aut
             <?php if (!empty($services)): ?>
                 <?php foreach ($services as $service): ?>
                     <?php 
-                    $sImg = !empty($service['image']) ? $service['image'] : 'assets/images/services/reiki-healing.jpg';
-                    $sImgUrl = (strpos($sImg, 'http://') === 0 || strpos($sImg, 'https://') === 0) ? $sImg : BASE_URL . ltrim($sImg, '/');
+                    $hasSImg = !empty($service['image']);
+                    $sImgUrl = $hasSImg ? ((strpos($service['image'], 'http://') === 0 || strpos($service['image'], 'https://') === 0) ? $service['image'] : BASE_URL . ltrim($service['image'], '/')) : '';
                     ?>
                     <div class="scroll-card">
+                        <?php if ($hasSImg): ?>
                         <div class="card-img-box">
                             <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>">
-                                <img src="<?php echo htmlspecialchars($sImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
+                                <img src="<?php echo htmlspecialchars($sImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" loading="lazy">
                             </a>
                             <?php if ($service['is_free']): ?>
                                 <span class="badge badge-green card-badge-pos">FREE • <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
@@ -52,8 +60,18 @@ $servicesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px aut
                                 <span class="badge card-badge-pos"><?php echo htmlspecialchars($service['duration_minutes']); ?> mins • <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
                             <?php endif; ?>
                         </div>
-                        <div class="card-body-content">
+                        <?php endif; ?>
+                        <div class="card-body-content" style="<?php echo !$hasSImg ? 'padding-top: 24px;' : ''; ?>">
                             <div>
+                                <?php if (!$hasSImg): ?>
+                                    <div style="margin-bottom: 10px;">
+                                        <?php if ($service['is_free']): ?>
+                                            <span class="badge badge-green" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 4px;">FREE • <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
+                                        <?php else: ?>
+                                            <span class="badge badge-gold" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 4px;"><?php echo htmlspecialchars($service['duration_minutes']); ?> mins • <?php echo htmlspecialchars($service['mode'] ?? 'Online'); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
                                 <span class="card-repeat-title"><?php echo htmlspecialchars($service['title']); ?></span>
                                 <h3 class="card-main-title">
                                     <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>" style="color: inherit; text-decoration: none;">

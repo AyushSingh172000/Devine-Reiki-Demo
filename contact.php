@@ -53,42 +53,50 @@ if (empty($contactMapsEmbed)) {
 }
 
 // Contact Hero Section Customization
-$contactHeroBadge = !empty($siteSettings['contact_hero_badge']) ? $siteSettings['contact_hero_badge'] : 'Free Online Consultation';
-$contactHeroTitle = !empty($siteSettings['contact_hero_title']) ? $siteSettings['contact_hero_title'] : '30 Minutes with <em>Reiki Masters</em>';
-$contactHeroDesc = isset($siteSettings['contact_hero_desc']) && $siteSettings['contact_hero_desc'] !== '' ? $siteSettings['contact_hero_desc'] : 'Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with our certified Reiki Masters.';
+$contactHeroBadge = array_key_exists('contact_hero_badge', $siteSettings) ? trim((string)$siteSettings['contact_hero_badge']) : 'Free Online Consultation';
+$contactHeroTitle = array_key_exists('contact_hero_title', $siteSettings) ? trim((string)$siteSettings['contact_hero_title']) : '30 Minutes with <em>Reiki Masters</em>';
 
-// Center Info Section & Cards Customization
-$contactSecBadge = !empty($siteSettings['contact_sec_badge']) ? $siteSettings['contact_sec_badge'] : 'Our Sanctuary Location';
-$contactSecHeading = !empty($siteSettings['contact_sec_heading']) ? $siteSettings['contact_sec_heading'] : htmlspecialchars(SITE_NAME);
-$contactSecDesc = isset($siteSettings['contact_sec_desc']) && $siteSettings['contact_sec_desc'] !== '' ? $siteSettings['contact_sec_desc'] : 'Visit our peaceful sanctuary or connect with our healing practitioners virtually.';
+$contactHeroDesc = '';
+if (array_key_exists('contact_hero_subtext', $siteSettings)) {
+    $contactHeroDesc = trim((string)$siteSettings['contact_hero_subtext']);
+} elseif (array_key_exists('contact_hero_desc', $siteSettings)) {
+    $contactHeroDesc = trim((string)$siteSettings['contact_hero_desc']);
+} else {
+    $contactHeroDesc = 'Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with our certified Reiki Masters.';
+}
 
-// Card 1: Visit Us
-$cCard1Icon = !empty($siteSettings['contact_card1_icon']) ? $siteSettings['contact_card1_icon'] : '📍';
-$cCard1Title = !empty($siteSettings['contact_card1_title']) ? $siteSettings['contact_card1_title'] : 'Visit Us';
-$cCard1Text = !empty($siteSettings['contact_card1_text']) ? $siteSettings['contact_card1_text'] : $contactAddress;
-$cCard1Btn = !empty($siteSettings['contact_card1_btn']) ? $siteSettings['contact_card1_btn'] : 'View on Google Maps →';
-$cCard1Url = !empty($siteSettings['contact_card1_url']) ? $siteSettings['contact_card1_url'] : $contactMapsUrl;
+// Center Info Section & Cards Customization (Falls back to global settings when fields are blank)
+$contactSecBadge = !empty(trim((string)($siteSettings['contact_sec_badge'] ?? ''))) ? trim((string)$siteSettings['contact_sec_badge']) : 'Our Sanctuary Location';
+$contactSecHeading = !empty(trim((string)($siteSettings['contact_sec_heading'] ?? ''))) ? trim((string)$siteSettings['contact_sec_heading']) : htmlspecialchars($siteSettings['site_name'] ?? (defined('SITE_NAME') ? SITE_NAME : 'Reiki Bliss'));
+$contactSecDesc = !empty(trim((string)($siteSettings['contact_sec_desc'] ?? ''))) ? trim((string)$siteSettings['contact_sec_desc']) : 'Visit our peaceful sanctuary or connect with our healing practitioners virtually.';
 
-// Card 2: Call / WhatsApp
-$cCard2Icon = !empty($siteSettings['contact_card2_icon']) ? $siteSettings['contact_card2_icon'] : '📞';
-$cCard2Title = !empty($siteSettings['contact_card2_title']) ? $siteSettings['contact_card2_title'] : 'Call / WhatsApp';
-$cCard2Phone = !empty($siteSettings['contact_card2_phone']) ? $siteSettings['contact_card2_phone'] : $contactPhone;
-$cCard2Wa = !empty($siteSettings['contact_card2_wa']) ? $siteSettings['contact_card2_wa'] : $contactPhone;
-$cCard2Btn = !empty($siteSettings['contact_card2_btn']) ? $siteSettings['contact_card2_btn'] : 'Chat on WhatsApp →';
-$cCard2Url = !empty($siteSettings['contact_card2_url']) ? $siteSettings['contact_card2_url'] : ('https://wa.me/' . $contactCleanWa);
+// Card 1: Visit Us (Falls back to global address and maps URL)
+$cCard1Icon = !empty(trim((string)($siteSettings['contact_card1_icon'] ?? ''))) ? trim((string)$siteSettings['contact_card1_icon']) : '📍';
+$cCard1Title = !empty(trim((string)($siteSettings['contact_card1_title'] ?? ''))) ? trim((string)$siteSettings['contact_card1_title']) : 'Visit Us';
+$cCard1Text = !empty(trim((string)($siteSettings['contact_card1_text'] ?? ''))) ? trim((string)$siteSettings['contact_card1_text']) : $contactAddress;
+$cCard1Btn = !empty(trim((string)($siteSettings['contact_card1_btn'] ?? ''))) ? trim((string)$siteSettings['contact_card1_btn']) : 'View on Google Maps →';
+$cCard1Url = !empty(trim((string)($siteSettings['contact_card1_url'] ?? ''))) ? trim((string)$siteSettings['contact_card1_url']) : $contactMapsUrl;
 
-// Card 3: Email Us
-$cCard3Icon = !empty($siteSettings['contact_card3_icon']) ? $siteSettings['contact_card3_icon'] : '✉️';
-$cCard3Title = !empty($siteSettings['contact_card3_title']) ? $siteSettings['contact_card3_title'] : 'Email Us';
-$cCard3Email = !empty($siteSettings['contact_card3_email']) ? $siteSettings['contact_card3_email'] : $contactEmail;
-$cCard3Btn = !empty($siteSettings['contact_card3_btn']) ? $siteSettings['contact_card3_btn'] : 'Send Email Inquiry →';
+// Card 2: Call / WhatsApp (Falls back to global phone, whatsapp, and wa.me link)
+$cCard2Icon = !empty(trim((string)($siteSettings['contact_card2_icon'] ?? ''))) ? trim((string)$siteSettings['contact_card2_icon']) : '📞';
+$cCard2Title = !empty(trim((string)($siteSettings['contact_card2_title'] ?? ''))) ? trim((string)$siteSettings['contact_card2_title']) : 'Call / WhatsApp';
+$cCard2Phone = !empty(trim((string)($siteSettings['contact_card2_phone'] ?? ''))) ? trim((string)$siteSettings['contact_card2_phone']) : $contactPhone;
+$cCard2Wa = !empty(trim((string)($siteSettings['contact_card2_wa'] ?? ''))) ? trim((string)$siteSettings['contact_card2_wa']) : (!empty($siteSettings['whatsapp']) ? $siteSettings['whatsapp'] : $contactPhone);
+$cCard2Btn = !empty(trim((string)($siteSettings['contact_card2_btn'] ?? ''))) ? trim((string)$siteSettings['contact_card2_btn']) : 'Chat on WhatsApp →';
+$cCard2Url = !empty(trim((string)($siteSettings['contact_card2_url'] ?? ''))) ? trim((string)$siteSettings['contact_card2_url']) : (!empty($contactCleanWa) ? ('https://wa.me/' . $contactCleanWa) : '#');
 
-// Card 4: Center Hours
-$cCard4Icon = !empty($siteSettings['contact_card4_icon']) ? $siteSettings['contact_card4_icon'] : '⏰';
-$cCard4Title = !empty($siteSettings['contact_card4_title']) ? $siteSettings['contact_card4_title'] : 'Center Hours';
-$cCard4Hours = !empty($siteSettings['contact_card4_hours']) ? $siteSettings['contact_card4_hours'] : $contactHours;
-$cCard4Btn = !empty($siteSettings['contact_card4_btn']) ? $siteSettings['contact_card4_btn'] : 'Book Consultation →';
-$cCard4Url = !empty($siteSettings['contact_card4_url']) ? $siteSettings['contact_card4_url'] : $contactBookingUrl;
+// Card 3: Email Us (Falls back to global email)
+$cCard3Icon = !empty(trim((string)($siteSettings['contact_card3_icon'] ?? ''))) ? trim((string)$siteSettings['contact_card3_icon']) : '✉️';
+$cCard3Title = !empty(trim((string)($siteSettings['contact_card3_title'] ?? ''))) ? trim((string)$siteSettings['contact_card3_title']) : 'Email Us';
+$cCard3Email = !empty(trim((string)($siteSettings['contact_card3_email'] ?? ''))) ? trim((string)$siteSettings['contact_card3_email']) : $contactEmail;
+$cCard3Btn = !empty(trim((string)($siteSettings['contact_card3_btn'] ?? ''))) ? trim((string)$siteSettings['contact_card3_btn']) : 'Send Email Inquiry →';
+
+// Card 4: Center Hours (Falls back to global working hours and booking URL)
+$cCard4Icon = !empty(trim((string)($siteSettings['contact_card4_icon'] ?? ''))) ? trim((string)$siteSettings['contact_card4_icon']) : '⏰';
+$cCard4Title = !empty(trim((string)($siteSettings['contact_card4_title'] ?? ''))) ? trim((string)$siteSettings['contact_card4_title']) : 'Center Hours';
+$cCard4Hours = !empty(trim((string)($siteSettings['contact_card4_hours'] ?? ''))) ? trim((string)$siteSettings['contact_card4_hours']) : $contactHours;
+$cCard4Btn = !empty(trim((string)($siteSettings['contact_card4_btn'] ?? ''))) ? trim((string)$siteSettings['contact_card4_btn']) : 'Book Consultation →';
+$cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? trim((string)$siteSettings['contact_card4_url']) : $contactBookingUrl;
 ?>
 
 <!-- ==========================================================================
@@ -100,8 +108,10 @@ $cCard4Url = !empty($siteSettings['contact_card4_url']) ? $siteSettings['contact
         <?php if (!empty($contactHeroBadge)): ?>
         <span class="contact-hero-badge"><?php echo htmlspecialchars($contactHeroBadge); ?></span>
         <?php endif; ?>
+        <?php if (!empty(trim(strip_tags((string)$contactHeroTitle)))): ?>
         <h1 class="contact-hero-title"><?php echo $contactHeroTitle; ?></h1>
-        <?php if (!empty($contactHeroDesc)): ?>
+        <?php endif; ?>
+        <?php if (!empty(trim(strip_tags((string)$contactHeroDesc)))): ?>
         <p class="contact-hero-subtext">
             <?php echo nl2br(htmlspecialchars($contactHeroDesc)); ?>
         </p>

@@ -34,7 +34,7 @@ $sectionDefinitions = [
         'badge' => 'REVIEWS',
         'allow_align' => true,
         'default_align' => 'center',
-        'default_tag' => '• STORIES OF HEALING',
+        'default_tag' => 'STORIES OF HEALING',
         'default_title' => 'What Our Students &amp; Clients <em>Say</em>',
         'default_desc' => 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.'
     ],
@@ -167,6 +167,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $stmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
         $stmt->execute(['superadmin_homepage_layout', json_encode($newLayout)]);
         $siteSettings['superadmin_homepage_layout'] = json_encode($newLayout);
+
+        // Synchronize section heading keys to site_settings
+        $settingSyncStmt = $pdo->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
+        foreach ($newLayout as $sec) {
+            $sId = $sec['id'] ?? '';
+            if (in_array($sId, ['services', 'courses', 'products', 'testimonials'])) {
+                $settingSyncStmt->execute(["home_{$sId}_badge", $sec['badge'] ?? '']);
+                $settingSyncStmt->execute(["home_{$sId}_title", $sec['title'] ?? '']);
+                $settingSyncStmt->execute(["home_{$sId}_desc", $sec['desc'] ?? '']);
+                $siteSettings["home_{$sId}_badge"] = $sec['badge'] ?? '';
+                $siteSettings["home_{$sId}_title"] = $sec['title'] ?? '';
+                $siteSettings["home_{$sId}_desc"] = $sec['desc'] ?? '';
+            }
+        }
+
         $successMsg = "Homepage section architecture, headings, and descriptions updated successfully! Live immediately on the homepage.";
     } catch (\PDOException $e) {
         $errorMsg = "Failed to save homepage layout: " . $e->getMessage();

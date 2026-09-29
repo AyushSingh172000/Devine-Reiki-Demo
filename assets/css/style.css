@@ -211,12 +211,8 @@ p:last-child {
 }
 
 .section-label::before {
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background-color: var(--accent-gold);
-  border-radius: var(--radius-circle);
+  display: none !important;
+  content: none !important;
 }
 
 .section-heading {

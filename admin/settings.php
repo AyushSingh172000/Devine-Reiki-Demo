@@ -320,7 +320,57 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 }
             }
 
-            $_SESSION['flash_success'] = "Home page settings updated successfully! All changes are live.";
+            // 5. Section Headings: Services, Courses, Products (Shop), Testimonials
+            $secHeadings = [
+                'services' => [
+                    'badge' => trim(strip_tags($_POST['home_services_badge'] ?? '')),
+                    'title' => trim(strip_tags($_POST['home_services_title'] ?? '', '<em><strong><span><br><b><i>')),
+                    'desc'  => trim(strip_tags($_POST['home_services_desc'] ?? '', '<em><strong><span><br><b><i>')),
+                ],
+                'courses' => [
+                    'badge' => trim(strip_tags($_POST['home_courses_badge'] ?? '')),
+                    'title' => trim(strip_tags($_POST['home_courses_title'] ?? '', '<em><strong><span><br><b><i>')),
+                    'desc'  => trim(strip_tags($_POST['home_courses_desc'] ?? '', '<em><strong><span><br><b><i>')),
+                ],
+                'products' => [
+                    'badge' => trim(strip_tags($_POST['home_products_badge'] ?? '')),
+                    'title' => trim(strip_tags($_POST['home_products_title'] ?? '', '<em><strong><span><br><b><i>')),
+                    'desc'  => trim(strip_tags($_POST['home_products_desc'] ?? '', '<em><strong><span><br><b><i>')),
+                ],
+                'testimonials' => [
+                    'badge' => trim(strip_tags($_POST['home_testimonials_badge'] ?? '')),
+                    'title' => trim(strip_tags($_POST['home_testimonials_title'] ?? '', '<em><strong><span><br><b><i>')),
+                    'desc'  => trim(strip_tags($_POST['home_testimonials_desc'] ?? '', '<em><strong><span><br><b><i>')),
+                ],
+            ];
+
+            foreach ($secHeadings as $secKey => $secVals) {
+                setSetting($pdo, "home_{$secKey}_badge", $secVals['badge']);
+                setSetting($pdo, "home_{$secKey}_title", $secVals['title']);
+                setSetting($pdo, "home_{$secKey}_desc", $secVals['desc']);
+            }
+
+            // Also keep superadmin_homepage_layout JSON synchronized so section overrides stay in sync
+            $layoutStmt = $pdo->prepare("SELECT setting_value FROM site_settings WHERE setting_key = 'superadmin_homepage_layout'");
+            $layoutStmt->execute();
+            $rawLayout = $layoutStmt->fetchColumn();
+            if (!empty($rawLayout)) {
+                $layoutArr = json_decode($rawLayout, true);
+                if (is_array($layoutArr)) {
+                    foreach ($layoutArr as &$secItem) {
+                        $sId = $secItem['id'] ?? '';
+                        if (isset($secHeadings[$sId])) {
+                            $secItem['badge'] = $secHeadings[$sId]['badge'];
+                            $secItem['title'] = $secHeadings[$sId]['title'];
+                            $secItem['desc']  = $secHeadings[$sId]['desc'];
+                        }
+                    }
+                    unset($secItem);
+                    setSetting($pdo, 'superadmin_homepage_layout', json_encode($layoutArr));
+                }
+            }
+
+            $_SESSION['flash_success'] = "Home page settings & section headings updated successfully! All changes are live.";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Error saving Homepage Hero settings: " . $e->getMessage();
         }
@@ -365,6 +415,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             foreach ($contactFields as $f) {
                 setSetting($pdo, $f, trim($_POST[$f] ?? ''));
             }
+            // Synchronize contact_hero_desc with contact_hero_subtext
+            setSetting($pdo, 'contact_hero_desc', trim($_POST['contact_hero_subtext'] ?? ''));
             $_SESSION['flash_success'] = "Contact page & cards updated successfully!";
         } catch (Exception $e) {
             $_SESSION['flash_error'] = "Error saving contact page settings: " . $e->getMessage();
@@ -1140,7 +1192,7 @@ if (!in_array($currentTab, $validTabs)) {
                     <div class="form-group">
                         <label class="form-label">Top Tagline / Location Badge</label>
                         <input type="text" name="hero_badge" id="heroBadgeInput" class="form-control" 
-                               value="<?= htmlspecialchars($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016') ?>" 
+                               value="<?= htmlspecialchars(array_key_exists('hero_badge', $settings) ? $settings['hero_badge'] : '● ADAJAN, SURAT · EST. 2016') ?>" 
                                placeholder="e.g. ● ADAJAN, SURAT · EST. 2016 (leave blank to hide)">
                         <div class="form-hint">Displayed at the top of the home page banner. Leave blank to hide this badge from the website.</div>
                     </div>
@@ -1149,14 +1201,14 @@ if (!in_array($currentTab, $validTabs)) {
                         <div class="form-group">
                             <label class="form-label">Main Heading (Line 1)</label>
                             <input type="text" name="hero_title" id="heroTitleInput" class="form-control" 
-                                   value="<?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?>" 
+                                   value="<?= htmlspecialchars(array_key_exists('hero_title', $settings) ? $settings['hero_title'] : 'Awaken Inner Harmony.') ?>" 
                                    placeholder="e.g. Awaken Inner Harmony.">
                             <div class="form-hint">First line of the main heading.</div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Highlighted Heading (Line 2)</label>
                             <input type="text" name="hero_title_gold" id="heroTitleGoldInput" class="form-control" 
-                                   value="<?= htmlspecialchars($settings['hero_title_gold'] ?? 'Heal. Balance. Transform.') ?>" 
+                                   value="<?= htmlspecialchars(array_key_exists('hero_title_gold', $settings) ? $settings['hero_title_gold'] : 'Heal. Balance. Transform.') ?>" 
                                    placeholder="e.g. Heal. Balance. Transform.">
                             <div class="form-hint">Second line of the heading with gold styling.</div>
                         </div>
@@ -1165,7 +1217,7 @@ if (!in_array($currentTab, $validTabs)) {
                     <div class="form-group">
                         <label class="form-label">Subheading / Description</label>
                         <textarea name="hero_subtext" id="heroSubtextInput" class="form-control" rows="3" 
-                                  placeholder="e.g. Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more."><?= htmlspecialchars($settings['hero_subtext'] ?? 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.') ?></textarea>
+                                  placeholder="e.g. Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings &amp; more."><?= htmlspecialchars(array_key_exists('hero_subtext', $settings) ? $settings['hero_subtext'] : 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.') ?></textarea>
                         <!-- <div class="form-hint">HTML allowed (e.g. <code>&lt;strong&gt;Grand Master Ms Anupama Agrawal&lt;/strong&gt;</code>).</div> -->
                     </div>
                 </div>
@@ -1352,26 +1404,34 @@ if (!in_array($currentTab, $validTabs)) {
                         ✦ Live Hero Preview (Updates as you type) ✦
                     </div>
 
-                    <?php $previewBadgeText = trim((string)($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016')); ?>
+                    <?php 
+                    $previewBadgeText = array_key_exists('hero_badge', $settings) ? trim((string)$settings['hero_badge']) : '● ADAJAN, SURAT · EST. 2016';
+                    $previewTitleText = array_key_exists('hero_title', $settings) ? trim((string)$settings['hero_title']) : 'Awaken Inner Harmony.';
+                    $previewTitleGoldText = array_key_exists('hero_title_gold', $settings) ? trim((string)$settings['hero_title_gold']) : 'Heal. Balance. Transform.';
+                    $previewSubtextContent = array_key_exists('hero_subtext', $settings) ? trim((string)$settings['hero_subtext']) : 'Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.';
+                    $hasHeading = (!empty($previewTitleText) || !empty($previewTitleGoldText));
+                    ?>
                     <div style="display: <?= !empty($previewBadgeText) ? 'inline-block' : 'none' ?>; padding: 5px 16px; border-radius: 9999px; background: rgba(243, 201, 102, 0.12); border: 1px solid rgba(243, 201, 102, 0.35); color: #F3C966; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;" id="previewBadge">
                         <?= htmlspecialchars($previewBadgeText) ?>
                     </div>
 
-                    <h2 style="font-family: 'Cinzel', serif, Georgia; font-size: 2rem; color: #fff; margin-bottom: 12px; line-height: 1.2;">
-                        <span id="previewTitle" style="color: #ffffff !important;"><?= htmlspecialchars($settings['hero_title'] ?? 'Awaken Inner Harmony.') ?></span><br>
-                        <span id="previewTitleGold" style="color: #F3C966;"><?= htmlspecialchars($settings['hero_title_gold'] ?? 'Heal. Balance. Transform.') ?></span>
+                    <h2 id="previewHeadingWrap" style="font-family: 'Cinzel', serif, Georgia; font-size: 2rem; color: #fff; margin-bottom: 12px; line-height: 1.2; display: <?= $hasHeading ? 'block' : 'none' ?>;">
+                        <span id="previewTitle" style="color: #ffffff !important; display: <?= !empty($previewTitleText) ? 'inline' : 'none' ?>;"><?= htmlspecialchars($previewTitleText) ?></span><?= (!empty($previewTitleText) && !empty($previewTitleGoldText)) ? '<br id="previewTitleBr">' : '<br id="previewTitleBr" style="display:none;">' ?>
+                        <span id="previewTitleGold" style="color: #F3C966; display: <?= !empty($previewTitleGoldText) ? 'inline' : 'none' ?>;"><?= htmlspecialchars($previewTitleGoldText) ?></span>
                     </h2>
 
-                    <p id="previewSubtext" style="color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 620px; margin: 0 auto 20px; line-height: 1.6;">
-                        <?= htmlspecialchars(strip_tags($settings['hero_subtext'] ?? 'Guided by Grand Master Ms Anupama Agrawal: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.')) ?>
+                    <p id="previewSubtext" style="color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 620px; margin: 0 auto 20px; line-height: 1.6; display: <?= !empty(trim(strip_tags($previewSubtextContent))) ? 'block' : 'none' ?>;">
+                        <?= htmlspecialchars(strip_tags($previewSubtextContent)) ?>
                     </p>
 
                     <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                        <button type="button" class="btn btn-gold" id="previewBtn1" style="pointer-events: none; padding: 8px 20px; font-weight: 700;">
-                            <?= htmlspecialchars($settings['hero_cta1_text'] ?? 'Book Free Session') ?> →
+                        <?php $btn1Text = array_key_exists('hero_cta1_text', $settings) ? trim((string)$settings['hero_cta1_text']) : 'Book Free Session'; ?>
+                        <button type="button" class="btn btn-gold" id="previewBtn1" style="pointer-events: none; padding: 8px 20px; font-weight: 700; display: <?= !empty($btn1Text) ? 'inline-block' : 'none' ?>;">
+                            <?= htmlspecialchars($btn1Text) ?> →
                         </button>
-                        <button type="button" class="btn" id="previewBtn2" style="pointer-events: none; padding: 8px 20px; background: rgba(255, 255, 255, 0.08) !important; color: #ffffff !important; border: 1.5px solid rgba(255, 255, 255, 0.4) !important;">
-                            <?= htmlspecialchars($settings['hero_cta2_text'] ?? 'Explore Courses') ?>
+                        <?php $btn2Text = array_key_exists('hero_cta2_text', $settings) ? trim((string)$settings['hero_cta2_text']) : 'Explore Courses'; ?>
+                        <button type="button" class="btn" id="previewBtn2" style="pointer-events: none; padding: 8px 20px; background: rgba(255, 255, 255, 0.08) !important; color: #ffffff !important; border: 1.5px solid rgba(255, 255, 255, 0.4) !important; display: <?= !empty($btn2Text) ? 'inline-block' : 'none' ?>;">
+                            <?= htmlspecialchars($btn2Text) ?>
                         </button>
                     </div>
 
@@ -1392,6 +1452,178 @@ if (!in_array($currentTab, $validTabs)) {
                             <div id="previewStat4Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat4_text'] ?? '8K+') ?></div>
                             <div id="previewStat4Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat4_label'] ?? 'SESSIONS COMPLETED') ?></div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 5: SERVICES SECTION HEADINGS
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SERVICES SECTION</span>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Services Section Headings</h4>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">Top Badge, Main Title &amp; Description</span>
+                    </div>
+
+                    <?php
+                    $hServicesBadge = array_key_exists('home_services_badge', $settings) ? $settings['home_services_badge'] : 'Holistic Healing Modalities';
+                    $hServicesTitle = array_key_exists('home_services_title', $settings) ? $settings['home_services_title'] : 'Our Core <em>Services</em>';
+                    $hServicesDesc  = array_key_exists('home_services_desc', $settings) ? $settings['home_services_desc'] : 'Experience personalized Reiki healing, chakra alignment, and aura cleansing guided by Grandmaster Anupama Agrawal to restore physical vitality and spiritual harmony.';
+                    ?>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Top Badge / Pill Tag</label>
+                            <input type="text" name="home_services_badge" class="form-control" 
+                                   value="<?= htmlspecialchars($hServicesBadge) ?>" 
+                                   placeholder="e.g. Holistic Healing Modalities (leave blank to hide)">
+                            <small class="text-muted" style="font-size: 0.75rem;">Small gold pill shown above main title. Clear to hide.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Main Section Heading</label>
+                            <input type="text" name="home_services_title" class="form-control" 
+                                   value="<?= htmlspecialchars($hServicesTitle) ?>" 
+                                   placeholder="e.g. Our Core &lt;em&gt;Services&lt;/em&gt;">
+                            <small class="text-muted" style="font-size: 0.75rem;">Supports &lt;em&gt; for golden italic font accent.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="form-label">Section Description / Subtitle</label>
+                        <textarea name="home_services_desc" class="form-control" rows="2" 
+                                  placeholder="Subtext paragraph shown under heading (leave blank to hide)..."><?= htmlspecialchars($hServicesDesc) ?></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">Overview paragraph below heading. Clear to hide.</small>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 6: COURSES SECTION HEADINGS
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">COURSES SECTION</span>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Courses Section Headings</h4>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">Top Badge, Main Title &amp; Description</span>
+                    </div>
+
+                    <?php
+                    $hCoursesBadge = array_key_exists('home_courses_badge', $settings) ? $settings['home_courses_badge'] : 'Certified Energy Training';
+                    $hCoursesTitle = array_key_exists('home_courses_title', $settings) ? $settings['home_courses_title'] : 'Explore Reiki &amp; Healing <em>Courses</em>';
+                    $hCoursesDesc  = array_key_exists('home_courses_desc', $settings) ? $settings['home_courses_desc'] : 'Become a certified Reiki healer yourself. Structured curriculum with authentic attunement (Diksha), physical manual, lifetime mentorship, and recognized certificates.';
+                    ?>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Top Badge / Pill Tag</label>
+                            <input type="text" name="home_courses_badge" class="form-control" 
+                                   value="<?= htmlspecialchars($hCoursesBadge) ?>" 
+                                   placeholder="e.g. Certified Energy Training (leave blank to hide)">
+                            <small class="text-muted" style="font-size: 0.75rem;">Small gold pill shown above main title. Clear to hide.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Main Section Heading</label>
+                            <input type="text" name="home_courses_title" class="form-control" 
+                                   value="<?= htmlspecialchars($hCoursesTitle) ?>" 
+                                   placeholder="e.g. Explore Reiki &amp; Healing &lt;em&gt;Courses&lt;/em&gt;">
+                            <small class="text-muted" style="font-size: 0.75rem;">Supports &lt;em&gt; for golden italic font accent.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="form-label">Section Description / Subtitle</label>
+                        <textarea name="home_courses_desc" class="form-control" rows="2" 
+                                  placeholder="Subtext paragraph shown under heading (leave blank to hide)..."><?= htmlspecialchars($hCoursesDesc) ?></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">Overview paragraph below heading. Clear to hide.</small>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 7: SACRED PRODUCTS / SHOP SECTION HEADINGS
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SHOP / PRODUCTS SECTION</span>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Sacred Products &amp; Shop Headings</h4>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">Top Badge, Main Title &amp; Description</span>
+                    </div>
+
+                    <?php
+                    $hProductsBadge = array_key_exists('home_products_badge', $settings) ? $settings['home_products_badge'] : 'Sacred Crystal Energy';
+                    $hProductsTitle = array_key_exists('home_products_title', $settings) ? $settings['home_products_title'] : 'Featured Reiki Charged <em>Products</em>';
+                    $hProductsDesc  = array_key_exists('home_products_desc', $settings) ? $settings['home_products_desc'] : 'Energized astrological bracelets, natural healing crystals, and sacred gemstone artifacts charged with high-frequency Reiki symbols to amplify protection, prosperity, and peace.';
+                    ?>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Top Badge / Pill Tag</label>
+                            <input type="text" name="home_products_badge" class="form-control" 
+                                   value="<?= htmlspecialchars($hProductsBadge) ?>" 
+                                   placeholder="e.g. Sacred Crystal Energy (leave blank to hide)">
+                            <small class="text-muted" style="font-size: 0.75rem;">Small gold pill shown above main title. Clear to hide.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Main Section Heading</label>
+                            <input type="text" name="home_products_title" class="form-control" 
+                                   value="<?= htmlspecialchars($hProductsTitle) ?>" 
+                                   placeholder="e.g. Featured Reiki Charged &lt;em&gt;Products&lt;/em&gt;">
+                            <small class="text-muted" style="font-size: 0.75rem;">Supports &lt;em&gt; for golden italic font accent.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="form-label">Section Description / Subtitle</label>
+                        <textarea name="home_products_desc" class="form-control" rows="2" 
+                                  placeholder="Subtext paragraph shown under heading (leave blank to hide)..."><?= htmlspecialchars($hProductsDesc) ?></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">Overview paragraph below heading. Clear to hide.</small>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------------------------
+                     SECTION 8: TESTIMONIALS SECTION HEADINGS
+                     ------------------------------------------------------------- -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">TESTIMONIALS SECTION</span>
+                            <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Testimonials &amp; Client Stories Headings</h4>
+                        </div>
+                        <span class="text-muted" style="font-size: 0.8rem;">Top Badge, Main Title &amp; Description</span>
+                    </div>
+
+                    <?php
+                    $hTestimonialsBadge = array_key_exists('home_testimonials_badge', $settings) ? $settings['home_testimonials_badge'] : 'STORIES OF HEALING';
+                    $hTestimonialsTitle = array_key_exists('home_testimonials_title', $settings) ? $settings['home_testimonials_title'] : 'What Our Students &amp; Clients <em>Say</em>';
+                    $hTestimonialsDesc  = array_key_exists('home_testimonials_desc', $settings) ? $settings['home_testimonials_desc'] : 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.';
+                    ?>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Top Badge / Pill Tag</label>
+                            <input type="text" name="home_testimonials_badge" class="form-control" 
+                                   value="<?= htmlspecialchars($hTestimonialsBadge) ?>" 
+                                   placeholder="e.g. STORIES OF HEALING (leave blank to hide)">
+                            <small class="text-muted" style="font-size: 0.75rem;">Small gold pill shown above main title. Clear to hide.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Main Section Heading</label>
+                            <input type="text" name="home_testimonials_title" class="form-control" 
+                                   value="<?= htmlspecialchars($hTestimonialsTitle) ?>" 
+                                   placeholder="e.g. What Our Students &amp; Clients &lt;em&gt;Say&lt;/em&gt;">
+                            <small class="text-muted" style="font-size: 0.75rem;">Supports &lt;em&gt; for golden italic font accent.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="form-label">Section Description / Subtitle</label>
+                        <textarea name="home_testimonials_desc" class="form-control" rows="2" 
+                                  placeholder="Subtext paragraph shown under heading (leave blank to hide)..."><?= htmlspecialchars($hTestimonialsDesc) ?></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">Overview paragraph below heading. Clear to hide.</small>
                     </div>
                 </div>
 
@@ -1590,7 +1822,8 @@ if (!in_array($currentTab, $validTabs)) {
 
                     <div class="form-group">
                         <label class="form-label">Hero Subtext</label>
-                        <textarea name="contact_hero_subtext" class="form-control" rows="2"><?= htmlspecialchars($settings['contact_hero_subtext'] ?? 'Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with our certified Reiki Masters.') ?></textarea>
+                        <textarea name="contact_hero_subtext" class="form-control" rows="2" placeholder="Subtext paragraph under consultation heading (leave blank to hide)..."><?= htmlspecialchars(array_key_exists('contact_hero_subtext', $settings) ? $settings['contact_hero_subtext'] : 'Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with our certified Reiki Masters.') ?></textarea>
+                        <small class="text-muted" style="font-size: 0.75rem;">Clear completely to remove this paragraph from the contact page.</small>
                     </div>
                 </div>
 
@@ -2132,14 +2365,35 @@ if (heroBadgeInput && previewBadge) {
 
 const heroTitleInput = document.getElementById('heroTitleInput');
 const previewTitle = document.getElementById('previewTitle');
-if (heroTitleInput && previewTitle) {
-    heroTitleInput.addEventListener('input', () => previewTitle.textContent = heroTitleInput.value || 'Awaken Inner Harmony.');
-}
-
 const heroTitleGoldInput = document.getElementById('heroTitleGoldInput');
 const previewTitleGold = document.getElementById('previewTitleGold');
-if (heroTitleGoldInput && previewTitleGold) {
-    heroTitleGoldInput.addEventListener('input', () => previewTitleGold.textContent = heroTitleGoldInput.value || 'Heal. Balance. Transform.');
+const previewTitleBr = document.getElementById('previewTitleBr');
+const previewHeadingWrap = document.getElementById('previewHeadingWrap');
+
+function updateHeadingPreview() {
+    const tVal = heroTitleInput ? heroTitleInput.value.trim() : '';
+    const gVal = heroTitleGoldInput ? heroTitleGoldInput.value.trim() : '';
+    if (previewTitle) {
+        previewTitle.textContent = tVal;
+        previewTitle.style.display = tVal ? 'inline' : 'none';
+    }
+    if (previewTitleGold) {
+        previewTitleGold.textContent = gVal;
+        previewTitleGold.style.display = gVal ? 'inline' : 'none';
+    }
+    if (previewTitleBr) {
+        previewTitleBr.style.display = (tVal && gVal) ? 'inline' : 'none';
+    }
+    if (previewHeadingWrap) {
+        previewHeadingWrap.style.display = (tVal || gVal) ? 'block' : 'none';
+    }
+}
+
+if (heroTitleInput) {
+    heroTitleInput.addEventListener('input', updateHeadingPreview);
+}
+if (heroTitleGoldInput) {
+    heroTitleGoldInput.addEventListener('input', updateHeadingPreview);
 }
 
 const heroSubtextInput = document.getElementById('heroSubtextInput');
@@ -2148,20 +2402,30 @@ if (heroSubtextInput && previewSubtext) {
     heroSubtextInput.addEventListener('input', () => {
         const tmp = document.createElement('div');
         tmp.innerHTML = heroSubtextInput.value;
-        previewSubtext.textContent = tmp.textContent || tmp.innerText || '';
+        const txt = (tmp.textContent || tmp.innerText || '').trim();
+        previewSubtext.textContent = txt;
+        previewSubtext.style.display = txt ? 'block' : 'none';
     });
 }
 
 const heroCta1TextInput = document.getElementById('heroCta1TextInput');
 const previewBtn1 = document.getElementById('previewBtn1');
 if (heroCta1TextInput && previewBtn1) {
-    heroCta1TextInput.addEventListener('input', () => previewBtn1.textContent = (heroCta1TextInput.value || 'Book Free Session') + ' →');
+    heroCta1TextInput.addEventListener('input', () => {
+        const val = heroCta1TextInput.value.trim();
+        previewBtn1.textContent = val ? val + ' →' : '';
+        previewBtn1.style.display = val ? 'inline-block' : 'none';
+    });
 }
 
 const heroCta2TextInput = document.getElementById('heroCta2TextInput');
 const previewBtn2 = document.getElementById('previewBtn2');
 if (heroCta2TextInput && previewBtn2) {
-    heroCta2TextInput.addEventListener('input', () => previewBtn2.textContent = heroCta2TextInput.value || 'Explore Courses');
+    heroCta2TextInput.addEventListener('input', () => {
+        const val = heroCta2TextInput.value.trim();
+        previewBtn2.textContent = val;
+        previewBtn2.style.display = val ? 'inline-block' : 'none';
+    });
 }
 
 // 4 Stats and Slide previews

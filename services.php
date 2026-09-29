@@ -63,23 +63,30 @@ include __DIR__ . '/includes/header.php';
         <div class="services-grid-list">
             <?php foreach ($services as $service): ?>
                 <?php 
-                $sImg = !empty($service['image']) ? $service['image'] : 'assets/images/services/reiki-healing.jpg';
-                $sImgUrl = (strpos($sImg, 'http://') === 0 || strpos($sImg, 'https://') === 0) ? $sImg : BASE_URL . ltrim($sImg, '/');
+                $hasImg = !empty($service['image']);
+                $sImgUrl = $hasImg ? ((strpos($service['image'], 'http://') === 0 || strpos($service['image'], 'https://') === 0) ? $service['image'] : BASE_URL . ltrim($service['image'], '/')) : '';
                 ?>
                 <div class="service-item-card animate-on-scroll service-card-filterable" data-is-free="<?php echo $service['is_free']; ?>">
+                    <?php if ($hasImg): ?>
                     <div class="service-thumb-box">
-                        <img src="<?php echo htmlspecialchars($sImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
+                        <img src="<?php echo htmlspecialchars($sImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" loading="lazy">
                         <?php if ($service['is_free']): ?>
                             <span class="badge badge-green" style="position: absolute; top: 12px; left: 12px; font-size: 0.72rem; padding: 3px 8px; border-radius: 4px; font-weight: 700;">FREE</span>
                         <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                     <div class="service-info-box">
                         <div>
-                            <h3 class="service-item-title">
-                                <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>">
-                                    <?php echo htmlspecialchars($service['title']); ?>
-                                </a>
-                            </h3>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
+                                <h3 class="service-item-title" style="margin-bottom: 0;">
+                                    <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>">
+                                        <?php echo htmlspecialchars($service['title']); ?>
+                                    </a>
+                                </h3>
+                                <?php if (!$hasImg && $service['is_free']): ?>
+                                    <span class="badge badge-green" style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; font-weight: 700;">FREE</span>
+                                <?php endif; ?>
+                            </div>
                             <p class="service-item-desc"><?php echo htmlspecialchars($service['short_description']); ?></p>
                         </div>
                         <div class="service-item-meta">

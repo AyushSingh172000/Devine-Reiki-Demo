@@ -81,12 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $currentImage = $_POST['current_image'] ?? '';
 
-    // Remove main image if requested
-    if (isset($_POST['remove_main_image']) && $_POST['remove_main_image'] == '1') {
+    // Remove main image if requested or cleared
+    if ((isset($_POST['remove_main_image']) && $_POST['remove_main_image'] == '1') || (isset($_POST['remove_image']) && $_POST['remove_image'] == '1') || empty($currentImage)) {
         if (!empty($currentImage)) {
             deleteImage($currentImage);
-            $currentImage = null;
         }
+        $currentImage = null;
     }
 
     // Handle Main Image Upload
@@ -950,9 +950,10 @@ try {
                 <tbody>
                     <?php foreach ($productsList as $prod): ?>
                         <?php 
-                            $thumb = !empty($prod['image']) 
+                            $hasImage = !empty($prod['image']);
+                            $thumb = $hasImage 
                                 ? (strpos($prod['image'], 'assets/') === 0 || strpos($prod['image'], 'uploads/') === 0 ? '../' . $prod['image'] : $prod['image']) 
-                                : '../assets/images/products/pyrite-bracelet.jpg';
+                                : '';
                             $inStock = !empty($prod['in_stock']);
                             $isActive = !empty($prod['is_active']);
                             $origPrice = (float)($prod['original_price'] ?? 0);
@@ -964,7 +965,13 @@ try {
                             <td>
                                 <div class="prod-cell-main">
                                     <div class="prod-thumb-box">
-                                        <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($prod['title']) ?>" class="prod-thumb-img" onerror="this.src='../assets/images/logo.png'">
+                                        <?php if ($hasImage): ?>
+                                            <img src="<?= htmlspecialchars($thumb) ?>" alt="<?= htmlspecialchars($prod['title']) ?>" class="prod-thumb-img" onerror="this.src='../assets/images/logo.png'">
+                                        <?php else: ?>
+                                            <div style="width: 44px; height: 44px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px dashed var(--card-border); display: flex; align-items: center; justify-content: center; color: var(--text-muted);" title="No image">
+                                                <i data-lucide="image-off" style="width: 16px; height: 16px; opacity: 0.6;"></i>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="prod-info-box">
                                         <div class="prod-title-text">

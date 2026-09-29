@@ -27,8 +27,12 @@ $foundingYear = $siteSettings['founding_year'] ?? '2014';
 $aboutHeroBadge = array_key_exists('about_hero_badge', $siteSettings) 
     ? trim((string)$siteSettings['about_hero_badge']) 
     : "Est. {$foundingYear} · Adajan, Surat";
-$aboutHeading = !empty($siteSettings['about_hero_heading']) ? $siteSettings['about_hero_heading'] : 'A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>';
-$aboutDescription = !empty($siteSettings['about_hero_description']) ? $siteSettings['about_hero_description'] : 'Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach dedicated to authentic energy healing, self-awareness, and holistic inner transformation.';
+$aboutHeading = array_key_exists('about_hero_heading', $siteSettings) 
+    ? trim((string)$siteSettings['about_hero_heading']) 
+    : 'A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>';
+$aboutDescription = array_key_exists('about_hero_description', $siteSettings) 
+    ? trim((string)$siteSettings['about_hero_description']) 
+    : 'Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach dedicated to authentic energy healing, self-awareness, and holistic inner transformation.';
 
 // 2. Scrolling Marquee & Impact Stats
 $healedCount = !empty($siteStats['lives_healed']['stat_value']) ? $siteStats['lives_healed']['stat_value'] . '+' : '30K+';
@@ -38,26 +42,26 @@ $coursesCount = !empty($siteStats['course_levels']['stat_value']) ? $siteStats['
 $marqueeExtra = !empty($siteSettings['about_marquee_extra']) ? $siteSettings['about_marquee_extra'] : '100% Authentic Lineage';
 
 // 3. Founder Details (Anupama Agrawal)
-$founderLabel = !empty($siteSettings['about_founder_label']) ? $siteSettings['about_founder_label'] : 'Our Founder';
-$founderHeading = !empty($siteSettings['about_founder_heading']) ? $siteSettings['about_founder_heading'] : 'Meet The Soul Behind <em>Reiki Bliss</em>';
-$founderSubheading = !empty($siteSettings['about_founder_subheading']) ? $siteSettings['about_founder_subheading'] : 'Dedicated to authentic healing, energy alignment, and empowering individuals to discover their inner harmony.';
-$founderName = !empty($siteSettings['about_founder_name']) ? $siteSettings['about_founder_name'] : 'Anupama Agrawal';
-$founderRole = !empty($siteSettings['about_founder_role']) ? $siteSettings['about_founder_role'] : 'Founder, Reiki Grand Master & Spiritual Wellness Coach';
-$founderBadge = !empty($siteSettings['about_founder_badge']) ? $siteSettings['about_founder_badge'] : 'Reiki Grand Master';
+$founderLabel = array_key_exists('about_founder_label', $siteSettings) ? trim((string)$siteSettings['about_founder_label']) : 'Our Founder';
+$founderHeading = array_key_exists('about_founder_heading', $siteSettings) ? trim((string)$siteSettings['about_founder_heading']) : 'Meet The Soul Behind <em>Reiki Bliss</em>';
+$founderSubheading = array_key_exists('about_founder_subheading', $siteSettings) ? trim((string)$siteSettings['about_founder_subheading']) : 'Dedicated to authentic healing, energy alignment, and empowering individuals to discover their inner harmony.';
+$founderName = array_key_exists('about_founder_name', $siteSettings) ? trim((string)$siteSettings['about_founder_name']) : 'Anupama Agrawal';
+$founderRole = array_key_exists('about_founder_role', $siteSettings) ? trim((string)$siteSettings['about_founder_role']) : 'Founder, Reiki Grand Master & Spiritual Wellness Coach';
+$founderBadge = array_key_exists('about_founder_badge', $siteSettings) ? trim((string)$siteSettings['about_founder_badge']) : 'Reiki Grand Master';
 $founderImage = !empty($siteSettings['about_founder_image']) ? getTeamImgUrl($siteSettings['about_founder_image']) : BASE_URL . 'assets/images/team/anupama_mam.jpeg';
-$founderQuote = !empty($siteSettings['about_founder_quote']) ? $siteSettings['about_founder_quote'] : 'Think Positive, Be Positive.';
-$founderQuoteCaption = !empty($siteSettings['about_founder_quote_caption']) ? $siteSettings['about_founder_quote_caption'] : 'The guiding belief at the heart of her life and healing practice';
+$founderQuote = array_key_exists('about_founder_quote', $siteSettings) ? trim((string)$siteSettings['about_founder_quote']) : 'Think Positive, Be Positive.';
+$founderQuoteCaption = array_key_exists('about_founder_quote_caption', $siteSettings) ? trim((string)$siteSettings['about_founder_quote_caption']) : 'The guiding belief at the heart of her life and healing practice';
 $founderStory = !empty($siteSettings['about_founder_story']) ? $siteSettings['about_founder_story'] : null;
 
-$founderSpecialtiesRaw = !empty($siteSettings['about_founder_specialties']) 
+$founderSpecialtiesRaw = array_key_exists('about_founder_specialties', $siteSettings) 
     ? $siteSettings['about_founder_specialties'] 
     : 'Reiki Healing, Chakra Balancing, Guided Meditation, Lama Fera, Access Bars, Angel Healing, Victory Reiki, Money Reiki, Switch Words, Tarot Card Reading';
 $founderSpecialties = array_values(array_filter(array_map('trim', explode(',', $founderSpecialtiesRaw))));
 
 // 4. Philosophy Pillars
-$philLabel = !empty($siteSettings['about_philosophy_label']) ? $siteSettings['about_philosophy_label'] : 'Our Philosophy';
-$philHeading = !empty($siteSettings['about_philosophy_heading']) ? $siteSettings['about_philosophy_heading'] : 'The Philosophy Behind <em>Reiki Bliss</em>';
-$philIntro = !empty($siteSettings['about_philosophy_intro']) ? $siteSettings['about_philosophy_intro'] : 'Anupama believes that meaningful change often begins by turning inward—creating space to understand ourselves, release what no longer serves us and become more intentional about the energy we bring into our lives.';
+$philLabel = array_key_exists('about_philosophy_label', $siteSettings) ? trim((string)$siteSettings['about_philosophy_label']) : 'Our Philosophy';
+$philHeading = array_key_exists('about_philosophy_heading', $siteSettings) ? trim((string)$siteSettings['about_philosophy_heading']) : 'The Philosophy Behind <em>Reiki Bliss</em>';
+$philIntro = array_key_exists('about_philosophy_intro', $siteSettings) ? trim((string)$siteSettings['about_philosophy_intro']) : 'Anupama believes that meaningful change often begins by turning inward—creating space to understand ourselves, release what no longer serves us and become more intentional about the energy we bring into our lives.';
 
 $philPillars = [
     [
@@ -83,9 +87,9 @@ $philPillars = [
 ];
 
 // 5. Core Values
-$valuesLabel = !empty($siteSettings['about_values_label']) ? $siteSettings['about_values_label'] : 'What We Stand For';
-$valuesHeading = !empty($siteSettings['about_values_heading']) ? $siteSettings['about_values_heading'] : 'Our Core <em>Values</em>';
-$valuesIntro = !empty($siteSettings['about_values_intro']) ? $siteSettings['about_values_intro'] : 'Principles that guide every healing session, attunement workshop, and crystal recommendation at our center.';
+$valuesLabel = array_key_exists('about_values_label', $siteSettings) ? trim((string)$siteSettings['about_values_label']) : 'What We Stand For';
+$valuesHeading = array_key_exists('about_values_heading', $siteSettings) ? trim((string)$siteSettings['about_values_heading']) : 'Our Core <em>Values</em>';
+$valuesIntro = array_key_exists('about_values_intro', $siteSettings) ? trim((string)$siteSettings['about_values_intro']) : 'Principles that guide every healing session, attunement workshop, and crystal recommendation at our center.';
 
 $coreValuesList = [];
 if (!empty($siteSettings['core_values'])) {
@@ -128,12 +132,16 @@ include __DIR__ . '/includes/header.php';
         <?php if (!empty(trim((string)$aboutHeroBadge))): ?>
             <span class="about-hero-badge"><?php echo htmlspecialchars($aboutHeroBadge); ?></span>
         <?php endif; ?>
+        <?php if (!empty(trim(strip_tags((string)$aboutHeading)))): ?>
         <h1 class="about-hero-title">
             <?php echo $aboutHeading; ?>
         </h1>
+        <?php endif; ?>
+        <?php if (!empty(trim(strip_tags((string)$aboutDescription)))): ?>
         <p class="about-hero-text">
             <?php echo htmlspecialchars($aboutDescription); ?>
         </p>
+        <?php endif; ?>
     </div>
 
     <!-- Infinite Scrolling Stats Marquee -->
@@ -157,11 +165,17 @@ include __DIR__ . '/includes/header.php';
 <section class="founders-section" id="founder">
     <div class="container">
         <div class="text-center animate-on-scroll" style="margin-bottom: 48px;">
+            <?php if (!empty(trim((string)$founderLabel))): ?>
             <span class="section-label"><?php echo htmlspecialchars($founderLabel); ?></span>
+            <?php endif; ?>
+            <?php if (!empty(trim(strip_tags((string)$founderHeading)))): ?>
             <h2 class="section-heading"><?php echo $founderHeading; ?></h2>
+            <?php endif; ?>
+            <?php if (!empty(trim(strip_tags((string)$founderSubheading)))): ?>
             <p style="max-width: 680px; margin: 0 auto; color: #555D6E; font-size: 1.05rem;">
                 <?php echo htmlspecialchars($founderSubheading); ?>
             </p>
+            <?php endif; ?>
         </div>
 
         <div class="founder-single-container animate-on-scroll">
@@ -228,11 +242,17 @@ include __DIR__ . '/includes/header.php';
 <section class="philosophy-section" id="philosophy">
     <div class="container">
         <div class="text-center animate-on-scroll">
+            <?php if (!empty(trim((string)$philLabel))): ?>
             <span class="section-label"><?php echo htmlspecialchars($philLabel); ?></span>
+            <?php endif; ?>
+            <?php if (!empty(trim(strip_tags((string)$philHeading)))): ?>
             <h2 class="section-heading"><?php echo $philHeading; ?></h2>
+            <?php endif; ?>
+            <?php if (!empty(trim(strip_tags((string)$philIntro)))): ?>
             <p style="max-width: 720px; margin: 0 auto; color: #555D6E; font-size: 1.05rem;">
                 <?php echo htmlspecialchars($philIntro); ?>
             </p>
+            <?php endif; ?>
         </div>
 
         <div class="philosophy-grid">
@@ -253,9 +273,15 @@ include __DIR__ . '/includes/header.php';
 <section class="values-section" id="values">
     <div class="container">
         <div class="text-center animate-on-scroll">
+            <?php if (!empty(trim((string)$valuesLabel))): ?>
             <span class="section-label"><?php echo htmlspecialchars($valuesLabel); ?></span>
+            <?php endif; ?>
+            <?php if (!empty(trim(strip_tags((string)$valuesHeading)))): ?>
             <h2 class="section-heading"><?php echo $valuesHeading; ?></h2>
+            <?php endif; ?>
+            <?php if (!empty(trim(strip_tags((string)$valuesIntro)))): ?>
             <p><?php echo htmlspecialchars($valuesIntro); ?></p>
+            <?php endif; ?>
         </div>
 
         <div class="values-grid">

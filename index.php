@@ -234,36 +234,45 @@ if (empty($healerClientCarouselImages)) {
 $heroBadge = array_key_exists('hero_badge', $siteSettings) 
     ? trim((string)$siteSettings['hero_badge']) 
     : ('● ADAJAN, SURAT · EST. ' . ($siteSettings['founding_year'] ?? '2016'));
-$heroTitle = $siteSettings['hero_title'] ?? 'Awaken Inner Harmony.';
-$heroTitleGold = $siteSettings['hero_title_gold'] ?? 'Heal. Balance. Transform.';
+$heroTitle = array_key_exists('hero_title', $siteSettings) 
+    ? trim((string)$siteSettings['hero_title']) 
+    : 'Awaken Inner Harmony.';
+$heroTitleGold = array_key_exists('hero_title_gold', $siteSettings) 
+    ? trim((string)$siteSettings['hero_title_gold']) 
+    : 'Heal. Balance. Transform.';
 $heroHeadingRaw = $siteSettings['hero_heading'] ?? '';
 
 // Build dynamic headline
-if (!empty($heroHeadingRaw) && empty($siteSettings['hero_title'])) {
-    if (strpos($heroHeadingRaw, '<') !== false) {
-        $heroTitleHtml = $heroHeadingRaw;
-    } else {
-        $heroTitleHtml = htmlspecialchars($heroHeadingRaw);
+$heroTitleHtml = '';
+$hasTitle = $heroTitle !== '';
+$hasTitleGold = $heroTitleGold !== '';
+
+if ($hasTitle || $hasTitleGold) {
+    if ($hasTitle) {
+        $heroTitleHtml .= htmlspecialchars($heroTitle);
     }
-} else {
-    $heroTitleHtml = htmlspecialchars($heroTitle);
-    if (!empty($heroTitleGold)) {
-        $heroTitleHtml .= '<br><span class="hero-gold-text">' . htmlspecialchars($heroTitleGold) . '</span>';
+    if ($hasTitleGold) {
+        if ($hasTitle) {
+            $heroTitleHtml .= '<br>';
+        }
+        $heroTitleHtml .= '<span class="hero-gold-text">' . htmlspecialchars($heroTitleGold) . '</span>';
     }
+} elseif (!empty($heroHeadingRaw) && !array_key_exists('hero_title', $siteSettings)) {
+    $heroTitleHtml = (strpos($heroHeadingRaw, '<') !== false) ? $heroHeadingRaw : htmlspecialchars($heroHeadingRaw);
 }
 
-$heroSubtext = !empty($siteSettings['hero_subtext']) 
-    ? $siteSettings['hero_subtext'] 
+$heroSubtext = array_key_exists('hero_subtext', $siteSettings) 
+    ? trim((string)$siteSettings['hero_subtext']) 
     : 'Guided by <strong>Grand Master Ms Anupama Agrawal</strong>: offering Reiki, Chakra Balancing, Guided Meditations, Other Healings & more.';
 
 $heroBookingUrl = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
 
 // Dynamic Homepage CTAs from Site Settings
-$cta1Text = !empty($siteSettings['hero_cta1_text']) ? $siteSettings['hero_cta1_text'] : 'Book Free Session';
+$cta1Text = array_key_exists('hero_cta1_text', $siteSettings) ? trim((string)$siteSettings['hero_cta1_text']) : 'Book Free Session';
 $cta1UrlRaw = !empty($siteSettings['hero_cta1_url']) ? $siteSettings['hero_cta1_url'] : $heroBookingUrl;
 $cta1Url = (strpos($cta1UrlRaw, 'http') === 0 || strpos($cta1UrlRaw, '#') === 0) ? $cta1UrlRaw : BASE_URL . ltrim($cta1UrlRaw, '/');
 
-$cta2Text = !empty($siteSettings['hero_cta2_text']) ? $siteSettings['hero_cta2_text'] : 'Explore Courses';
+$cta2Text = array_key_exists('hero_cta2_text', $siteSettings) ? trim((string)$siteSettings['hero_cta2_text']) : 'Explore Courses';
 $cta2UrlRaw = !empty($siteSettings['hero_cta2_url']) ? $siteSettings['hero_cta2_url'] : 'courses.php';
 $cta2Url = (strpos($cta2UrlRaw, 'http') === 0 || strpos($cta2UrlRaw, '#') === 0) ? $cta2UrlRaw : BASE_URL . ltrim($cta2UrlRaw, '/');
 

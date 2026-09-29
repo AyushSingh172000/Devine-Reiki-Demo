@@ -31,22 +31,32 @@ $currentHeroSubtext = isset($getSecContent) ? $getSecContent('hero', 'desc', $he
             </span>
         <?php endif; ?>
 
+        <?php if (!empty(trim(strip_tags((string)$currentHeroTitle)))): ?>
         <h1 class="hero-title">
             <?php echo $currentHeroTitle; ?>
         </h1>
+        <?php endif; ?>
 
+        <?php if (!empty(trim(strip_tags((string)$currentHeroSubtext)))): ?>
         <div class="hero-subtext">
             <?php echo $currentHeroSubtext; ?>
         </div>
+        <?php endif; ?>
 
+        <?php if (!empty(trim((string)$cta1Text)) || !empty(trim((string)$cta2Text))): ?>
         <div class="hero-ctas">
+            <?php if (!empty(trim((string)$cta1Text))): ?>
             <a href="<?php echo htmlspecialchars($cta1Url); ?>" target="_blank" rel="noopener" class="btn-gold btn-hero-primary">
                 <?php echo htmlspecialchars($cta1Text); ?> <span class="btn-arrow">→</span>
             </a>
+            <?php endif; ?>
+            <?php if (!empty(trim((string)$cta2Text))): ?>
             <a href="<?php echo htmlspecialchars($cta2Url); ?>" class="btn-secondary btn-hero-secondary">
                 <?php echo htmlspecialchars($cta2Text); ?>
             </a>
+            <?php endif; ?>
         </div>
+        <?php endif; ?>
 
         <!-- Centered Trust Stats Bar -->
         <div class="hero-trust-bar">

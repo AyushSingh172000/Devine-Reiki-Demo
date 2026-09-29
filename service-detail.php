@@ -45,20 +45,22 @@ try {
 }
 
 // Helper to guarantee absolute asset URL for rewritten routes
-$getAssetUrl = function($path, $fallback = 'assets/images/services/reiki-healing.jpg') {
+$getAssetUrl = function($path, $fallback = '') {
     $img = !empty($path) ? $path : $fallback;
+    if (empty($img)) return '';
     if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
         return $img;
     }
     return BASE_URL . ltrim($img, '/');
 };
 
+$hasServiceImg = !empty($service['image']);
 $heroImgUrl = $getAssetUrl($service['image'] ?? '');
 
 // Page Metadata
 $pageTitle = htmlspecialchars($service['title']) . " | Divine Reiki & Energy Healing Center";
 $pageDescription = htmlspecialchars($service['short_description']);
-$pageOgImage = $heroImgUrl;
+$pageOgImage = $hasServiceImg ? $heroImgUrl : null;
 
 // Include Header Component
 include __DIR__ . '/includes/header.php';
@@ -82,10 +84,12 @@ include __DIR__ . '/includes/header.php';
             
             <!-- Main Service Content Column -->
             <article class="service-detail-main animate-on-scroll">
+                <?php if ($hasServiceImg): ?>
                 <!-- Hero Image -->
                 <div class="service-main-hero-img">
-                    <img src="<?php echo htmlspecialchars($heroImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
+                    <img src="<?php echo htmlspecialchars($heroImgUrl); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" loading="lazy">
                 </div>
+                <?php endif; ?>
 
                 <!-- Title & Meta Header -->
                 <h1 class="service-detail-title"><?php echo htmlspecialchars($service['title']); ?></h1>
@@ -150,11 +154,16 @@ include __DIR__ . '/includes/header.php';
                 
                 <?php if (!empty($relatedServices)): ?>
                     <?php foreach ($relatedServices as $rel): ?>
-                        <?php $relImgUrl = $getAssetUrl($rel['image'] ?? ''); ?>
+                        <?php 
+                        $hasRelImg = !empty($rel['image']);
+                        $relImgUrl = $getAssetUrl($rel['image'] ?? ''); 
+                        ?>
                         <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($rel['slug']); ?>" class="related-service-card">
+                            <?php if ($hasRelImg): ?>
                             <div class="related-thumb-box">
-                                <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" onerror="this.src='<?php echo BASE_URL; ?>assets/images/services/reiki-healing.jpg';" loading="lazy">
+                                <img src="<?php echo htmlspecialchars($relImgUrl); ?>" alt="<?php echo htmlspecialchars($rel['title']); ?>" loading="lazy">
                             </div>
+                            <?php endif; ?>
                             <div class="related-info-box" style="flex: 1; min-width: 0;">
                                 <h4 class="related-title"><?php echo htmlspecialchars($rel['title']); ?></h4>
                                 <div class="related-meta-flex">

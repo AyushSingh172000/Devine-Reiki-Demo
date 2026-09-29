@@ -66,7 +66,37 @@ function removePreview(btn) {
     const input = formGroup.querySelector('.image-upload-input');
     if (input) input.value = '';
     const preview = formGroup.querySelector('.upload-preview');
-    if (preview) preview.style.display = 'none';
+    if (preview) {
+      preview.style.display = 'none';
+      preview.innerHTML = '';
+    }
+    const form = formGroup.closest('form');
+    if (form) {
+      // Clear hidden current_image values
+      const currentImg = form.querySelector('input[name="current_image"], input[name="current_main_image"]');
+      if (currentImg) currentImg.value = '';
+
+      // Check any removal checkboxes
+      const removeCheck = form.querySelector('input[name="remove_image"], input[name="remove_main_image"]');
+      if (removeCheck) {
+        removeCheck.checked = true;
+      }
+
+      // Add a hidden remove flag so the form reliably posts remove_image=1
+      let hiddenRemove = form.querySelector('input[data-auto-remove="1"]');
+      if (!hiddenRemove) {
+        hiddenRemove = document.createElement('input');
+        hiddenRemove.type = 'hidden';
+        hiddenRemove.setAttribute('data-auto-remove', '1');
+        if (form.querySelector('input[name="remove_main_image"]')) {
+          hiddenRemove.name = 'remove_main_image';
+        } else {
+          hiddenRemove.name = 'remove_image';
+        }
+        form.appendChild(hiddenRemove);
+      }
+      hiddenRemove.value = '1';
+    }
   }
 }
 </script>

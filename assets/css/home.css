@@ -621,6 +621,16 @@
   margin-bottom: 8px;
 }
 
+.section-label::before,
+.services-section .section-label::before,
+.courses-section .section-label::before,
+.products-section .section-label::before,
+.testimonials-section .section-label::before,
+.testimonials-header-center .section-label::before {
+  display: none !important;
+  content: none !important;
+}
+
 .testimonials-header-center .section-heading {
   font-family: var(--font-serif);
   font-size: 2.75rem;

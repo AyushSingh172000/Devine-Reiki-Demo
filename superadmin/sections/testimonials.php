@@ -11,14 +11,24 @@ if (($secAlign ?? 'center') === 'left') {
     <div class="container">
         <div class="testimonials-header-wrap animate-on-scroll">
 <?php
-$testimBadge = isset($getSecContent) ? $getSecContent('testimonials', 'badge', '• STORIES OF HEALING') : '• STORIES OF HEALING';
-$testimTitle = isset($getSecContent) ? $getSecContent('testimonials', 'title', 'What Our Students &amp; Clients <em>Say</em>') : 'What Our Students &amp; Clients <em>Say</em>';
-$testimDesc  = isset($getSecContent) ? $getSecContent('testimonials', 'desc', 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.') : 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.';
+$defaultTestimBadge = array_key_exists('home_testimonials_badge', $siteSettings) ? trim((string)$siteSettings['home_testimonials_badge']) : 'STORIES OF HEALING';
+$defaultTestimTitle = array_key_exists('home_testimonials_title', $siteSettings) ? trim((string)$siteSettings['home_testimonials_title']) : 'What Our Students &amp; Clients <em>Say</em>';
+$defaultTestimDesc  = array_key_exists('home_testimonials_desc', $siteSettings) ? trim((string)$siteSettings['home_testimonials_desc']) : 'Read real life experiences from individuals who restored harmony, vitality, and peace through our Reiki sessions.';
+
+$testimBadge = isset($getSecContent) ? $getSecContent('testimonials', 'badge', $defaultTestimBadge) : $defaultTestimBadge;
+$testimTitle = isset($getSecContent) ? $getSecContent('testimonials', 'title', $defaultTestimTitle) : $defaultTestimTitle;
+$testimDesc  = isset($getSecContent) ? $getSecContent('testimonials', 'desc', $defaultTestimDesc) : $defaultTestimDesc;
 ?>
             <div class="testimonials-header-center" <?php echo $testimHeaderStyle; ?>>
+                <?php if (!empty(trim((string)$testimBadge))): ?>
                 <span class="section-label"><?php echo htmlspecialchars($testimBadge); ?></span>
+                <?php endif; ?>
+                <?php if (!empty(trim(strip_tags((string)$testimTitle)))): ?>
                 <h2 class="section-heading"><?php echo $testimTitle; ?></h2>
+                <?php endif; ?>
+                <?php if (!empty(trim(strip_tags((string)$testimDesc)))): ?>
                 <p><?php echo htmlspecialchars($testimDesc); ?></p>
+                <?php endif; ?>
             </div>
             <div class="testimonials-nav-btns">
                 <button type="button" class="testimonial-nav-btn prev-btn" id="testimonialPrevBtn" onclick="scrollTestimonials('prev')" aria-label="Previous Testimonials">
