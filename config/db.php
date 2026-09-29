@@ -13,13 +13,13 @@ if ($isLocal) {
     $username = 'root';
     $password = '';
 } else {
-    // Production / Hostinger Server (Enter client's Hostinger MySQL Database credentials here)
+    // Production / Hostinger Server (reikiblisswellness.com)
     // On Hostinger: Host is typically 'localhost' or your Hostinger MySQL hostname
     $host = 'localhost';
     $port = 3306;
-    $dbname = 'u123456789_reiki';     // Hostinger MySQL Database Name
-    $username = 'u123456789_reikiuser'; // Hostinger MySQL Username
-    $password = 'YourHostingerPassword';// Hostinger MySQL User Password
+    $dbname = 'u616755674_reiki_bliss';
+    $username = 'u616755674_reiki_bliss';
+    $password = 'Reiki_bliss@123';
 }
 
 $charset = 'utf8mb4';
