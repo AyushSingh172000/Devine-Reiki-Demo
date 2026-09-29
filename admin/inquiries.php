@@ -10,12 +10,24 @@ $error = '';
 // =========================================================================
 // 1. AJAX & AUTO MARK-READ HANDLER
 // =========================================================================
-if (isset($_GET['ajax']) && $_GET['ajax'] === 'mark_read' && isset($_GET['id'])) {
-    $ajaxId = (int)$_GET['id'];
+if (
+    (isset($_GET['ajax']) && $_GET['ajax'] === 'mark_read') ||
+    (isset($_POST['ajax']) && $_POST['ajax'] === 'mark_read') ||
+    (isset($_POST['action']) && $_POST['action'] === 'mark_read_ajax')
+) {
+    $ajaxId = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
     if ($ajaxId > 0) {
-        $pdo->prepare("UPDATE contact_inquiries SET is_read = 1 WHERE id = ?")->execute([$ajaxId]);
+        try {
+            $pdo->prepare("UPDATE contact_inquiries SET is_read = 1 WHERE id = ?")->execute([$ajaxId]);
+        } catch (PDOException $e) {}
     }
-    echo json_encode(['success' => true]);
+    $newUnread = 0;
+    try {
+        $newUnread = (int)$pdo->query("SELECT COUNT(*) FROM contact_inquiries WHERE is_read = 0")->fetchColumn();
+    } catch (PDOException $e) {}
+
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'id' => $ajaxId, 'unread_total' => $newUnread]);
     exit;
 }
 
@@ -157,13 +169,10 @@ require_once 'includes/admin-header.php';
 <style>
 .table-responsive {
     width: 100%;
-    overflow-x: hidden;
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
     border-radius: 12px;
-}
-@media (max-width: 900px) {
-    .table-responsive {
-        overflow-x: auto;
-    }
 }
 .inquiry-table {
     width: 100% !important;
@@ -182,8 +191,16 @@ require_once 'includes/admin-header.php';
     vertical-align: middle !important;
     padding: 10px 10px;
 }
+.inquiry-table thead th:last-child,
+.inquiry-table tbody td:last-child {
+    text-align: right !important;
+    padding-right: 16px !important;
+    width: 150px !important;
+    min-width: 150px !important;
+    white-space: nowrap !important;
+}
 .inquiry-msg-preview {
-    max-width: 260px;
+    max-width: 220px;
     font-size: 0.84rem;
     color: var(--text-secondary);
     line-height: 1.4;
@@ -550,33 +567,35 @@ require_once 'includes/admin-header.php';
             <?php endif; ?>
             <select name="status" class="filter-select" onchange="this.form.submit()">
                 <option value="All" <?= $statusFilter === 'All' ? 'selected' : '' ?>>All Inquiries (<?= count($inquiriesList) ?>)</option>
-                <option value="Unread" <?= $statusFilter === 'Unread' ? 'selected' : '' ?>>Unread (<?= $unreadTotal ?>)</option>
+                <option value="Unread" id="unreadFilterOption" <?= $statusFilter === 'Unread' ? 'selected' : '' ?>>Unread (<?= $unreadTotal ?>)</option>
                 <option value="Read" <?= $statusFilter === 'Read' ? 'selected' : '' ?>>Read</option>
             </select>
         </form>
 
         <!-- Stats Mini-Bar -->
-        <?php if ($unreadTotal > 0): ?>
-            <span class="badge badge-danger flex items-center gap-1" style="font-size: 0.8rem; padding: 6px 12px; font-weight: 600;">
-                <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 0 2px rgba(239,68,68,0.2);"></span>
-                <?= $unreadTotal ?> Unread <?= $unreadTotal === 1 ? 'Inquiry' : 'Inquiries' ?>
-            </span>
-        <?php else: ?>
-            <span class="badge badge-success flex items-center gap-1" style="font-size: 0.8rem; padding: 6px 12px; font-weight: 600;">
-                <i data-lucide="check-check" style="width: 14px; height: 14px;"></i> All Inquiries Read
-            </span>
-        <?php endif; ?>
+        <div id="unreadStatBadgeContainer" style="display: inline-flex; align-items: center;">
+            <?php if ($unreadTotal > 0): ?>
+                <span id="unreadStatBadge" class="badge badge-danger flex items-center gap-1" style="font-size: 0.8rem; padding: 6px 12px; font-weight: 600;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 0 2px rgba(239,68,68,0.2);"></span>
+                    <?= $unreadTotal ?> Unread <?= $unreadTotal === 1 ? 'Inquiry' : 'Inquiries' ?>
+                </span>
+            <?php else: ?>
+                <span id="unreadStatBadge" class="badge badge-success flex items-center gap-1" style="font-size: 0.8rem; padding: 6px 12px; font-weight: 600;">
+                    <i data-lucide="check-check" style="width: 14px; height: 14px;"></i> All Inquiries Read
+                </span>
+            <?php endif; ?>
+        </div>
     </div>
 
     <!-- Mark All Read Form -->
-    <?php if ($unreadTotal > 0): ?>
+    <div id="markAllReadContainer" style="<?= $unreadTotal > 0 ? '' : 'display: none;' ?>">
         <form action="inquiries.php" method="POST" onsubmit="return confirm('Mark all unread inquiries as read?');">
             <input type="hidden" name="action" value="mark_all_read">
             <button type="submit" class="btn btn-outline btn-sm flex items-center gap-1" style="border-color: rgba(179,139,45,0.4); color: var(--gold); font-weight: 600; background: rgba(179,139,45,0.05); padding: 8px 14px;">
                 <i data-lucide="check-check" style="width: 15px; height: 15px;"></i> Mark All Read
             </button>
         </form>
-    <?php endif; ?>
+    </div>
 </div>
 
 <!-- Bulk Actions Form -->
@@ -615,12 +634,12 @@ require_once 'includes/admin-header.php';
                             <th style="width: 32px; text-align: center;">
                                 <input type="checkbox" id="selectAllCheckbox" title="Select All">
                             </th>
-                            <th style="min-width: 155px;">Client</th>
+                            <th style="min-width: 140px;">Client</th>
                             <th style="width: 105px;">Phone</th>
-                            <th style="min-width: 160px;">Message Preview</th>
+                            <th style="min-width: 140px; max-width: 220px;">Message Preview</th>
                             <th style="width: 75px; text-align: center;">Status</th>
                             <th style="width: 95px;">Received Date</th>
-                            <th style="text-align: right; width: 110px; padding-right: 10px; white-space: nowrap;">Actions</th>
+                            <th style="text-align: right; width: 150px; min-width: 150px; padding-right: 16px; white-space: nowrap;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -677,27 +696,30 @@ require_once 'includes/admin-header.php';
                                         <?= !empty($inq['created_at']) ? date('h:i A', strtotime($inq['created_at'])) : '' ?>
                                     </div>
                                 </td>
-                                <td style="text-align: right; padding-right: 14px;">
-                                    <div class="flex gap-1" style="justify-content: flex-end;">
+                                <td style="text-align: right; width: 150px; min-width: 150px; padding-right: 16px; white-space: nowrap;">
+                                    <div class="flex gap-1" style="justify-content: flex-end; align-items: center; flex-wrap: nowrap;">
                                         <!-- View Modal Eye Button -->
                                         <button 
                                             type="button" 
                                             class="btn btn-purple btn-sm flex items-center gap-1" 
                                             title="View Full Message & Reply"
                                             onclick="openInquiryModal(<?= (int)$inq['id'] ?>)"
+                                            style="flex-shrink: 0;"
                                         >
                                             <i data-lucide="eye" style="width: 13px; height: 13px;"></i> View
                                         </button>
 
-                                        <!-- Toggle Read / Unread -->
+                                        <!-- Toggle Read / Unread (Commented out for now)
                                         <button 
                                             type="button" 
                                             class="btn btn-outline btn-icon btn-sm flex items-center justify-center" 
                                             title="<?= $isUnread ? 'Mark as Read' : 'Mark as Unread' ?>"
                                             onclick="toggleInquiryStatus(<?= $inq['id'] ?>)"
+                                            style="flex-shrink: 0;"
                                         >
                                             <i data-lucide="<?= $isUnread ? 'check' : 'mail' ?>" style="width: 13px; height: 13px;"></i>
                                         </button>
+                                        -->
 
                                         <!-- Delete Button (triggers dedicated delete-form via HTML5 form attribute) -->
                                         <button 
@@ -705,6 +727,7 @@ require_once 'includes/admin-header.php';
                                             form="deleteInqForm_<?= $inq['id'] ?>"
                                             class="btn btn-danger btn-icon btn-sm flex items-center justify-center" 
                                             title="Delete Inquiry"
+                                            style="flex-shrink: 0;"
                                         >
                                             <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
                                         </button>
@@ -876,6 +899,53 @@ function toggleInquiryStatus(id) {
 // Inquiries Data Map (safe from quote and syntax errors)
 const inquiriesData = <?= json_encode($inquiriesMap, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 let currentModalInqId = null;
+let currentUnreadTotal = <?= (int)$unreadTotal ?>;
+
+function updatePageUnreadCounters(count) {
+    currentUnreadTotal = Math.max(0, parseInt(count, 10) || 0);
+
+    // 1. Update filter bar unread badge
+    const unreadStatBadge = document.getElementById('unreadStatBadge');
+    if (unreadStatBadge) {
+        if (currentUnreadTotal > 0) {
+            unreadStatBadge.className = 'badge badge-danger flex items-center gap-1';
+            unreadStatBadge.style.fontSize = '0.8rem';
+            unreadStatBadge.style.padding = '6px 12px';
+            unreadStatBadge.style.fontWeight = '600';
+            unreadStatBadge.innerHTML = `<span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 0 2px rgba(239,68,68,0.2);"></span> ${currentUnreadTotal} Unread ${currentUnreadTotal === 1 ? 'Inquiry' : 'Inquiries'}`;
+        } else {
+            unreadStatBadge.className = 'badge badge-success flex items-center gap-1';
+            unreadStatBadge.style.fontSize = '0.8rem';
+            unreadStatBadge.style.padding = '6px 12px';
+            unreadStatBadge.style.fontWeight = '600';
+            unreadStatBadge.innerHTML = '<i data-lucide="check-check" style="width: 14px; height: 14px;"></i> All Inquiries Read';
+        }
+    }
+
+    // 2. Hide or show Mark All Read button container
+    const markAllContainer = document.getElementById('markAllReadContainer');
+    if (markAllContainer) {
+        markAllContainer.style.display = currentUnreadTotal > 0 ? '' : 'none';
+    }
+
+    // 3. Update dropdown Unread count
+    const unreadOpt = document.getElementById('unreadFilterOption');
+    if (unreadOpt) {
+        unreadOpt.textContent = `Unread (${currentUnreadTotal})`;
+    }
+
+    // 4. Update topbar notification bell & sidebar badge
+    document.querySelectorAll('.notif-badge, .sidebar-badge').forEach(badge => {
+        if (currentUnreadTotal > 0) {
+            badge.textContent = currentUnreadTotal;
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+    });
+
+    if (window.lucide) lucide.createIcons();
+}
 
 // Delete Single (Triggers .delete-form submit for global luxury confirmation modal)
 function deleteInquirySingle(id) {
@@ -948,23 +1018,65 @@ function openInquiryModal(inqOrId) {
         deleteInquirySingle(inq.id);
     };
 
-    // Auto-mark as read in background if unread
-    if (inq.is_read == 0) {
-        fetch('inquiries.php?ajax=mark_read&id=' + inq.id)
+    // Auto-mark as read if unread
+    const isCurrentlyUnread = (!inq.is_read || inq.is_read == 0 || inq.is_read === '0');
+    if (isCurrentlyUnread) {
+        inq.is_read = 1;
+        modalBadge.className = 'badge badge-read-pill';
+        modalBadge.textContent = 'Read';
+
+        const row = document.getElementById('inqRow_' + inq.id);
+        if (row) {
+            row.classList.remove('row-unread');
+            const redDot = row.querySelector('span[title="Unread inquiry"]');
+            if (redDot) redDot.remove();
+
+            const badge = document.getElementById('statusBadge_' + inq.id);
+            if (badge) {
+                badge.className = 'badge badge-read-pill';
+                badge.textContent = 'Read';
+            }
+
+            const toggleBtn = row.querySelector('button[title="Mark as Read"]');
+            if (toggleBtn) {
+                toggleBtn.title = 'Mark as Unread';
+                toggleBtn.innerHTML = '<i data-lucide="mail" style="width: 13px; height: 13px;"></i>';
+            }
+        }
+
+        // Update all unread counters and badges on the page immediately
+        updatePageUnreadCounters(currentUnreadTotal - 1);
+
+        // Send POST request to mark as read in DB (immune to .htaccess GET redirects on live server)
+        const fd = new FormData();
+        fd.append('ajax', 'mark_read');
+        fd.append('action', 'mark_read_ajax');
+        fd.append('id', inq.id);
+
+        const currentPath = window.location.href.split('?')[0];
+        fetch(currentPath, {
+            method: 'POST',
+            body: fd
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data && typeof data.unread_total !== 'undefined') {
+                updatePageUnreadCounters(data.unread_total);
+            }
+        })
+        .catch(() => {
+            fetch('inquiries.php', {
+                method: 'POST',
+                body: fd
+            })
             .then(res => res.json())
-            .then(() => {
-                inq.is_read = 1;
-                modalBadge.className = 'badge badge-read-pill';
-                modalBadge.textContent = 'Read';
-                const row = document.getElementById('inqRow_' + inq.id);
-                if (row) row.classList.remove('row-unread');
-                const badge = document.getElementById('statusBadge_' + inq.id);
-                if (badge) {
-                    badge.className = 'badge badge-read-pill';
-                    badge.textContent = 'Read';
+            .then(data => {
+                if (data && typeof data.unread_total !== 'undefined') {
+                    updatePageUnreadCounters(data.unread_total);
                 }
             })
             .catch(() => {});
+        });
     }
 
     const modal = document.getElementById('inquiryDetailModal');
