@@ -41,8 +41,12 @@ if (!defined('ADMIN_ACCESS')) {
   </div>
 </div>
 
-<!-- Core Admin JavaScript -->
-<script src="assets/js/admin.js"></script>
+<!-- Core Admin JavaScript with Cache-Busting -->
+<?php
+$adminJsFile = __DIR__ . '/../assets/js/admin.js';
+$adminJsVer = file_exists($adminJsFile) ? filemtime($adminJsFile) : time();
+?>
+<script src="assets/js/admin.js?v=<?= $adminJsVer ?>"></script>
 
 <script>
 // Image preview on file input change

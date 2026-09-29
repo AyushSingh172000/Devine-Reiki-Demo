@@ -166,7 +166,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <base href="<?= ADMIN_URL ?>">
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <?php
+    $loginCssVer = file_exists(__DIR__ . '/assets/css/admin.css') ? filemtime(__DIR__ . '/assets/css/admin.css') : time();
+    ?>
+    <link rel="stylesheet" href="assets/css/admin.css?v=<?= $loginCssVer ?>">
     <!-- Lucide Icons -->
     <script src="assets/js/lucide.min.js"></script>
     <style>

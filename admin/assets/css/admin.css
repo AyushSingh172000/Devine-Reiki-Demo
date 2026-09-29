@@ -1156,10 +1156,12 @@ select.form-control option {
   .admin-sidebar {
     transform: translateX(-100%);
     box-shadow: 10px 0 30px rgba(15, 23, 42, 0.15);
+    z-index: 1000 !important;
   }
 
   .admin-sidebar.open {
     transform: translateX(0);
+    z-index: 1000 !important;
   }
 
   .admin-main {
@@ -1863,11 +1865,13 @@ select.form-control option {
   z-index: 998;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .sidebar-overlay.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .char-counter {
@@ -2133,10 +2137,9 @@ select.form-control option {
 
 .admin-layout {
   position: relative;
-  z-index: 1;
 }
 .admin-sidebar {
-  z-index: 100;
+  z-index: 1000;
 }
 .admin-header {
   z-index: 50;

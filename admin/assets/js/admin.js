@@ -29,7 +29,13 @@ function initResponsiveSidebar() {
     overlay = document.createElement('div');
     overlay.id = 'adminSidebarOverlay';
     overlay.className = 'sidebar-overlay';
-    document.body.appendChild(overlay);
+    if (sidebar && sidebar.parentNode) {
+      sidebar.parentNode.insertBefore(overlay, sidebar);
+    } else {
+      document.body.appendChild(overlay);
+    }
+  } else if (sidebar && sidebar.parentNode && overlay.parentNode !== sidebar.parentNode) {
+    sidebar.parentNode.insertBefore(overlay, sidebar);
   }
 
   function openSidebar() {

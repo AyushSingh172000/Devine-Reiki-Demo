@@ -97,8 +97,12 @@ $sbLabel = function($key) use ($customSidebarLabels, $defaultSidebarLabels) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <base href="<?= ADMIN_URL ?>">
-    <!-- Admin CSS -->
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <!-- Admin CSS with Cache-Busting -->
+    <?php
+    $adminCssFile = __DIR__ . '/../assets/css/admin.css';
+    $adminCssVer = file_exists($adminCssFile) ? filemtime($adminCssFile) : time();
+    ?>
+    <link rel="stylesheet" href="assets/css/admin.css?v=<?= $adminCssVer ?>">
     <!-- Lucide Icons -->
     <script src="assets/js/lucide.min.js"></script>
 </head>
