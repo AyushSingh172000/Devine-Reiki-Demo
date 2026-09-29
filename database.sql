@@ -1,5 +1,5 @@
 -- Reiki Bliss Database Export for Hostinger & Localhost Deployment
--- Generated on 2026-09-29 09:32:34
+-- Generated on 2026-09-29 10:03:14
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -259,7 +259,7 @@ CREATE TABLE `site_settings` (
   `setting_value` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `setting_key` (`setting_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=429 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`) VALUES
 ('1', 'site_name', 'Reiki Bliss'),
@@ -270,14 +270,14 @@ INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`) VALUES
 ('6', 'facebook_url', 'https://www.facebook.com/ReikiblissbyAnu'),
 ('7', 'youtube_url', 'https://www.youtube.com/channel/UCWIDBDdEAN1XlZ2AsOCUqXA'),
 ('8', 'maps_url', 'https://www.google.com/maps/place/28%C2%B032\'56.5%22N+77%C2%B015\'04.3%22E/@28.549015,77.2486077,17z/data=!3m1!4b1!4m4!3m3!8m2!3d28.549015!4d77.2511826?hl=en&entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D'),
-('9', 'working_hours', 'Monday - Saturday: 9:00 AM - 7:00 PM (IST)'),
+('9', 'working_hours', 'Monday - Saturday: 12:00 PM - 6:00 PM (IST)'),
 ('10', 'instagram_url', 'https://www.instagram.com/reiki_bliss/'),
 ('12', 'site_tagline', 'Heal. Balance. Transform.'),
 ('18', 'maps_embed_url', 'https://maps.google.com/maps?q=28.549015,77.2511826&hl=en&z=17&output=embed'),
 ('23', 'booking_url', 'https://calendar.app.google/HRtsYS3JLw8fJdoN9'),
-('24', 'logo_path', 'assets/images/logo.png'),
+('24', 'logo_path', 'assets/images/1790667806_logo.png'),
 ('25', 'favicon_path', 'assets/images/favicon_1789119768.png'),
-('26', 'og_image_path', 'uploads/branding/1789389307_logo.png'),
+('26', 'og_image_path', 'uploads/branding/1790667806_logo.png'),
 ('27', 'founding_year', '2016'),
 ('28', 'about_heading', 'Healing with Heart & Purpose'),
 ('29', 'about_description', 'Reiki Bliss was born from a single conviction — that every person deserves access to authentic energy healing. We have been guiding seekers on their healing journey since 2014.'),
@@ -352,7 +352,33 @@ INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`) VALUES
 ('161', 'wa_templates', '[{\"icon\":\"🙏\",\"title\":\"Book a Healing Session\",\"message\":\"Hello Reiki Bliss! I would like to book a healing session.\"},{\"icon\":\"📚\",\"title\":\"Enquire About a Course\",\"message\":\"Hello Reiki Bliss! I would like to enquire about your courses.\"},{\"icon\":\"🔮\",\"title\":\"Order Birth Chart Bracelet\",\"message\":\"Hello Reiki Bliss! I would like to order a Birth Chart Bracelet.\"},{\"icon\":\"✨\",\"title\":\"Order Customized Bracelet\",\"message\":\"Hello Reiki Bliss! I would like to order a Customized Bracelet.\"},{\"icon\":\"🛍️\",\"title\":\"Product \\/ Shop Query\",\"message\":\"Hello Reiki Bliss! I have a question regarding your spiritual products\\/shop.\"},{\"icon\":\"📚\",\"title\":\"Something Else\",\"message\":\"Hello Reiki Bliss! I have a general query.\"},{\"icon\":\"💬\",\"title\":\"testing\",\"message\":\"have you recieved?\"},{\"icon\":\"💬\",\"title\":\"fdhghkjhkj\",\"message\":\"gfhhjj\"}]'),
 ('179', 'superadmin_homepage_layout', '[{\"id\":\"hero\",\"name\":\"Hero Banner & Trust Numbers\",\"visible\":true,\"align\":\"center\",\"badge\":\"\",\"title\":\"\",\"desc\":\"\"},{\"id\":\"services\",\"name\":\"Holistic Services & Modalities\",\"visible\":true,\"align\":\"center\",\"badge\":\"\",\"title\":\"\",\"desc\":\"Experience personalized Reiki healing, chakra alignment, and aura cleansing guided by Grandmaster Anupama Agrawal to restore physical vitality and spiritual harmony.\"},{\"id\":\"cta_banner\",\"name\":\"Healing Journey CTA Banner\",\"visible\":true,\"align\":\"left\",\"badge\":\"\",\"title\":\"\",\"desc\":\"\",\"bg_image\":\"assets\\/images\\/cta-bg.jpg\",\"btn_text\":\"Book Free Session \\u2192\",\"btn_url\":\"\"},{\"id\":\"courses\",\"name\":\"Certified Energy Courses\",\"visible\":true,\"align\":\"center\",\"badge\":\"\",\"title\":\"\",\"desc\":\"Become a certified Reiki healer yourself. Structured curriculum with authentic attunement (Diksha), physical manual, lifetime mentorship, and recognized certificates.\"},{\"id\":\"products\",\"name\":\"Sacred Products & Bracelets\",\"visible\":true,\"align\":\"center\",\"badge\":\"\",\"title\":\"\",\"desc\":\"Energized astrological bracelets, natural healing crystals, and sacred gemstone artifacts charged with high-frequency Reiki symbols to amplify protection, prosperity, and peace.\"},{\"id\":\"testimonials\",\"name\":\"Testimonials & Client Stories\",\"visible\":true,\"align\":\"center\",\"badge\":\"\",\"title\":\"\",\"desc\":\"\"},{\"id\":\"reels\",\"name\":\"Instagram Reels Showcase\",\"visible\":false,\"align\":\"center\",\"badge\":\"\",\"title\":\"\",\"desc\":\"\"}]'),
 ('180', 'superadmin_admin_permissions', '{\"show_hero_ctas\":false,\"allowed_menus\":[\"services\",\"courses\",\"products\",\"testimonials\",\"gallery\",\"inquiries\",\"whatsapp\",\"settings\",\"footer\"],\"allowed_settings_tabs\":[\"general\",\"branding\",\"contact\",\"homepage\",\"footer\",\"whatsapp\",\"password\"]}'),
-('181', 'superadmin_site_toggles', '{\"maintenance_mode\":false,\"maintenance_msg\":\"We are currently performing scheduled spiritual enhancements. Please return shortly or message us on WhatsApp.\",\"hide_prices\":false,\"disable_bookings\":false,\"announcement_enabled\":false,\"announcement_text\":\"\"}');
+('181', 'superadmin_site_toggles', '{\"maintenance_mode\":false,\"maintenance_msg\":\"We are currently performing scheduled spiritual enhancements. Please return shortly or message us on WhatsApp.\",\"hide_prices\":false,\"disable_bookings\":false,\"announcement_enabled\":false,\"announcement_text\":\"\"}'),
+('347', 'contact_sec_badge', 'Our Sanctuary Location'),
+('348', 'contact_sec_heading', 'Reiki Bliss'),
+('349', 'contact_sec_desc', 'Visit our peaceful sanctuary or connect with our healing practitioners virtually.'),
+('350', 'contact_card1_icon', '📍'),
+('351', 'contact_card1_title', 'Visit Us'),
+('352', 'contact_card1_text', ''),
+('353', 'contact_card1_btn', 'View on Google Maps →'),
+('354', 'contact_card1_url', ''),
+('355', 'contact_card2_icon', '📞'),
+('356', 'contact_card2_title', 'Call / WhatsApp'),
+('357', 'contact_card2_phone', ''),
+('358', 'contact_card2_wa', ''),
+('359', 'contact_card2_btn', 'Chat on WhatsApp →'),
+('360', 'contact_card2_url', ''),
+('361', 'contact_card3_icon', '✉️'),
+('362', 'contact_card3_title', 'Email Us'),
+('363', 'contact_card3_email', ''),
+('364', 'contact_card3_btn', 'Send Email Inquiry →'),
+('365', 'contact_card4_icon', '⏰'),
+('366', 'contact_card4_title', 'Center Hours'),
+('367', 'contact_card4_hours', ''),
+('368', 'contact_card4_btn', 'Book Consultation →'),
+('369', 'contact_card4_url', ''),
+('370', 'contact_hero_badge', 'Free Online Consultation'),
+('371', 'contact_hero_title', '30 Minutes with Reiki Masters'),
+('372', 'contact_hero_subtext', 'Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with our certified Reiki Masters.');
 
 DROP TABLE IF EXISTS `login_attempts`;
 CREATE TABLE `login_attempts` (

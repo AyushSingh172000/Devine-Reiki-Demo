@@ -14,7 +14,7 @@ if (!defined('BASE_URL')) {
         $baseDir = rtrim($dir, '/') . '/';
         define('BASE_URL', "{$scheme}://{$host}{$baseDir}");
     } else {
-        define('BASE_URL', 'http://localhost/reikibliss/');
+        define('BASE_URL', 'http://localhost/reiki_bliss/');
     }
 }
 

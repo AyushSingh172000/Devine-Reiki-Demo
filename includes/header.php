@@ -28,23 +28,25 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     $faviconUrl = !empty($siteSettings['favicon_path']) ? BASE_URL . ltrim($siteSettings['favicon_path'], '/') : BASE_URL . 'assets/images/favicon-circle.png';
     $logoUrl = !empty($siteSettings['logo_path']) ? BASE_URL . ltrim($siteSettings['logo_path'], '/') : BASE_URL . 'assets/images/reikilogo1.png';
     $docRoot = dirname(__DIR__);
-    $appleTouchUrl = !empty($siteSettings['apple_touch_icon_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['apple_touch_icon_path'], '/'))
-        ? BASE_URL . ltrim($siteSettings['apple_touch_icon_path'], '/')
-        : $faviconUrl;
+    $appleTouchFile = !empty($siteSettings['apple_touch_icon_path']) ? $docRoot . '/' . ltrim($siteSettings['apple_touch_icon_path'], '/') : '';
+    $appleTouchExists = !empty($appleTouchFile) && file_exists($appleTouchFile);
+    $appleTouchUrl = $appleTouchExists ? BASE_URL . ltrim($siteSettings['apple_touch_icon_path'], '/') : $faviconUrl;
+    $appleTouchVer = $appleTouchExists ? filemtime($appleTouchFile) : time();
+    $appleTouchUrlVersioned = $appleTouchUrl . (strpos($appleTouchUrl, '?') !== false ? '&' : '?') . 'v=' . $appleTouchVer;
     
-    // Resolve Open Graph Social Image (Priority: Page Override -> Settings OG Image -> Apple Touch Icon -> og-image.jpg -> og-image.png -> Logo)
+    // Resolve Open Graph Social Image (Priority: Page Override -> Settings OG Image -> Apple Touch Icon -> Logo -> og-image.jpg -> og-image.png)
     if (!empty($pageOgImage)) {
         $rawOgImage = $pageOgImage;
     } elseif (!empty($siteSettings['og_image_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['og_image_path'], '/'))) {
         $rawOgImage = $siteSettings['og_image_path'];
-    } elseif (!empty($siteSettings['apple_touch_icon_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['apple_touch_icon_path'], '/'))) {
+    } elseif ($appleTouchExists) {
         $rawOgImage = $siteSettings['apple_touch_icon_path'];
+    } elseif (!empty($siteSettings['logo_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['logo_path'], '/'))) {
+        $rawOgImage = $siteSettings['logo_path'];
     } elseif (file_exists($docRoot . '/assets/images/og-image.jpg')) {
         $rawOgImage = 'assets/images/og-image.jpg';
     } elseif (file_exists($docRoot . '/assets/images/og-image.png')) {
         $rawOgImage = 'assets/images/og-image.png';
-    } elseif (!empty($siteSettings['logo_path']) && file_exists($docRoot . '/' . ltrim($siteSettings['logo_path'], '/'))) {
-        $rawOgImage = $siteSettings['logo_path'];
     } else {
         $rawOgImage = 'assets/images/logo.png';
     }
@@ -55,8 +57,12 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
         $ogImageUrl = BASE_URL . ltrim($rawOgImage, '/');
     }
 
-    // Secure HTTPS image URL for WhatsApp / Facebook
-    $ogImageSecureUrl = preg_replace('/^http:\/\//i', 'https://', $ogImageUrl);
+    // Secure HTTPS image URL for WhatsApp / Facebook (Only emitted when HTTPS is active)
+    $ogImageSecureUrlVersioned = '';
+    if ($isHttps) {
+        $ogImageSecureUrl = preg_replace('/^http:\/\//i', 'https://', $ogImageUrl);
+        $ogImageSecureUrlVersioned = $ogImageSecureUrl . (strpos($ogImageSecureUrl, '?') !== false ? '&' : '?') . 'v=' . ($ogVer ?? time());
+    }
 
     // Compute dimensions, MIME type and cache-busting version
     $localOgPath = $docRoot . '/' . ltrim(parse_url($rawOgImage, PHP_URL_PATH) ?? $rawOgImage, '/');
@@ -84,7 +90,9 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
 
     // Append version hash so WhatsApp / Facebook crawlers never serve stale cached image on update
     $ogImageUrlVersioned = $ogImageUrl . (strpos($ogImageUrl, '?') !== false ? '&' : '?') . 'v=' . $ogVer;
-    $ogImageSecureUrlVersioned = $ogImageSecureUrl . (strpos($ogImageSecureUrl, '?') !== false ? '&' : '?') . 'v=' . $ogVer;
+    if ($isHttps && !empty($ogImageSecureUrlVersioned)) {
+        $ogImageSecureUrlVersioned = preg_replace('/v=\d+/', 'v=' . $ogVer, $ogImageSecureUrlVersioned);
+    }
 
     $bookingHref = !empty($siteSettings['booking_url']) ? $siteSettings['booking_url'] : (defined('BOOKING_URL') ? BOOKING_URL : '#');
     ?>
@@ -92,7 +100,19 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
     <link rel="shortcut icon" type="image/png" href="<?php echo htmlspecialchars($faviconUrl); ?>">
-    <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($appleTouchUrl); ?>">
+
+    <!-- Apple Touch Icons (iOS Home Screen, Safari Bookmarks & Sharing) -->
+    <link rel="apple-touch-icon" href="<?php echo htmlspecialchars($appleTouchUrlVersioned); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo htmlspecialchars($appleTouchUrlVersioned); ?>">
+    <link rel="apple-touch-icon" sizes="152x152" href="<?php echo htmlspecialchars($appleTouchUrlVersioned); ?>">
+    <link rel="apple-touch-icon" sizes="167x167" href="<?php echo htmlspecialchars($appleTouchUrlVersioned); ?>">
+    <link rel="apple-touch-icon" sizes="120x120" href="<?php echo htmlspecialchars($appleTouchUrlVersioned); ?>">
+    <link rel="apple-touch-icon-precomposed" href="<?php echo htmlspecialchars($appleTouchUrlVersioned); ?>">
+
+    <!-- iOS Safari Web App Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="<?php echo htmlspecialchars(SITE_NAME); ?>">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <!-- Open Graph / WhatsApp / Facebook Meta Tags -->
     <meta property="og:type" content="website">
@@ -101,7 +121,9 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <meta property="og:title" content="<?php echo htmlspecialchars($pageTitle); ?>">
     <meta property="og:description" content="<?php echo htmlspecialchars($pageDescription); ?>">
     <meta property="og:image" content="<?php echo htmlspecialchars($ogImageUrlVersioned); ?>">
+    <?php if (!empty($ogImageSecureUrlVersioned)): ?>
     <meta property="og:image:secure_url" content="<?php echo htmlspecialchars($ogImageSecureUrlVersioned); ?>">
+    <?php endif; ?>
     <meta property="og:image:type" content="<?php echo htmlspecialchars($ogMime); ?>">
     <meta property="og:image:width" content="<?php echo (int)$ogWidth; ?>">
     <meta property="og:image:height" content="<?php echo (int)$ogHeight; ?>">

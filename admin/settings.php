@@ -97,11 +97,36 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 }
             }
 
-            // C. Apple Touch Icon
+            // C. Apple Touch Icon (iOS Home Screen, Safari & Link Sharing)
             if (isset($_FILES['apple_touch_icon']) && $_FILES['apple_touch_icon']['error'] === UPLOAD_ERR_OK) {
-                $touchRes = uploadImage($_FILES['apple_touch_icon'], '../assets/images/', 1048576);
+                $touchRes = uploadImage($_FILES['apple_touch_icon'], '../assets/images/', 8388608); // 8MB limit
                 if ($touchRes['success']) {
                     setSetting($pdo, 'apple_touch_icon_path', $touchRes['path']);
+                    $docRoot = dirname(__DIR__);
+                    $uploadedTouchFile = $docRoot . '/' . ltrim($touchRes['path'], '/');
+                    
+                    if (file_exists($uploadedTouchFile)) {
+                        // Copy to standard Apple root icon files for Safari & iOS automatic requests
+                        @copy($uploadedTouchFile, $docRoot . '/apple-touch-icon.png');
+                        @copy($uploadedTouchFile, $docRoot . '/apple-touch-icon-precomposed.png');
+                        @copy($uploadedTouchFile, $docRoot . '/apple-touch-icon-180x180.png');
+                        @copy($uploadedTouchFile, $docRoot . '/apple-touch-icon-152x152.png');
+                        @copy($uploadedTouchFile, $docRoot . '/apple-touch-icon-167x167.png');
+                        @copy($uploadedTouchFile, $docRoot . '/apple-touch-icon-120x120.png');
+
+                        // Sync to OpenGraph / Social Share image if requested or if no separate OG image uploaded
+                        $syncTouchToOg = isset($_POST['sync_touch_to_og']) ? (bool)$_POST['sync_touch_to_og'] : true;
+                        $hasSeparateOgUpload = isset($_FILES['og_image']) && $_FILES['og_image']['error'] === UPLOAD_ERR_OK;
+                        
+                        if ($syncTouchToOg && !$hasSeparateOgUpload) {
+                            setSetting($pdo, 'og_image_path', $touchRes['path']);
+                            if (function_exists('optimizeOgSocialImage')) {
+                                optimizeOgSocialImage($uploadedTouchFile);
+                            }
+                        }
+                    }
+                } else {
+                    $_SESSION['flash_error'] = "Apple Touch Icon upload failed: " . ($touchRes['error'] ?? 'Unknown error');
                 }
             }
 
@@ -699,16 +724,23 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <!-- 3. Apple Touch Icon -->
                 <div class="form-group mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 24px;">
-                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Apple Touch Icon (iOS Home Screen)</label>
-                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Icon shown when users add or bookmark your website to their Apple iPhone/iPad home screen.</p>
+                    <label class="form-label" style="font-size: 0.95rem; font-weight: 700;">Apple Touch Icon (iOS Home Screen &amp; Link Sharing)</label>
+                    <p class="text-muted mb-2" style="font-size: 0.84rem;">Icon shown when users bookmark or save your website to an iPhone/iPad home screen, Safari share sheet, and link previews.</p>
                     
                     <div class="flex items-center gap-3" style="flex-wrap: wrap;">
                         <div style="background: #ffffff; border: 1px solid var(--card-border); border-radius: 12px; width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--card-shadow);">
                             <img id="touchLivePreview" src="<?= htmlspecialchars($currentTouchPath) ?>?v=<?= $cacheVer ?>" alt="Apple Touch Icon" style="width: 44px; height: 44px; object-fit: contain; border-radius: 8px;">
                         </div>
                         <div style="flex: 1; min-width: 250px;">
-                            <input type="file" id="touchFileInput" name="apple_touch_icon" class="form-control mb-1" accept="image/png">
-                            <span class="form-hint">Square 180×180 PNG recommended.</span>
+                            <input type="file" id="touchFileInput" name="apple_touch_icon" class="form-control mb-1" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+                            <span class="form-hint">Square 180×180 or 512×512 PNG/JPEG recommended (Max 8MB). Automatically synced to standard Apple root files.</span>
+                            
+                            <div class="mt-2" style="background: rgba(201, 168, 76, 0.08); border: 1px solid rgba(201, 168, 76, 0.25); border-radius: 6px; padding: 8px 12px;">
+                                <label class="flex items-center gap-2" style="font-size: 0.84rem; color: var(--text-primary); cursor: pointer; margin: 0;">
+                                    <input type="checkbox" name="sync_touch_to_og" value="1" checked style="accent-color: var(--gold); width: 15px; height: 15px;">
+                                    <span><strong>Also use this icon for Link Sharing Preview</strong> (WhatsApp, iMessage, Facebook &amp; social chat cards)</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
