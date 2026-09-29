@@ -384,8 +384,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 7. Google Calendar Appointment Scheduling Trigger (Mobile & Desktop Optimized)
   document.addEventListener('click', (e) => {
-    const bookingBtn = e.target.closest('a[href*="calendar.google.com"], .btn-book-session, .open-gcal-popup');
+    const bookingBtn = e.target.closest('a[href*="calendar.google.com"], a[href*="calendar.app.google"], .btn-book-session, .open-gcal-popup');
     if (bookingBtn) {
+      let rawHref = bookingBtn.getAttribute('href');
+      let targetUrl = (rawHref && rawHref !== '#' && rawHref.trim() !== '') ? rawHref : (window.BOOKING_URL || '');
+      if (!targetUrl || targetUrl === '#' || targetUrl.trim() === '') return;
+
       // Detect mobile screens or touch phones
       const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
@@ -394,11 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // in a new tab without desktop grid view (?gv=true).
         // This delivers the full touch-friendly calendar, stacked time slots, and Google Meet integration.
         e.preventDefault();
-        let targetUrl = bookingBtn.getAttribute('href') || 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1RI6bVu-iU0Oi4_H09OlL-bQglgmpskaOrSO0nCevRuaKlWfCVYv1XsrEzLz-g7HUkgeiO0C2c';
         targetUrl = targetUrl.replace('?gv=true', '').replace('&gv=true', '');
         window.open(targetUrl, '_blank', 'noopener,noreferrer');
       } else {
-        // On desktop/laptop, trigger Google's desktop modal popup
+        // On desktop/laptop, trigger Google's desktop modal popup if available
         const gcalBtn = document.querySelector('.qxCTlb');
         if (gcalBtn) {
           e.preventDefault();

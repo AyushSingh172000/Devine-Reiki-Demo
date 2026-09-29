@@ -139,10 +139,10 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
       "description": "<?php echo htmlspecialchars($pageDescription); ?>",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "108 Healing Touch Way, Spiritual Enclave",
-        "addressLocality": "Adajan, Surat",
-        "addressRegion": "Gujarat",
-        "postalCode": "395009",
+        "streetAddress": <?php echo json_encode(SITE_ADDRESS); ?>,
+        "addressLocality": "Nehru Place, New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110019",
         "addressCountry": "IN"
       },
       "telephone": "<?php echo SITE_PHONE; ?>",
@@ -231,6 +231,9 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     
     <!-- Google Calendar Appointment Scheduling Stylesheet -->
     <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+    <script>
+        window.BOOKING_URL = <?php echo json_encode(defined('BOOKING_URL') ? BOOKING_URL : ''); ?>;
+    </script>
 </head>
 <body>
 

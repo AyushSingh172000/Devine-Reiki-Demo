@@ -24,7 +24,9 @@ if (!function_exists('getTeamImgUrl')) {
 
 // 1. Dynamic Hero Content from $siteSettings & $siteStats
 $foundingYear = $siteSettings['founding_year'] ?? '2014';
-$aboutHeroBadge = !empty($siteSettings['about_hero_badge']) ? $siteSettings['about_hero_badge'] : "Est. {$foundingYear} · Adajan, Surat";
+$aboutHeroBadge = array_key_exists('about_hero_badge', $siteSettings) 
+    ? trim((string)$siteSettings['about_hero_badge']) 
+    : "Est. {$foundingYear} · Adajan, Surat";
 $aboutHeading = !empty($siteSettings['about_hero_heading']) ? $siteSettings['about_hero_heading'] : 'A Journey Inward.<br>A Purpose to <em>Help Others Heal.</em>';
 $aboutDescription = !empty($siteSettings['about_hero_description']) ? $siteSettings['about_hero_description'] : 'Reiki Bliss was founded by Anupama Agrawal, a Reiki Grand Master and Spiritual Wellness Coach dedicated to authentic energy healing, self-awareness, and holistic inner transformation.';
 
@@ -123,7 +125,9 @@ include __DIR__ . '/includes/header.php';
 <section class="about-hero" id="about-hero">
     <canvas class="hero-bg-canvas"></canvas>
     <div class="container animate-on-scroll">
-        <span class="about-hero-badge"><?php echo htmlspecialchars($aboutHeroBadge); ?></span>
+        <?php if (!empty(trim((string)$aboutHeroBadge))): ?>
+            <span class="about-hero-badge"><?php echo htmlspecialchars($aboutHeroBadge); ?></span>
+        <?php endif; ?>
         <h1 class="about-hero-title">
             <?php echo $aboutHeading; ?>
         </h1>

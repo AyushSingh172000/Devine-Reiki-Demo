@@ -69,18 +69,61 @@ try {
 }
 
 // Define Site Constants from $siteSettings
-define('BOOKING_URL', $siteSettings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1RI6bVu-iU0Oi4_H09OlL-bQglgmpskaOrSO0nCevRuaKlWfCVYv1XsrEzLz-g7HUkgeiO0C2c');
+define('BOOKING_URL', $siteSettings['booking_url'] ?? '');
 define('SITE_NAME', $siteSettings['site_name'] ?? 'Reiki Bliss');
 define('SITE_TAGLINE', $siteSettings['site_tagline'] ?? 'Heal. Balance. Transform.');
-define('SITE_PHONE', $siteSettings['phone'] ?? '+91 9726581787');
-define('SITE_EMAIL', $siteSettings['email'] ?? 'info@reikibliss.com');
-define('SITE_ADDRESS', $siteSettings['address'] ?? '4th Floor, Keshav Arcade, Golden Park Society, Anand Mahal Road, Adajan, Surat – 395009');
-define('SITE_WHATSAPP', $siteSettings['whatsapp'] ?? '919726581787');
+define('SITE_PHONE', $siteSettings['phone'] ?? '+91 99716 55705');
+define('SITE_EMAIL', $siteSettings['email'] ?? 'anupama.snj@gmail.com');
+define('SITE_ADDRESS', $siteSettings['address'] ?? 'Office No. 305 Building Kusal bazar, 32-33, Nehru Place, New Delhi - 110019');
+define('SITE_WHATSAPP', $siteSettings['whatsapp'] ?? '919971655705');
 define('FACEBOOK_URL', $siteSettings['facebook_url'] ?? 'https://www.facebook.com/profile.php?id=100063697185284');
 define('YOUTUBE_URL', $siteSettings['youtube_url'] ?? 'https://www.youtube.com/@chiraggajjarreikigrandmast8374');
 define('INSTAGRAM_URL', $siteSettings['instagram_url'] ?? '');
-define('MAPS_URL', $siteSettings['maps_url'] ?? 'https://maps.app.goo.gl/FaadyRvvvjf1QQHE6');
-define('MAPS_EMBED_URL', $siteSettings['maps_embed_url'] ?? '');
+// Helper to convert any Google Maps URL or place link to an embeddable URL
+if (!function_exists('convertGoogleMapsToEmbedUrl')) {
+    function convertGoogleMapsToEmbedUrl($url, $address = '') {
+        $url = trim((string)$url);
+        $address = trim((string)$address);
+        if (empty($url) && empty($address)) {
+            return '';
+        }
+        // If full iframe code was pasted, extract src
+        if (preg_match('/<iframe\s+[^>]*src="([^"]+)"/i', $url, $m)) {
+            return $m[1];
+        }
+        // Already an embed URL
+        if (strpos($url, '/maps/embed') !== false || strpos($url, 'output=embed') !== false) {
+            return $url;
+        }
+        // Extract exact pin coordinates !3d(lat)!4d(lng)
+        if (preg_match('/!3d([0-9.-]+)!4d([0-9.-]+)/', $url, $m)) {
+            return "https://maps.google.com/maps?q=" . $m[1] . "," . $m[2] . "&hl=en&z=17&output=embed";
+        }
+        // Extract center coordinates @lat,lng
+        if (preg_match('/@([0-9.-]+),([0-9.-]+)/', $url, $m)) {
+            return "https://maps.google.com/maps?q=" . $m[1] . "," . $m[2] . "&hl=en&z=17&output=embed";
+        }
+        // Extract place query
+        if (preg_match('#/maps/place/([^/@?]+)#', $url, $m)) {
+            return "https://maps.google.com/maps?q=" . urlencode(urldecode($m[1])) . "&hl=en&z=16&output=embed";
+        }
+        // Extract query parameter q=
+        if (preg_match('/[?&]q=([^&]+)/', $url, $m)) {
+            return "https://maps.google.com/maps?q=" . $m[1] . "&hl=en&z=16&output=embed";
+        }
+        // Fallback to address
+        if (!empty($address)) {
+            return "https://maps.google.com/maps?q=" . urlencode($address) . "&hl=en&z=16&output=embed";
+        }
+        return $url;
+    }
+}
+
+define('MAPS_URL', $siteSettings['maps_url'] ?? '');
+$resolvedEmbed = !empty($siteSettings['maps_url']) 
+    ? convertGoogleMapsToEmbedUrl($siteSettings['maps_url'], $siteSettings['address'] ?? '') 
+    : (!empty($siteSettings['maps_embed_url']) ? $siteSettings['maps_embed_url'] : convertGoogleMapsToEmbedUrl('', $siteSettings['address'] ?? ''));
+define('MAPS_EMBED_URL', $resolvedEmbed);
 define('WORKING_HOURS', $siteSettings['working_hours'] ?? 'Mon–Sat: 7 AM – 6 PM · Sun: 9 AM – 1 PM');
 define('LOGO_PATH', $siteSettings['logo_path'] ?? 'assets/images/logo.png');
 define('FAVICON_PATH', $siteSettings['favicon_path'] ?? 'assets/images/favicon.ico');

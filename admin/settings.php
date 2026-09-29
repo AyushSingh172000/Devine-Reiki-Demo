@@ -42,6 +42,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $val = trim($_POST[$field] ?? '');
                 setSetting($pdo, $field, $val);
             }
+            // Auto-convert and synchronize Google Maps Embed URL
+            $mapsUrlVal = trim($_POST['maps_url'] ?? '');
+            $addrVal = trim($_POST['address'] ?? '');
+            $autoEmbed = convertGoogleMapsToEmbedUrl($mapsUrlVal, $addrVal);
+            setSetting($pdo, 'maps_embed_url', $autoEmbed);
             $_SESSION['flash_success'] = "General settings saved successfully!";
         } catch (PDOException $e) {
             $_SESSION['flash_error'] = "Error saving general settings: " . $e->getMessage();
@@ -312,21 +317,34 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             setSetting($pdo, 'footer_cta_btn_text', trim($_POST['footer_cta_btn_text'] ?? ''));
             setSetting($pdo, 'footer_cta_btn_url', trim($_POST['footer_cta_btn_url'] ?? ''));
 
-            // Privacy Policy Page Content
-            setSetting($pdo, 'privacy_title', trim($_POST['privacy_title'] ?? ''));
-            setSetting($pdo, 'privacy_tagline', trim($_POST['privacy_tagline'] ?? ''));
-            setSetting($pdo, 'privacy_content', trim($_POST['privacy_content'] ?? ''));
-
-            // Terms & Conditions Page Content
-            setSetting($pdo, 'terms_title', trim($_POST['terms_title'] ?? ''));
-            setSetting($pdo, 'terms_tagline', trim($_POST['terms_tagline'] ?? ''));
-            setSetting($pdo, 'terms_content', trim($_POST['terms_content'] ?? ''));
-
-            $_SESSION['flash_success'] = "Footer & Legal pages updated successfully!";
+            $_SESSION['flash_success'] = "Footer settings updated successfully!";
         } catch (Exception $e) {
-            $_SESSION['flash_error'] = "Error saving Footer & Legal settings: " . $e->getMessage();
+            $_SESSION['flash_error'] = "Error saving Footer settings: " . $e->getMessage();
         }
         header("Location: settings.php?tab=footer");
+        exit;
+    }
+
+    // TAB: CONTACT PAGE & LOCATION CARDS SETTINGS
+    if ($tab === 'contact') {
+        $contactFields = [
+            'contact_sec_badge', 'contact_sec_heading', 'contact_sec_desc',
+            'contact_card1_icon', 'contact_card1_title', 'contact_card1_text', 'contact_card1_btn', 'contact_card1_url',
+            'contact_card2_icon', 'contact_card2_title', 'contact_card2_phone', 'contact_card2_wa', 'contact_card2_btn', 'contact_card2_url',
+            'contact_card3_icon', 'contact_card3_title', 'contact_card3_email', 'contact_card3_btn',
+            'contact_card4_icon', 'contact_card4_title', 'contact_card4_hours', 'contact_card4_btn', 'contact_card4_url',
+            'contact_hero_badge', 'contact_hero_title', 'contact_hero_subtext'
+        ];
+
+        try {
+            foreach ($contactFields as $f) {
+                setSetting($pdo, $f, trim($_POST[$f] ?? ''));
+            }
+            $_SESSION['flash_success'] = "Contact page & cards updated successfully!";
+        } catch (Exception $e) {
+            $_SESSION['flash_error'] = "Error saving contact page settings: " . $e->getMessage();
+        }
+        header("Location: settings.php?tab=contact");
         exit;
     }
 
@@ -486,7 +504,7 @@ require_once 'includes/admin-header.php';
 
 <?php
 $currentTab = $_GET['tab'] ?? 'general';
-$validTabs = ['general', 'branding', 'about', 'homepage', 'footer', 'whatsapp', 'account'];
+$validTabs = ['general', 'branding', 'about', 'homepage', 'contact', 'footer', 'whatsapp', 'account'];
 if (!in_array($currentTab, $validTabs)) {
     $currentTab = 'general';
 }
@@ -514,8 +532,11 @@ if (!in_array($currentTab, $validTabs)) {
         <button type="button" class="settings-tab-btn <?= $currentTab === 'homepage' ? 'active' : '' ?> flex items-center gap-1" data-tab="homepage">
             <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> Home Page
         </button>
+        <button type="button" class="settings-tab-btn <?= $currentTab === 'contact' ? 'active' : '' ?> flex items-center gap-1" data-tab="contact">
+            <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i> Contact Page
+        </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'footer' ? 'active' : '' ?> flex items-center gap-1" data-tab="footer">
-            <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer &amp; Legal Pages
+            <i data-lucide="panel-bottom" style="width: 16px; height: 16px;"></i> Footer Settings
         </button>
         <button type="button" class="settings-tab-btn <?= $currentTab === 'whatsapp' ? 'active' : '' ?> flex items-center gap-1" data-tab="whatsapp">
             <i data-lucide="message-square" style="width: 16px; height: 16px;"></i> WhatsApp Chat
@@ -548,18 +569,18 @@ if (!in_array($currentTab, $validTabs)) {
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Phone Number</label>
-                        <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($settings['phone'] ?? '+91 98765 43210') ?>">
+                        <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($settings['phone'] ?? '+91 99716 55705') ?>">
                     </div>
                     <div class="form-group">
                         <label class="form-label">WhatsApp Number (with country code)</label>
-                        <input type="text" name="whatsapp" class="form-control" value="<?= htmlspecialchars($settings['whatsapp'] ?? '+91 98765 43210') ?>">
+                        <input type="text" name="whatsapp" class="form-control" value="<?= htmlspecialchars($settings['whatsapp'] ?? '+91 99716 55705') ?>">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($settings['email'] ?? 'contact@reikiwebsite.com') ?>">
+                        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($settings['email'] ?? 'anupama.snj@gmail.com') ?>">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Working / Operating Hours</label>
@@ -569,7 +590,7 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="form-group">
                     <label class="form-label">Center Address</label>
-                    <textarea name="address" class="form-control" rows="2"><?= htmlspecialchars($settings['address'] ?? '108 Healing Touch Way, Spiritual Enclave, New Delhi - 110001') ?></textarea>
+                    <textarea name="address" class="form-control" rows="2"><?= htmlspecialchars($settings['address'] ?? 'Office No. 305 Building Kusal bazar, 32-33, Nehru Place, New Delhi - 110019') ?></textarea>
                 </div>
 
                 <div class="form-group">
@@ -579,8 +600,8 @@ if (!in_array($currentTab, $validTabs)) {
 
                 <div class="form-group">
                     <label class="form-label">Appointment Booking Calendar Link</label>
-                    <input type="text" name="booking_url" class="form-control" value="<?= htmlspecialchars($settings['booking_url'] ?? 'https://calendar.google.com/calendar/appointments/...') ?>">
-                    <div class="form-hint">Used for "Book Session" buttons across the website.</div>
+                    <input type="text" name="booking_url" class="form-control" value="<?= htmlspecialchars($settings['booking_url'] ?? '') ?>" placeholder="https://calendar.google.com/calendar/appointments/... or https://calendar.app.google/...">
+                    <div class="form-hint">Used for "Book Session" buttons across the website. Provide your Google Calendar Appointment Schedule link.</div>
                 </div>
 
                 <h4 style="font-size: 0.95rem; color: var(--gold); margin: 24px 0 14px; border-top: 1px solid var(--card-border); padding-top: 16px;">
@@ -1088,8 +1109,8 @@ if (!in_array($currentTab, $validTabs)) {
                         <label class="form-label">Top Tagline / Location Badge</label>
                         <input type="text" name="hero_badge" id="heroBadgeInput" class="form-control" 
                                value="<?= htmlspecialchars($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016') ?>" 
-                               placeholder="e.g. ● ADAJAN, SURAT · EST. 2016">
-                        <div class="form-hint">Displayed at the top of the home page banner.</div>
+                               placeholder="e.g. ● ADAJAN, SURAT · EST. 2016 (leave blank to hide)">
+                        <div class="form-hint">Displayed at the top of the home page banner. Leave blank to hide this badge from the website.</div>
                     </div>
 
                     <div class="form-row">
@@ -1299,8 +1320,9 @@ if (!in_array($currentTab, $validTabs)) {
                         ✦ Live Hero Preview (Updates as you type) ✦
                     </div>
 
-                    <div style="display: inline-block; padding: 5px 16px; border-radius: 9999px; background: rgba(243, 201, 102, 0.12); border: 1px solid rgba(243, 201, 102, 0.35); color: #F3C966; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;" id="previewBadge">
-                        <?= htmlspecialchars($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016') ?>
+                    <?php $previewBadgeText = trim((string)($settings['hero_badge'] ?? '● ADAJAN, SURAT · EST. 2016')); ?>
+                    <div style="display: <?= !empty($previewBadgeText) ? 'inline-block' : 'none' ?>; padding: 5px 16px; border-radius: 9999px; background: rgba(243, 201, 102, 0.12); border: 1px solid rgba(243, 201, 102, 0.35); color: #F3C966; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;" id="previewBadge">
+                        <?= htmlspecialchars($previewBadgeText) ?>
                     </div>
 
                     <h2 style="font-family: 'Cinzel', serif, Georgia; font-size: 2rem; color: #fff; margin-bottom: 12px; line-height: 1.2;">
@@ -1353,26 +1375,218 @@ if (!in_array($currentTab, $validTabs)) {
     </div>
 
     <!-- =====================================================================
-         TAB: FOOTER & LEGAL PAGES
+         TAB: CONTACT US PAGE & SANCTUARY CARDS
+         ===================================================================== -->
+    <div class="tab-content <?= $currentTab === 'contact' ? 'active' : '' ?>" id="tab-contact">
+        <div class="admin-card">
+            <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
+                <div>
+                    <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
+                        Contact Us Page &amp; Location Cards
+                    </h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
+                        Customize the section heading, description, and the 4 interactive contact cards (Visit Us, WhatsApp, Email, Center Hours) shown on the Contact page.
+                    </p>
+                </div>
+                <a href="../contact.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1">
+                    <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View Contact Page
+                </a>
+            </div>
+
+            <form action="settings.php" method="POST">
+                <input type="hidden" name="tab" value="contact">
+
+                <!-- SECTION 1: SECTION HEADING & BADGE -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 1</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Sanctuary Cards Section Heading</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Section Pill Badge</label>
+                            <input type="text" name="contact_sec_badge" class="form-control" value="<?= htmlspecialchars($settings['contact_sec_badge'] ?? 'Our Sanctuary Location') ?>" placeholder="e.g. Our Sanctuary Location">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Section Main Heading</label>
+                            <input type="text" name="contact_sec_heading" class="form-control" value="<?= htmlspecialchars($settings['contact_sec_heading'] ?? ($settings['site_name'] ?? 'Reiki Bliss')) ?>" placeholder="e.g. Reiki Bliss">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Section Subtitle / Description</label>
+                        <textarea name="contact_sec_desc" class="form-control" rows="2" placeholder="Subtext under heading..."><?= htmlspecialchars($settings['contact_sec_desc'] ?? 'Visit our peaceful sanctuary or connect with our healing practitioners virtually.') ?></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: 4 CONTACT CARDS -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 2</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Interactive Contact Information Cards</h4>
+                    </div>
+
+                    <!-- CARD 1: VISIT US -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+                        <h5 style="color: var(--gold); font-size: 0.92rem; font-weight: 700; margin-bottom: 12px;">Card 1: Visit Us (Address &amp; Location)</h5>
+                        <div class="form-row" style="grid-template-columns: 80px 1fr 1fr;">
+                            <div class="form-group">
+                                <label class="form-label">Icon</label>
+                                <input type="text" name="contact_card1_icon" class="form-control text-center" value="<?= htmlspecialchars($settings['contact_card1_icon'] ?? '📍') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Card Title</label>
+                                <input type="text" name="contact_card1_title" class="form-control" value="<?= htmlspecialchars($settings['contact_card1_title'] ?? 'Visit Us') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Label</label>
+                                <input type="text" name="contact_card1_btn" class="form-control" value="<?= htmlspecialchars($settings['contact_card1_btn'] ?? 'View on Google Maps →') ?>">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Address Text (Leave blank to use main address)</label>
+                                <textarea name="contact_card1_text" class="form-control" rows="2" placeholder="<?= htmlspecialchars($settings['address'] ?? '') ?>"><?= htmlspecialchars($settings['contact_card1_text'] ?? '') ?></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Custom Maps URL (Leave blank to use main Google Maps link)</label>
+                                <input type="text" name="contact_card1_url" class="form-control" value="<?= htmlspecialchars($settings['contact_card1_url'] ?? '') ?>" placeholder="<?= htmlspecialchars($settings['maps_url'] ?? '') ?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: CALL & WHATSAPP -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+                        <h5 style="color: var(--gold); font-size: 0.92rem; font-weight: 700; margin-bottom: 12px;">Card 2: Call / WhatsApp</h5>
+                        <div class="form-row" style="grid-template-columns: 80px 1fr 1fr;">
+                            <div class="form-group">
+                                <label class="form-label">Icon</label>
+                                <input type="text" name="contact_card2_icon" class="form-control text-center" value="<?= htmlspecialchars($settings['contact_card2_icon'] ?? '📞') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Card Title</label>
+                                <input type="text" name="contact_card2_title" class="form-control" value="<?= htmlspecialchars($settings['contact_card2_title'] ?? 'Call / WhatsApp') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Label</label>
+                                <input type="text" name="contact_card2_btn" class="form-control" value="<?= htmlspecialchars($settings['contact_card2_btn'] ?? 'Chat on WhatsApp →') ?>">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Calling Number (Leave blank to use main phone)</label>
+                                <input type="text" name="contact_card2_phone" class="form-control" value="<?= htmlspecialchars($settings['contact_card2_phone'] ?? '') ?>" placeholder="<?= htmlspecialchars($settings['phone'] ?? '+91 99716 55705') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">WhatsApp Display Text (Leave blank to use main WhatsApp)</label>
+                                <input type="text" name="contact_card2_wa" class="form-control" value="<?= htmlspecialchars($settings['contact_card2_wa'] ?? '') ?>" placeholder="<?= htmlspecialchars($settings['whatsapp'] ?? '+91 99716 55705') ?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: EMAIL US -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px; margin-bottom: 18px;">
+                        <h5 style="color: var(--gold); font-size: 0.92rem; font-weight: 700; margin-bottom: 12px;">Card 3: Email Us</h5>
+                        <div class="form-row" style="grid-template-columns: 80px 1fr 1fr;">
+                            <div class="form-group">
+                                <label class="form-label">Icon</label>
+                                <input type="text" name="contact_card3_icon" class="form-control text-center" value="<?= htmlspecialchars($settings['contact_card3_icon'] ?? '✉️') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Card Title</label>
+                                <input type="text" name="contact_card3_title" class="form-control" value="<?= htmlspecialchars($settings['contact_card3_title'] ?? 'Email Us') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Label</label>
+                                <input type="text" name="contact_card3_btn" class="form-control" value="<?= htmlspecialchars($settings['contact_card3_btn'] ?? 'Send Email Inquiry →') ?>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address (Leave blank to use main email)</label>
+                            <input type="email" name="contact_card3_email" class="form-control" value="<?= htmlspecialchars($settings['contact_card3_email'] ?? '') ?>" placeholder="<?= htmlspecialchars($settings['email'] ?? 'anupama.snj@gmail.com') ?>">
+                        </div>
+                    </div>
+
+                    <!-- CARD 4: CENTER HOURS (Clock Card) -->
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px;">
+                        <h5 style="color: var(--gold); font-size: 0.92rem; font-weight: 700; margin-bottom: 12px;">Card 4: Center Hours (Operating Schedule)</h5>
+                        <div class="form-row" style="grid-template-columns: 80px 1fr 1fr;">
+                            <div class="form-group">
+                                <label class="form-label">Icon</label>
+                                <input type="text" name="contact_card4_icon" class="form-control text-center" value="<?= htmlspecialchars($settings['contact_card4_icon'] ?? '⏰') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Card Title</label>
+                                <input type="text" name="contact_card4_title" class="form-control" value="<?= htmlspecialchars($settings['contact_card4_title'] ?? 'Center Hours') ?>">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Label</label>
+                                <input type="text" name="contact_card4_btn" class="form-control" value="<?= htmlspecialchars($settings['contact_card4_btn'] ?? 'Book Consultation →') ?>">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Operating Hours Text (Supports multiple lines)</label>
+                                <textarea name="contact_card4_hours" class="form-control" rows="2" placeholder="<?= htmlspecialchars($settings['working_hours'] ?? 'Monday - Saturday: 9:00 AM - 7:00 PM (IST)') ?>"><?= htmlspecialchars($settings['contact_card4_hours'] ?? '') ?></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Link URL (Leave blank to use primary booking calendar URL)</label>
+                                <input type="text" name="contact_card4_url" class="form-control" value="<?= htmlspecialchars($settings['contact_card4_url'] ?? '') ?>" placeholder="<?= htmlspecialchars($settings['booking_url'] ?? '') ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: TOP CONSULTATION HERO -->
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Top Consultation Hero Banner</h4>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Hero Badge</label>
+                            <input type="text" name="contact_hero_badge" class="form-control" value="<?= htmlspecialchars($settings['contact_hero_badge'] ?? 'Free Online Consultation') ?>" placeholder="e.g. Free Online Consultation">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hero Title</label>
+                            <input type="text" name="contact_hero_title" class="form-control" value="<?= htmlspecialchars($settings['contact_hero_title'] ?? '30 Minutes with <em>Reiki Masters</em>') ?>" placeholder="e.g. 30 Minutes with <em>Reiki Masters</em>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Subtext</label>
+                        <textarea name="contact_hero_subtext" class="form-control" rows="2"><?= htmlspecialchars($settings['contact_hero_subtext'] ?? 'Take the first step toward physical vitality and spiritual peace. Schedule a complimentary 30-minute online video guidance session directly with our certified Reiki Masters.') ?></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                    <div class="flex-between">
+                        <span class="text-muted" style="font-size: 0.85rem;">Click save to publish all Contact Us page changes instantly.</span>
+                        <button type="submit" class="btn btn-gold flex items-center gap-2">
+                            <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Contact Page Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         TAB: FOOTER SETTINGS
          ===================================================================== -->
     <div class="tab-content <?= $currentTab === 'footer' ? 'active' : '' ?>" id="tab-footer">
         <div class="admin-card">
             <div class="flex-between mb-4" style="border-bottom: 1px solid var(--card-border); padding-bottom: 16px;">
                 <div>
                     <h3 class="admin-card-title" style="color: var(--text-primary); font-size: 1.2rem; font-weight: 700;">
-                        Footer &amp; Legal Pages
+                        Footer Settings
                     </h3>
                     <p class="text-muted" style="font-size: 0.85rem; margin-top: 2px;">
-                        Manage the website footer description, consultation booking banner, and legal pages (Privacy Policy and Terms &amp; Conditions).
+                        Manage the website footer description, copyright notice, and consultation booking banner.
                     </p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <a href="../privacy.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1">
-                        <i data-lucide="shield" style="width: 14px; height: 14px;"></i> View Privacy Page
-                    </a>
-                    <a href="../terms.php" target="_blank" class="btn btn-outline btn-sm flex items-center gap-1">
-                        <i data-lucide="file-text" style="width: 14px; height: 14px;"></i> View Terms Page
-                    </a>
                 </div>
             </div>
 
@@ -1443,71 +1657,9 @@ if (!in_array($currentTab, $validTabs)) {
                     </div>
                 </div>
 
-                <!-- -------------------------------------------------------------
-                     SECTION 3: PRIVACY SANCTUARY POLICY (privacy.php)
-                     ------------------------------------------------------------- -->
-                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 3</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Privacy Policy Page</h4>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Page Title (H1)</label>
-                            <input type="text" name="privacy_title" class="form-control" value="<?= htmlspecialchars($settings['privacy_title'] ?? 'Privacy Sanctuary Policy') ?>">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Page Subtitle</label>
-                            <input type="text" name="privacy_tagline" class="form-control" value="<?= htmlspecialchars($settings['privacy_tagline'] ?? 'Our sacred commitment to honoring your personal information, confidentiality, and spiritual trust.') ?>">
-                        </div>
-                    </div>
-
-                    <?php 
-                        $defaultPrivacyContent = "### 1. Sacred Sanctuary & Confidentiality\nAt Reiki Bliss, your privacy is treated with the same reverence and sacred trust as our healing sessions. We hold all personal conversations, session discussions, energy readings, and inquiries in absolute confidence.\n\n### 2. Information We Gather\nWhen you interact with our website, book an appointment, or order a sacred energized bracelet, we may collect:\n- Personal Details: Name, email address, contact phone number, and WhatsApp number.\n- Birth Details (For Custom Astrological & Birth Chart Bracelets): Date of birth, exact time of birth, and place of birth. This sensitive data is used strictly for chart calculations and planetary gemstone alignment.\n- Inquiry Details: Specific spiritual intentions, personal wellness goals, or health concerns you share voluntarily.\n\n### 3. How We Use Your Sacred Information\nYour data is used exclusively to:\n- Schedule and confirm in-person or distance Reiki sessions.\n- Provide tailored consultation regarding courses and crystal recommendations.\n- Calculate and craft customized birth chart crystal bracelets aligned with your astrological energies.\n- Send important appointment reminders or order updates via WhatsApp or email.\n\n### 4. Zero Data Selling & Third-Party Protection\nWe never sell, rent, lease, or trade your personal information to third parties or marketing agencies under any circumstance. Your information remains strictly within the Reiki Bliss healing sanctuary.\n\n### 5. Spiritual Wellness & Complementary Care Disclaimer\nReiki energy healing, chakra balancing, and crystal therapy are gentle complementary spiritual wellness practices designed to support the body's natural healing capacity. They are not substitutes for professional medical diagnosis, psychiatric care, or prescribed medical treatments. We encourage you to always maintain regular consultation with licensed medical practitioners.\n\n### 6. Security of Your Records\nAll digital inquiries and consultation notes are safeguarded using secure server protocols and strict administrative access controls. Only Grand Master Anupama Agrawal and authorized administrative personnel have access to appointment details.\n\n### 7. Inquiries & Data Rights\nIf you wish to view, update, or permanently delete any personal information from our sanctuary records, please contact us at info@reikibliss.com or message us directly via WhatsApp.";
-                        $privacyVal = !empty($settings['privacy_content']) ? $settings['privacy_content'] : $defaultPrivacyContent;
-                    ?>
-                    <div class="form-group">
-                        <label class="form-label">Privacy Policy Content</label>
-                        <textarea name="privacy_content" class="form-control" rows="12" style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"><?= htmlspecialchars($privacyVal) ?></textarea>
-                        <span class="form-hint">Supports Markdown headings (<code>### Section Title</code>), bullet points (<code>- Item</code>), and clean multi-paragraph formatting.</span>
-                    </div>
-                </div>
-
-                <!-- -------------------------------------------------------------
-                     SECTION 4: TERMS OF ATTUNEMENT (terms.php)
-                     ------------------------------------------------------------- -->
-                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span style="background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 4px;">SECTION 4</span>
-                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0;">Terms &amp; Conditions Page</h4>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Page Title (H1)</label>
-                            <input type="text" name="terms_title" class="form-control" value="<?= htmlspecialchars($settings['terms_title'] ?? 'Terms of Attunement & Healing Agreement') ?>">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Page Subtitle</label>
-                            <input type="text" name="terms_tagline" class="form-control" value="<?= htmlspecialchars($settings['terms_tagline'] ?? 'Clear guidelines for healing sessions, certified attunement courses, and consecrated crystal products.') ?>">
-                        </div>
-                    </div>
-
-                    <?php 
-                        $defaultTermsContent = "### 1. Sacred Agreement & General Terms\nBy scheduling a healing session, enrolling in a certification course, or acquiring energized crystals from Reiki Bliss, you acknowledge and agree to the sacred principles and guidelines outlined herein.\n\n### 2. Nature of Energy Healing Sessions\n- Reiki is a non-invasive, gentle Japanese energy technique that facilitates relaxation, emotional release, and spiritual balance.\n- Healing sessions involve gentle touch or hands hovering over energy centers (chakras). Distance sessions are conducted remotely through quantum energetic connection.\n- Individual healing responses vary naturally. While clients often report immediate lightness, peace, and emotional clarity, Reiki Bliss does not make medical guarantees or claims of physical disease cure.\n\n### 3. Free Initial Consultation Policy\nWe offer a complimentary initial consultation so seekers may meet Reiki Grand Master Anupama Agrawal, discuss their wellness journey, and understand recommended healing modalities with zero pressure or obligation. Free sessions must be booked in advance and are subject to schedule availability.\n\n### 4. Rescheduling & Courtesy Notice\nTo honor the sacred time and energy allocated for each seeker, we kindly request a minimum of 12 hours notice for appointment rescheduling or cancellations. This allows us to offer the healing window to someone else in need.\n\n### 5. Sacred Courses & Attunements\n- Certification courses (Level 1, Level 2, Master, and Grand Master) require dedicated participation, practice, and personal commitment.\n- Sacred attunement symbols, manuals, and lineage materials shared during workshops are confidential and intended exclusively for the initiated practitioner's personal development.\n\n### 6. Energized Crystal Bracelets & Products\n- All crystal bracelets are hand-selected, cleansed, and consecrated through authentic Reiki energy rituals prior to dispatch.\n- Natural gemstones vary naturally in color tone, banding, and internal inclusions. These organic variations reflect the natural origin and authenticity of the Earth's crystals.\n- Customized and birth-chart energized bracelets are uniquely tailored to individual astrological coordinates; therefore, customized orders are crafted specifically for the intended bearer.\n\n### 7. Sanctuary Code of Conduct\nReiki Bliss maintains a warm, respectful, and compassionate sanctuary. Any disruptive, disrespectful, or inappropriate behavior will result in immediate termination of the session without refund.\n\n### 8. Questions & Sacred Assistance\nFor any questions regarding these terms or your healing journey, reach out to Anupama Agrawal and the Reiki Bliss team at info@reikibliss.com or +91 9726581787.";
-                        $termsVal = !empty($settings['terms_content']) ? $settings['terms_content'] : $defaultTermsContent;
-                    ?>
-                    <div class="form-group">
-                        <label class="form-label">Terms &amp; Conditions Content</label>
-                        <textarea name="terms_content" class="form-control" rows="12" style="font-family: inherit; font-size: 0.88rem; line-height: 1.5;"><?= htmlspecialchars($termsVal) ?></textarea>
-                        <span class="form-hint">Supports Markdown headings (<code>### Section Title</code>), bullet points (<code>- Item</code>), and clean multi-paragraph formatting.</span>
-                    </div>
-                </div>
-
                 <div class="mt-4" style="position: sticky; bottom: 16px; z-index: 10; background: var(--bg-card); padding: 14px 20px; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
                     <div class="flex-between">
-                        <span class="text-muted" style="font-size: 0.85rem;">Click save to publish all footer and policy page changes.</span>
+                        <span class="text-muted" style="font-size: 0.85rem;">Click save to publish all footer changes.</span>
                         <button type="submit" class="btn btn-gold flex items-center gap-2">
                             <i data-lucide="check-circle" style="width: 17px; height: 17px;"></i> Save Changes
                         </button>
@@ -1934,7 +2086,16 @@ if (newPass && strengthFill && strengthLabel) {
 const heroBadgeInput = document.getElementById('heroBadgeInput');
 const previewBadge = document.getElementById('previewBadge');
 if (heroBadgeInput && previewBadge) {
-    heroBadgeInput.addEventListener('input', () => previewBadge.textContent = heroBadgeInput.value || '● ADAJAN, SURAT · EST. 2016');
+    heroBadgeInput.addEventListener('input', () => {
+        const val = heroBadgeInput.value.trim();
+        if (!val) {
+            previewBadge.style.display = 'none';
+            previewBadge.textContent = '';
+        } else {
+            previewBadge.style.display = 'inline-block';
+            previewBadge.textContent = heroBadgeInput.value;
+        }
+    });
 }
 
 const heroTitleInput = document.getElementById('heroTitleInput');

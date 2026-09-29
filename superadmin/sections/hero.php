@@ -25,9 +25,11 @@ $currentHeroSubtext = isset($getSecContent) ? $getSecContent('hero', 'desc', $he
     <canvas id="hero-bg-canvas"></canvas>
 
     <div class="container hero-container-center animate-on-scroll">
-        <span class="hero-location-badge">
-            <?php echo htmlspecialchars($currentHeroBadge); ?>
-        </span>
+        <?php if (!empty(trim((string)$currentHeroBadge))): ?>
+            <span class="hero-location-badge">
+                <?php echo htmlspecialchars($currentHeroBadge); ?>
+            </span>
+        <?php endif; ?>
 
         <h1 class="hero-title">
             <?php echo $currentHeroTitle; ?>

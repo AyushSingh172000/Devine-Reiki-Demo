@@ -1,5 +1,8 @@
 <?php
 // Section 6: Instagram Reels Showcase
+if (isset($sectionItem) && empty($sectionItem['visible'])) {
+    return;
+}
 $reelsHeaderWrapStyle = '';
 $reelsTitleBoxStyle = '';
 if (($secAlign ?? 'left') === 'center') {

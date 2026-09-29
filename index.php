@@ -231,7 +231,9 @@ if (empty($healerClientCarouselImages)) {
 }
 
 // Dynamic Hero Settings from $siteSettings and $siteStats
-$heroBadge = !empty($siteSettings['hero_badge']) ? $siteSettings['hero_badge'] : ('● ADAJAN, SURAT · EST. ' . ($siteSettings['founding_year'] ?? '2016'));
+$heroBadge = array_key_exists('hero_badge', $siteSettings) 
+    ? trim((string)$siteSettings['hero_badge']) 
+    : ('● ADAJAN, SURAT · EST. ' . ($siteSettings['founding_year'] ?? '2016'));
 $heroTitle = $siteSettings['hero_title'] ?? 'Awaken Inner Harmony.';
 $heroTitleGold = $siteSettings['hero_title_gold'] ?? 'Heal. Balance. Transform.';
 $heroHeadingRaw = $siteSettings['hero_heading'] ?? '';
@@ -335,7 +337,7 @@ $defaultHomepageLayout = [
     ['id' => 'testimonials', 'name' => 'Testimonials & Student Reviews', 'visible' => true, 'align' => 'center'],
     ['id' => 'courses', 'name' => 'Reiki & Energy Courses', 'visible' => true, 'align' => 'left'],
     ['id' => 'products', 'name' => 'Featured Products & Crystals', 'visible' => true, 'align' => 'left'],
-    ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => true, 'align' => 'left'],
+    ['id' => 'reels', 'name' => 'Instagram Reels Showcase', 'visible' => false, 'align' => 'left'],
     ['id' => 'cta_banner', 'name' => 'Healing Journey CTA Banner', 'visible' => true, 'align' => 'center']
 ];
 

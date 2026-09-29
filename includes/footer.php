@@ -165,18 +165,6 @@ if (isset($pdo) && ($pdo instanceof PDO)) {
                 </ul>
             </div>
         </div>
-
-        <!-- Bottom Bar -->
-        <div class="footer-bottom">
-            <div class="footer-bottom-content">
-                <p><?php echo $footerCopyright; ?> &middot; <a href="<?php echo BASE_URL; ?>admin/" style="color: inherit; opacity: 0.65; text-decoration: none; font-size: 0.9em;" title="Admin Portal">Admin Portal</a></p>
-                <div class="footer-bottom-links">
-                    <a href="<?php echo BASE_URL; ?>privacy">Privacy Sanctuary</a>
-                    <a href="<?php echo BASE_URL; ?>terms">Terms of Attunement</a>
-                    <a href="#hero" class="footer-back-top">Back to Top ↑</a>
-                </div>
-            </div>
-        </div>
     </div>
 </footer>
 
@@ -282,6 +270,7 @@ iframe.mmGMM {
   background: #ffffff !important;
 }
 </style>
+<?php if (!empty(BOOKING_URL) && BOOKING_URL !== '#'): ?>
 <div id="gcal-scheduling-target-wrapper" style="display: none !important;" aria-hidden="true">
     <div id="gcal-scheduling-target"></div>
 </div>
@@ -291,17 +280,22 @@ function initGCalButton() {
   if (window.calendar && window.calendar.schedulingButton) {
     var target = document.getElementById('gcal-scheduling-target');
     if (target && !document.querySelector('.qxCTlb')) {
-      calendar.schedulingButton.load({
-        url: '<?php echo BOOKING_URL; ?>?gv=true',
-        color: '#C9A84C',
-        label: 'Book an appointment',
-        target: target,
-      });
+      var bookingUrl = <?php echo json_encode(BOOKING_URL); ?>;
+      if (bookingUrl && bookingUrl !== '#') {
+        var cleanUrl = bookingUrl.indexOf('?') !== -1 ? bookingUrl + '&gv=true' : bookingUrl + '?gv=true';
+        calendar.schedulingButton.load({
+          url: cleanUrl,
+          color: '#C9A84C',
+          label: 'Book an appointment',
+          target: target,
+        });
+      }
     }
   }
 }
 window.addEventListener('load', initGCalButton);
 </script>
+<?php endif; ?>
 <!-- end Google Calendar Appointment Scheduling -->
 </body>
 </html>

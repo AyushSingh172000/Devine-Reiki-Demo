@@ -13,12 +13,13 @@ if ($isLocal) {
     $username = 'root';
     $password = '';
 } else {
-    // InfinityFree Cloud (Default for live server)
-    $host = 'sql206.infinityfree.com';
+    // Production / Hostinger Server (Enter client's Hostinger MySQL Database credentials here)
+    // On Hostinger: Host is typically 'localhost' or your Hostinger MySQL hostname
+    $host = 'localhost';
     $port = 3306;
-    $dbname = 'if0_42861215_reikibliss';
-    $username = 'if0_42861215';
-    $password = 'Ayush171998';
+    $dbname = 'u123456789_reiki';     // Hostinger MySQL Database Name
+    $username = 'u123456789_reikiuser'; // Hostinger MySQL Username
+    $password = 'YourHostingerPassword';// Hostinger MySQL User Password
 }
 
 $charset = 'utf8mb4';
