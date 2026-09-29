@@ -374,16 +374,16 @@ require_once 'includes/admin-header.php';
 <!-- =========================================================================
      CATEGORY ADD/EDIT MODAL
      ========================================================================= -->
-<div id="categoryModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-    <div class="admin-card" style="width: 100%; max-width: 480px; padding: 28px; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: modalScaleIn 0.2s ease-out;">
-        <div class="flex items-center justify-between" style="margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 14px;">
-            <div class="flex items-center gap-2">
-                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(179,139,45,0.12); display: flex; align-items: center; justify-content: center; color: var(--gold);">
+<div id="categoryModal" class="modal-overlay">
+    <div class="modal category-modal-dialog">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(179,139,45,0.12); display: flex; align-items: center; justify-content: center; color: var(--gold); flex-shrink: 0;">
                     <i data-lucide="tag" style="width: 18px; height: 18px;"></i>
                 </div>
                 <h3 id="categoryModalTitle" style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0;">Add New Category</h3>
             </div>
-            <button type="button" onclick="closeCategoryModal()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;">
+            <button type="button" class="modal-close" onclick="closeCategoryModal()" title="Close dialog">
                 <i data-lucide="x" style="width: 20px; height: 20px;"></i>
             </button>
         </div>
@@ -440,7 +440,7 @@ require_once 'includes/admin-header.php';
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-2" style="border-top: 1px solid var(--card-border); padding-top: 16px;">
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--card-border); padding-top: 16px;">
                 <button type="button" class="btn btn-outline" onclick="closeCategoryModal()">Cancel</button>
                 <button type="submit" class="btn btn-purple flex items-center gap-1">
                     <i data-lucide="check" style="width: 15px; height: 15px;"></i> Save Category
@@ -451,7 +451,75 @@ require_once 'includes/admin-header.php';
 </div>
 
 <style>
-@keyframes modalScaleIn {
+#categoryModal.modal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    background: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    z-index: 99999 !important;
+    display: none;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding-top: calc(var(--header-height, 65px) + 42px) !important;
+    padding-bottom: 40px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+}
+#categoryModal.modal-overlay.active {
+    display: flex !important;
+}
+#categoryModal .category-modal-dialog {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto !important;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(212, 175, 55, 0.1);
+    padding: 24px 28px !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    transform: none !important;
+    animation: catModalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#categoryModal .modal-header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+    border-bottom: 1px solid var(--card-border) !important;
+    padding-bottom: 14px !important;
+}
+#categoryModal .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+#categoryModal .modal-close:hover {
+    background: rgba(15, 23, 42, 0.06);
+    color: var(--text-primary);
+}
+@keyframes catModalScaleIn {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
 }
@@ -484,9 +552,12 @@ function openCategoryModal() {
     document.getElementById('catModalActive').checked = true;
 
     const modal = document.getElementById('categoryModal');
+    modal.classList.add('active');
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    document.getElementById('catModalName').focus();
+    setTimeout(() => {
+        document.getElementById('catModalName').focus();
+    }, 50);
     if (window.lucide) lucide.createIcons();
 }
 
@@ -501,14 +572,18 @@ function editCategory(cat) {
     document.getElementById('catModalActive').checked = (parseInt(cat.is_active, 10) === 1);
 
     const modal = document.getElementById('categoryModal');
+    modal.classList.add('active');
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    document.getElementById('catModalName').focus();
+    setTimeout(() => {
+        document.getElementById('catModalName').focus();
+    }, 50);
     if (window.lucide) lucide.createIcons();
 }
 
 function closeCategoryModal() {
     const modal = document.getElementById('categoryModal');
+    modal.classList.remove('active');
     modal.style.display = 'none';
     document.body.style.overflow = '';
 }
