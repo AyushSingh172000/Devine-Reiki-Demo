@@ -314,12 +314,12 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     <div class="mobile-nav-overlay" id="mobile-nav-overlay">
         <div class="mobile-nav-content">
             <ul class="mobile-nav-menu">
-                <li><a href="<?php echo BASE_URL; ?>" class="mobile-nav-link">Home</a></li>
-                <li><a href="<?php echo BASE_URL; ?>services" class="mobile-nav-link">Services</a></li>
-                <li><a href="<?php echo BASE_URL; ?>courses" class="mobile-nav-link">Courses</a></li>
-                <li><a href="<?php echo BASE_URL; ?>products" class="mobile-nav-link">Shop</a></li>
-                <li><a href="<?php echo BASE_URL; ?>about" class="mobile-nav-link">About Us</a></li>
-                <li><a href="<?php echo BASE_URL; ?>contact" class="mobile-nav-link">Contact Us</a></li>
+                <li><a href="<?php echo BASE_URL; ?>" class="mobile-nav-link <?php echo ($currentPage == 'index.php' || $currentPage == '') ? 'active' : ''; ?>">Home</a></li>
+                <li><a href="<?php echo BASE_URL; ?>services" class="mobile-nav-link <?php echo ($currentPage == 'services.php' || $currentPage == 'service-detail.php') ? 'active' : ''; ?>">Services</a></li>
+                <li><a href="<?php echo BASE_URL; ?>courses" class="mobile-nav-link <?php echo ($currentPage == 'courses.php' || $currentPage == 'course-detail.php') ? 'active' : ''; ?>">Courses</a></li>
+                <li><a href="<?php echo BASE_URL; ?>products" class="mobile-nav-link <?php echo ($currentPage == 'products.php' || $currentPage == 'shop.php' || $currentPage == 'product-detail.php') ? 'active' : ''; ?>">Shop</a></li>
+                <li><a href="<?php echo BASE_URL; ?>about" class="mobile-nav-link <?php echo ($currentPage == 'about.php') ? 'active' : ''; ?>">About Us</a></li>
+                <li><a href="<?php echo BASE_URL; ?>contact" class="mobile-nav-link <?php echo ($currentPage == 'contact.php') ? 'active' : ''; ?>">Contact Us</a></li>
             </ul>
 
             <div class="mobile-nav-cta">

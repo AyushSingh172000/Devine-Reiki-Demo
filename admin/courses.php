@@ -8,6 +8,30 @@ $editId = (int)($_GET['id'] ?? 0);
 $search = trim($_GET['search'] ?? '');
 $error = '';
 
+// Auto-ensure extended course columns exist (duration, mode, energy_exchange, language, certificate, course_material)
+try {
+    $existingCols = [];
+    $colStmt = $pdo->query("DESCRIBE courses");
+    while ($r = $colStmt->fetch(PDO::FETCH_ASSOC)) {
+        $existingCols[] = $r['Field'];
+    }
+    $extraCols = [
+        'duration' => 'VARCHAR(100) NULL',
+        'mode' => 'VARCHAR(100) NULL',
+        'energy_exchange' => 'VARCHAR(100) NULL',
+        'language' => 'VARCHAR(100) NULL',
+        'certificate' => 'VARCHAR(100) NULL',
+        'course_material' => 'VARCHAR(100) NULL'
+    ];
+    foreach ($extraCols as $colName => $colDef) {
+        if (!in_array($colName, $existingCols)) {
+            $pdo->exec("ALTER TABLE courses ADD COLUMN {$colName} {$colDef}");
+        }
+    }
+} catch (Exception $e) {
+    // Columns already created
+}
+
 // =========================================================================
 // 1. HANDLE POST ACTIONS (Delete, Insert, Update)
 // =========================================================================
@@ -47,12 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_course'])) {
         $slug = generateSlug($slug);
     }
 
-    $shortDesc = trim($_POST['short_description'] ?? '');
     $fullDesc = trim($_POST['full_description'] ?? '');
-    $priceText = trim($_POST['price_text'] ?? 'Contact for price');
+    $duration = trim($_POST['duration'] ?? '');
+    $mode = trim($_POST['mode'] ?? '');
+    $language = trim($_POST['language'] ?? '');
+    $certificate = trim($_POST['certificate'] ?? '');
+    $courseMaterial = trim($_POST['course_material'] ?? '');
+
+    $priceText = trim($_POST['price_text'] ?? '');
     if (empty($priceText)) {
         $priceText = 'Contact for price';
     }
+    // Sync energy_exchange with price_text so both stay fully aligned
+    $energyExchange = $priceText;
+
     $sortOrder = (int)($_POST['sort_order'] ?? 0);
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $currentImage = $_POST['current_image'] ?? '';
@@ -101,21 +133,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_course'])) {
                     short_description = ?, 
                     full_description = ?, 
                     price_text = ?, 
+                    duration = ?,
+                    mode = ?,
+                    energy_exchange = ?,
+                    language = ?,
+                    certificate = ?,
+                    course_material = ?,
                     image = ?, 
                     sort_order = ?, 
                     is_active = ?, 
                     updated_at = NOW() 
                     WHERE id = ?";
                 $stmt = $pdo->prepare($updateSql);
-                $stmt->execute([$title, $slug, $shortDesc, $fullDesc, $priceText, $currentImage, $sortOrder, $isActive, $editId]);
+                $stmt->execute([
+                    $title, $slug, $shortDesc, $fullDesc, $priceText,
+                    $duration, $mode, $energyExchange, $language, $certificate, $courseMaterial,
+                    $currentImage, $sortOrder, $isActive, $editId
+                ]);
                 $_SESSION['flash_success'] = "Course updated successfully!";
             } else {
                 // INSERT
                 $insertSql = "INSERT INTO courses 
-                    (title, slug, short_description, full_description, price_text, image, sort_order, is_active, created_at) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                    (title, slug, short_description, full_description, price_text, duration, mode, energy_exchange, language, certificate, course_material, image, sort_order, is_active, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                 $stmt = $pdo->prepare($insertSql);
-                $stmt->execute([$title, $slug, $shortDesc, $fullDesc, $priceText, $currentImage, $sortOrder, $isActive]);
+                $stmt->execute([
+                    $title, $slug, $shortDesc, $fullDesc, $priceText,
+                    $duration, $mode, $energyExchange, $language, $certificate, $courseMaterial,
+                    $currentImage, $sortOrder, $isActive
+                ]);
                 $_SESSION['flash_success'] = "New course added successfully!";
             }
             header("Location: courses.php");
@@ -244,19 +290,102 @@ require_once 'includes/admin-header.php';
                 ><?= htmlspecialchars($_POST['full_description'] ?? ($editItem['full_description'] ?? '')) ?></textarea>
             </div>
 
+            <!-- Key Course Details & Specifications (Duration, Mode, Energy Exchange, Language, Certificate, Course Material) -->
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border, #EAE5DB); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                <h4 style="margin: 0 0 16px 0; font-size: 0.96rem; font-weight: 600; color: var(--gold, #C9A84C); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+                    Course Highlights & Specifications
+                </h4>
+
+                <div class="form-row">
+                    <!-- Duration -->
+                    <div class="form-group">
+                        <label for="courseDuration" class="form-label">Duration</label>
+                        <input 
+                            type="text" 
+                            id="courseDuration" 
+                            name="duration" 
+                            class="form-control" 
+                            placeholder="e.g. 9 hours"
+                            value="<?= htmlspecialchars($_POST['duration'] ?? ($editItem['duration'] ?? '')) ?>"
+                        >
+                        <div class="form-hint">e.g. 9 hours, 2 Days, Self-paced</div>
+                    </div>
+
+                    <!-- Mode -->
+                    <div class="form-group">
+                        <label for="courseMode" class="form-label">Mode</label>
+                        <input 
+                            type="text" 
+                            id="courseMode" 
+                            name="mode" 
+                            class="form-control" 
+                            placeholder="e.g. Online"
+                            value="<?= htmlspecialchars($_POST['mode'] ?? ($editItem['mode'] ?? '')) ?>"
+                        >
+                        <div class="form-hint">e.g. Online, Offline, Hybrid</div>
+                    </div>
+
+                    <!-- Language -->
+                    <div class="form-group">
+                        <label for="courseLanguage" class="form-label">Language</label>
+                        <input 
+                            type="text" 
+                            id="courseLanguage" 
+                            name="language" 
+                            class="form-control" 
+                            placeholder="e.g. Hindi"
+                            value="<?= htmlspecialchars($_POST['language'] ?? ($editItem['language'] ?? '')) ?>"
+                        >
+                        <div class="form-hint">e.g. Hindi, English</div>
+                    </div>
+                    <!-- Course Material -->
+                    <div class="form-group">
+                        <label for="courseMaterial" class="form-label">Course Material</label>
+                        <input 
+                            type="text" 
+                            id="courseMaterial" 
+                            name="course_material" 
+                            class="form-control" 
+                            placeholder="e.g. Included"
+                            value="<?= htmlspecialchars($_POST['course_material'] ?? ($editItem['course_material'] ?? '')) ?>"
+                        >
+                        <div class="form-hint">e.g. Included, PDF Manual & Audio</div>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-top: 14px;">
+                    <!-- Certificate -->
+                    <div class="form-group">
+                        <label for="courseCertificate" class="form-label">Certificate</label>
+                        <input 
+                            type="text" 
+                            id="courseCertificate" 
+                            name="certificate" 
+                            class="form-control" 
+                            placeholder="e.g. Included"
+                            value="<?= htmlspecialchars($_POST['certificate'] ?? ($editItem['certificate'] ?? '')) ?>"
+                        >
+                        <div class="form-hint">e.g. Included, ISO Certified</div>
+                    </div>
+
+                    
+                </div>
+            </div>
+
             <div class="form-row">
-                <!-- Price Text -->
+                <!-- Energy Exchange -->
                 <div class="form-group">
-                    <label for="priceText" class="form-label">Price Display Text</label>
+                    <label for="priceText" class="form-label">Energy Exchange</label>
                     <input 
                         type="text" 
                         id="priceText" 
                         name="price_text" 
                         class="form-control" 
-                        placeholder="e.g. ₹5,000 or Contact for price"
-                        value="<?= htmlspecialchars($_POST['price_text'] ?? ($editItem['price_text'] ?? 'Contact for price')) ?>"
+                        placeholder="e.g. Rs. 5,100 or ₹5,000"
+                        value="<?= htmlspecialchars($_POST['price_text'] ?? ($editItem['price_text'] ?? ($editItem['energy_exchange'] ?? 'Contact for price'))) ?>"
                     >
-                    <div class="form-hint">Flexible text displayed on the course card.</div>
+                    <div class="form-hint">Fee / Energy exchange displayed on the course card and detail page.</div>
                 </div>
 
                 <!-- Sort Order -->
@@ -455,7 +584,7 @@ try {
                     <tr>
                         <th style="width: 65px; text-align: center;">Image</th>
                         <th style="min-width: 220px;">Title</th>
-                        <th style="width: 150px;">Price Text</th>
+                        <th style="width: 150px;">Energy Exchange</th>
                         <th style="width: 100px;">Status</th>
                         <th style="width: 80px; text-align: center;">Order</th>
                         <th style="text-align: right; width: 140px;">Actions</th>
@@ -483,10 +612,22 @@ try {
                             <td>
                                 <strong style="color: var(--text-primary);"><?= htmlspecialchars($crs['title']) ?></strong>
                                 <div class="text-muted" style="font-size: 0.78rem;"><?= htmlspecialchars($crs['slug']) ?></div>
+                                <?php 
+                                    $specs = array_filter([
+                                        !empty($crs['duration']) ? '⏱️ ' . $crs['duration'] : '',
+                                        !empty($crs['mode']) ? '🌐 ' . $crs['mode'] : '',
+                                        !empty($crs['language']) ? '🗣️ ' . $crs['language'] : ''
+                                    ]);
+                                    if (!empty($specs)):
+                                ?>
+                                    <div style="font-size: 0.75rem; color: var(--gold, #C9A84C); margin-top: 4px;">
+                                        <?= htmlspecialchars(implode(' • ', $specs)) ?>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <span class="badge badge-gold">
-                                    <?= htmlspecialchars($crs['price_text'] ?: 'Contact for price') ?>
+                                    <?= htmlspecialchars(!empty($crs['energy_exchange']) ? $crs['energy_exchange'] : ($crs['price_text'] ?: 'Contact for price')) ?>
                                 </span>
                             </td>
                             <td>

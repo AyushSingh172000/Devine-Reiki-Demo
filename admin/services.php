@@ -346,7 +346,7 @@ require_once 'includes/admin-header.php';
 
             <div class="form-row">
                 <!-- Sort Order -->
-                <!-- <div class="form-group">
+                <div class="form-group">
                     <label for="sortOrder" class="form-label">Sort Order</label>
                     <input 
                         type="number" 
@@ -357,7 +357,7 @@ require_once 'includes/admin-header.php';
                         value="<?= htmlspecialchars($_POST['sort_order'] ?? ($editItem['sort_order'] ?? '0')) ?>"
                     >
                     <div class="form-hint">Lower numbers appear first on the website.</div>
-                </div> -->
+                </div>
 
                 <!-- Is Active -->
                 <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">

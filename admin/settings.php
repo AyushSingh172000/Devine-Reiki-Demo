@@ -1877,11 +1877,11 @@ if (!in_array($currentTab, $validTabs)) {
                         <span class="form-hint">Displayed in the footer under the Reiki Bliss logo. Supports <code>&lt;strong&gt;</code> bold styling.</span>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label class="form-label">Copyright Notice</label>
                         <input type="text" name="footer_copyright" class="form-control" value="<?= htmlspecialchars($settings['footer_copyright'] ?? '© {year} Reiki Bliss Healing Center. All sacred rights reserved.') ?>" placeholder="e.g. © {year} Reiki Bliss Healing Center. All sacred rights reserved.">
                         <span class="form-hint">Use <code>{year}</code> to automatically insert the current year (e.g. 2026).</span>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- -------------------------------------------------------------

@@ -98,6 +98,68 @@ include __DIR__ . '/includes/header.php';
                     <?php echo htmlspecialchars($course['short_description']); ?>
                 </p>
 
+                <!-- Key Course Highlights Bar -->
+                <?php if (!empty($course['duration']) || !empty($course['mode']) || !empty($course['energy_exchange']) || !empty($course['language']) || !empty($course['certificate']) || !empty($course['course_material'])): ?>
+                <div class="course-spec-highlights" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; background: #FAF8F5; border: 1px solid #EAE5DB; border-radius: 14px; padding: 18px 20px; margin-bottom: 28px;">
+                    <?php if (!empty($course['duration'])): ?>
+                    <div class="course-spec-item">
+                        <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7B8089; display: block; margin-bottom: 4px;">Duration</span>
+                        <strong style="font-size: 0.95rem; color: #0F1117; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.05rem;">⏱️</span> <?php echo htmlspecialchars($course['duration']); ?>
+                        </strong>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($course['mode'])): ?>
+                    <div class="course-spec-item">
+                        <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7B8089; display: block; margin-bottom: 4px;">Mode</span>
+                        <strong style="font-size: 0.95rem; color: #0F1117; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.05rem;">🌐</span> <?php echo htmlspecialchars($course['mode']); ?>
+                        </strong>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php 
+                    $eeDisplay = !empty($course['energy_exchange']) ? $course['energy_exchange'] : (!empty($course['price_text']) ? $course['price_text'] : '');
+                    if (!empty($eeDisplay)): 
+                    ?>
+                    <div class="course-spec-item">
+                        <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7B8089; display: block; margin-bottom: 4px;">Energy Exchange</span>
+                        <strong style="font-size: 0.95rem; color: var(--accent-gold-dark, #8A6D3B); display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.05rem;">✨</span> <?php echo htmlspecialchars($eeDisplay); ?>
+                        </strong>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($course['language'])): ?>
+                    <div class="course-spec-item">
+                        <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7B8089; display: block; margin-bottom: 4px;">Language</span>
+                        <strong style="font-size: 0.95rem; color: #0F1117; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.05rem;">🗣️</span> <?php echo htmlspecialchars($course['language']); ?>
+                        </strong>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($course['certificate'])): ?>
+                    <div class="course-spec-item">
+                        <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7B8089; display: block; margin-bottom: 4px;">Certificate</span>
+                        <strong style="font-size: 0.95rem; color: #0F1117; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.05rem;">📜</span> <?php echo htmlspecialchars($course['certificate']); ?>
+                        </strong>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($course['course_material'])): ?>
+                    <div class="course-spec-item">
+                        <span style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; color: #7B8089; display: block; margin-bottom: 4px;">Course Material</span>
+                        <strong style="font-size: 0.95rem; color: #0F1117; display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.05rem;">📚</span> <?php echo htmlspecialchars($course['course_material']); ?>
+                        </strong>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+
                 <!-- Full Course Description -->
                 <div class="course-body-content">
                     <?php 
@@ -115,8 +177,45 @@ include __DIR__ . '/includes/header.php';
             <!-- Sidebar Column -->
             <aside class="course-sidebar-box animate-on-scroll">
                 <div class="course-price-big">
-                    <?php echo htmlspecialchars($course['price_text']); ?>
+                    <?php echo htmlspecialchars(!empty($course['energy_exchange']) ? $course['energy_exchange'] : $course['price_text']); ?>
                 </div>
+
+                <?php if (!empty($course['duration']) || !empty($course['mode']) || !empty($course['language']) || !empty($course['certificate']) || !empty($course['course_material'])): ?>
+                <div style="background: #FAF8F5; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; border: 1px solid #EAE5DB;">
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+                        <?php if (!empty($course['duration'])): ?>
+                        <li style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666;">Duration:</span>
+                            <strong style="color: #0F1117;"><?php echo htmlspecialchars($course['duration']); ?></strong>
+                        </li>
+                        <?php endif; ?>
+                        <?php if (!empty($course['mode'])): ?>
+                        <li style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666;">Mode:</span>
+                            <strong style="color: #0F1117;"><?php echo htmlspecialchars($course['mode']); ?></strong>
+                        </li>
+                        <?php endif; ?>
+                        <?php if (!empty($course['language'])): ?>
+                        <li style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666;">Language:</span>
+                            <strong style="color: #0F1117;"><?php echo htmlspecialchars($course['language']); ?></strong>
+                        </li>
+                        <?php endif; ?>
+                        <?php if (!empty($course['certificate'])): ?>
+                        <li style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666;">Certificate:</span>
+                            <strong style="color: #0F1117;"><?php echo htmlspecialchars($course['certificate']); ?></strong>
+                        </li>
+                        <?php endif; ?>
+                        <?php if (!empty($course['course_material'])): ?>
+                        <li style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666;">Course Material:</span>
+                            <strong style="color: #0F1117;"><?php echo htmlspecialchars($course['course_material']); ?></strong>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
 
                 <ul class="course-sidebar-features">
                     <li><span style="color: var(--accent-gold-dark);">✓</span> Recognized Practitioner Certificate</li>

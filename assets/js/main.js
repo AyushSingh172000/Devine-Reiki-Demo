@@ -25,17 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const toggleMobileMenu = () => {
     if (hamburgerToggle && mobileOverlay) {
-      const isOpen = hamburgerToggle.classList.toggle('open');
+      const isOpen = !hamburgerToggle.classList.contains('active') && !hamburgerToggle.classList.contains('open');
+      hamburgerToggle.classList.toggle('active', isOpen);
+      hamburgerToggle.classList.toggle('open', isOpen);
+      mobileOverlay.classList.toggle('active', isOpen);
       mobileOverlay.classList.toggle('open', isOpen);
       document.body.classList.toggle('no-scroll', isOpen);
+      hamburgerToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     }
   };
 
   const closeMobileMenu = () => {
     if (hamburgerToggle && mobileOverlay) {
-      hamburgerToggle.classList.remove('open');
-      mobileOverlay.classList.remove('open');
+      hamburgerToggle.classList.remove('active', 'open');
+      mobileOverlay.classList.remove('active', 'open');
       document.body.classList.remove('no-scroll');
+      hamburgerToggle.setAttribute('aria-expanded', 'false');
     }
   };
 
@@ -46,7 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Close Mobile Menu when links are clicked
+  if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', (e) => {
+      if (e.target === mobileOverlay) {
+        closeMobileMenu();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMobileMenu();
+    }
+  });
+
+  // Close Mobile Menu when links are clicked
   const mobileLinks = document.querySelectorAll('#mobile-nav-overlay a');
   mobileLinks.forEach((link) => {
     link.addEventListener('click', closeMobileMenu);
