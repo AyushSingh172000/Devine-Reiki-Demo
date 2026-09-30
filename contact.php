@@ -1,5 +1,6 @@
 <?php
 // Contact & Consultation Page - Divine Reiki & Energy Healing Center
+$currentPage = 'contact.php';
 require_once __DIR__ . '/config/constants.php';
 if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/config/db.php';
@@ -236,8 +237,12 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
                 <p style="color: #555D6E; font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Fill out the form below and our healing masters will reach out to you promptly within 24 hours.</p>
             </div>
 
-            <!-- AJAX Response Alert Box -->
-            <div id="form-response-alert" class="form-alert-box" role="alert"></div>
+            <!-- AJAX / Fallback Response Alert Box -->
+            <?php 
+            $feedbackSuccess = $_GET['success'] ?? '';
+            $feedbackError = $_GET['error'] ?? '';
+            ?>
+            <div id="form-response-alert" class="form-alert-box<?php echo $feedbackSuccess ? ' alert-success' : ($feedbackError ? ' alert-danger' : ''); ?>" <?php echo ($feedbackSuccess || $feedbackError) ? 'style="display:block;"' : ''; ?> role="alert"><?php echo htmlspecialchars($feedbackSuccess ?: $feedbackError); ?></div>
 
             <form id="contact-form-element" action="<?php echo BASE_URL; ?>api/contact-submit.php" method="POST" novalidate>
                 <div class="form-grid-2col">
@@ -255,8 +260,8 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
 
                     <!-- Message Textarea -->
                     <div class="form-group full-width">
-                        <label for="contact-message" class="form-label">Your Message or Healing Concern *</label>
-                        <textarea id="contact-message" name="message" class="form-textarea" placeholder="Tell us about your physical, emotional, or spiritual healing goals..." required><?php echo htmlspecialchars($defaultMessage); ?></textarea>
+                        <label for="contact-message" class="form-label">Your Message or Healing Concern <span style="font-weight: normal; color: #888; font-size: 0.9em;">(Optional)</span></label>
+                        <textarea id="contact-message" name="message" class="form-textarea" placeholder="Tell us about your physical, emotional, or spiritual healing goals..."><?php echo htmlspecialchars($defaultMessage); ?></textarea>
                     </div>
                 </div>
 

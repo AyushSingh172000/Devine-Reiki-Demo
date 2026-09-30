@@ -252,8 +252,13 @@ if (isset($pdo) && ($pdo instanceof PDO)) {
 
 <script src="<?php echo BASE_URL; ?>assets/js/gallery.js"></script>
 <?php endif; ?>
-<?php if (isset($currentPage) && $currentPage == 'contact.php'): ?>
-<script src="<?php echo BASE_URL; ?>assets/js/contact-form.js"></script>
+<?php 
+$isContactPage = (isset($currentPage) && in_array($currentPage, ['contact.php', 'contact'])) 
+    || (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) === 'contact.php')
+    || (isset($_SERVER['REQUEST_URI']) && preg_match('#/contact(\.php)?([?#]|$)#', $_SERVER['REQUEST_URI']));
+if ($isContactPage): 
+?>
+<script src="<?php echo BASE_URL; ?>assets/js/contact-form.js?v=<?php echo file_exists(dirname(__DIR__) . '/assets/js/contact-form.js') ? filemtime(dirname(__DIR__) . '/assets/js/contact-form.js') : time(); ?>"></script>
 <?php endif; ?>
 <?php if (isset($currentPage) && ($currentPage == 'order-bracelet.php' || $currentPage == 'custom-bracelet.php')): ?>
 <script src="<?php echo BASE_URL; ?>assets/js/order-bracelet.js"></script>

@@ -2,12 +2,39 @@
  * Contact Form AJAX Submission & Validation JavaScript
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initContactForm() {
   const contactForm = document.getElementById('contact-form-element');
   const alertBox = document.getElementById('form-response-alert');
   const submitBtn = document.getElementById('contact-submit-btn');
 
   if (!contactForm) return;
+
+  let dismissTimer = null;
+
+  function showAlert(msg, type, autoDismiss = false) {
+    if (!alertBox) return;
+    if (dismissTimer) {
+      clearTimeout(dismissTimer);
+      dismissTimer = null;
+    }
+    alertBox.textContent = msg;
+    alertBox.className = 'form-alert-box ' + (type === 'success' ? 'alert-success' : 'alert-danger');
+    alertBox.style.display = 'block';
+    alertBox.style.opacity = '1';
+    alertBox.style.transition = 'opacity 0.4s ease';
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    if (autoDismiss) {
+      dismissTimer = setTimeout(() => {
+        alertBox.style.opacity = '0';
+        setTimeout(() => {
+          alertBox.style.display = 'none';
+          alertBox.className = 'form-alert-box';
+          alertBox.textContent = '';
+        }, 400);
+      }, 5000);
+    }
+  }
 
   contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -24,26 +51,24 @@ document.addEventListener('DOMContentLoaded', () => {
       alertBox.textContent = '';
     }
 
-    // Client-side Validation
+    // Client-side Validation with defensive null-checks
     const nameInput = contactForm.querySelector('[name="name"]');
     const phoneInput = contactForm.querySelector('[name="phone"]');
     const messageInput = contactForm.querySelector('[name="message"]');
 
-    if (!nameInput.value.trim()) {
+    const nameVal = nameInput ? nameInput.value.trim() : '';
+    const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+    const messageVal = messageInput ? messageInput.value.trim() : '';
+
+    if (!nameVal) {
       showAlert('Please enter your full name.', 'error');
-      nameInput.focus();
+      if (nameInput) nameInput.focus();
       return;
     }
 
-    if (!phoneInput.value.trim()) {
+    if (!phoneVal) {
       showAlert('Please enter your phone number.', 'error');
-      phoneInput.focus();
-      return;
-    }
-
-    if (!messageInput.value.trim()) {
-      showAlert('Please enter your message or inquiry.', 'error');
-      messageInput.focus();
+      if (phoneInput) phoneInput.focus();
       return;
     }
 
@@ -55,13 +80,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      let actionUrl = contactForm.getAttribute('action') || 'api/contact-submit.php';
+      // If current page is loaded over HTTPS, force actionUrl to HTTPS to prevent mixed-content blocking & 301 drop
+      if (window.location.protocol === 'https:' && actionUrl.startsWith('http://')) {
+        actionUrl = actionUrl.replace(/^http:\/\//i, 'https://');
+      }
+
       const formData = new FormData(contactForm);
-      const response = await fetch(contactForm.action, {
+      const response = await fetch(actionUrl, {
         method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json'
+        },
         body: formData
       });
 
-      const result = await response.json();
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (jsonErr) {
+        console.error('Non-JSON server response received:', responseText);
+        throw new Error('Server returned an unexpected response format.');
+      }
 
       if (result.success) {
         showAlert(result.message, 'success', true);
@@ -90,31 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+}
 
-  let dismissTimer = null;
-
-  function showAlert(msg, type, autoDismiss = false) {
-    if (!alertBox) return;
-    if (dismissTimer) {
-      clearTimeout(dismissTimer);
-      dismissTimer = null;
-    }
-    alertBox.textContent = msg;
-    alertBox.className = 'form-alert-box ' + (type === 'success' ? 'alert-success' : 'alert-danger');
-    alertBox.style.display = 'block';
-    alertBox.style.opacity = '1';
-    alertBox.style.transition = 'opacity 0.4s ease';
-    alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    if (autoDismiss) {
-      dismissTimer = setTimeout(() => {
-        alertBox.style.opacity = '0';
-        setTimeout(() => {
-          alertBox.style.display = 'none';
-          alertBox.className = 'form-alert-box';
-          alertBox.textContent = '';
-        }, 400);
-      }, 5000);
-    }
-  }
-});
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initContactForm);
+} else {
+  initContactForm();
+}
