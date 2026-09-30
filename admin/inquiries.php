@@ -661,11 +661,13 @@ require_once 'includes/admin-header.php';
                                             <?= htmlspecialchars($inq['name']) ?>
                                         </strong>
                                     </div>
+                                    <?php if (!empty($inq['email']) && strtoupper(trim($inq['email'])) !== 'N/A' && strtolower(trim($inq['email'])) !== 'not provided'): ?>
                                     <div style="margin-top: 2px;">
                                         <a href="mailto:<?= htmlspecialchars($inq['email']) ?>" class="text-muted" style="text-decoration: none; font-size: 0.78rem; display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="<?= htmlspecialchars($inq['email']) ?>">
                                             <?= htmlspecialchars($inq['email']) ?>
                                         </a>
                                     </div>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-muted" style="font-size: 0.84rem; white-space: nowrap;">
                                     <?php if (!empty($inq['phone'])): ?>
@@ -786,23 +788,9 @@ require_once 'includes/admin-header.php';
                 </div>
             </div>
 
-            <!-- Contact Details Cards Grid -->
-            <div class="modal-contact-grid">
-                <!-- Email Card -->
-                <div class="modal-contact-card">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                        <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-                            <i data-lucide="mail" style="width: 12px; height: 12px; color: var(--gold);"></i> Email Address
-                        </span>
-                        <button type="button" class="copy-mini-btn" id="copyEmailBtn" onclick="copyContactValue('modalEmailLink', this)" title="Copy email">
-                            <i data-lucide="copy" style="width: 12px; height: 12px;"></i> Copy
-                        </button>
-                    </div>
-                    <a id="modalEmailLink" href="" class="text-gold" style="text-decoration: none; font-weight: 600; font-size: 0.88rem; word-break: break-all;"></a>
-                </div>
-
-                <!-- Phone Card -->
-                <div class="modal-contact-card">
+            <!-- Contact Details Card: Phone -->
+            <div style="margin-bottom: 14px;">
+                <div class="modal-contact-card" style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
                         <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
                             <i data-lucide="phone" style="width: 12px; height: 12px; color: #10b981;"></i> Phone Number
@@ -811,7 +799,7 @@ require_once 'includes/admin-header.php';
                             <i data-lucide="copy" style="width: 12px; height: 12px;"></i> Copy
                         </button>
                     </div>
-                    <a id="modalPhoneLink" href="" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.88rem;"></a>
+                    <a id="modalPhoneLink" href="" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.95rem;"></a>
                 </div>
             </div>
 
@@ -826,13 +814,10 @@ require_once 'includes/admin-header.php';
                 <div id="modalFullMessage" style="color: var(--text-primary); font-size: 0.93rem; line-height: 1.65; white-space: pre-wrap; word-break: break-word;"></div>
             </div>
 
-            <!-- Action Buttons: WhatsApp & Email Reply -->
-            <div class="flex gap-2 modal-reply-group" style="margin-bottom: 6px;">
-                <a id="modalWhatsAppBtn" href="" target="_blank" class="btn btn-luxury-wa flex-1 flex items-center justify-center gap-2">
+            <!-- Action Button: WhatsApp Reply -->
+            <div class="modal-reply-group" style="margin-bottom: 6px;">
+                <a id="modalWhatsAppBtn" href="" target="_blank" class="btn btn-luxury-wa flex items-center justify-center gap-2" style="width: 100%; padding: 11px 20px; font-weight: 600; font-size: 0.92rem;">
                     <i data-lucide="message-circle" style="width: 17px; height: 17px;"></i> Reply on WhatsApp
-                </a>
-                <a id="modalEmailBtn" href="" class="btn btn-luxury-email flex-1 flex items-center justify-center gap-2">
-                    <i data-lucide="send" style="width: 17px; height: 17px;"></i> Reply via Email
                 </a>
             </div>
         </div>
@@ -983,13 +968,7 @@ function openInquiryModal(inqOrId) {
         modalBadge.textContent = 'Read';
     }
 
-    // Email links
-    document.getElementById('modalEmailLink').href = 'mailto:' + inq.email;
-    document.getElementById('modalEmailLink').textContent = inq.email;
 
-    const emailSubject = encodeURIComponent('Re: Your Inquiry with Reiki Bliss');
-    const emailBody = encodeURIComponent(`Dear ${nameStr},\n\nThank you for reaching out to Reiki Bliss. Regarding your inquiry:\n"${inq.message}"\n\n`);
-    document.getElementById('modalEmailBtn').href = `mailto:${inq.email}?subject=${emailSubject}&body=${emailBody}`;
 
     // Phone & WhatsApp links
     const rawPhone = (inq.phone || '').replace(/[^\d+]/g, '');

@@ -247,14 +247,8 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
                         <input type="text" id="contact-name" name="name" class="form-input" placeholder="e.g. Ananya Sharma" required>
                     </div>
 
-                    <!-- Email Input -->
-                    <div class="form-group">
-                        <label for="contact-email" class="form-label">Your Email Address *</label>
-                        <input type="email" id="contact-email" name="email" class="form-input" placeholder="name@example.com" required>
-                    </div>
-
                     <!-- Phone Input -->
-                    <div class="form-group full-width">
+                    <div class="form-group">
                         <label for="contact-phone" class="form-label">Phone / WhatsApp Number *</label>
                         <input type="tel" id="contact-phone" name="phone" class="form-input" placeholder="+91 98765 43210" required>
                     </div>

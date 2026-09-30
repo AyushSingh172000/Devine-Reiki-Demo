@@ -46,6 +46,7 @@
   0% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -68,7 +69,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
+  background:
     radial-gradient(ellipse 80% 65% at 50% 45%, rgba(12, 14, 20, 0.42) 0%, rgba(8, 10, 15, 0.74) 100%),
     linear-gradient(180deg, rgba(12, 14, 20, 0.35) 0%, rgba(8, 10, 15, 0.68) 100%);
   z-index: 2;
@@ -221,25 +222,25 @@
 }
 
 .trust-stat-number {
-  font-family: var(--font-sans);
+  font-family: var(--font-cinzel, 'Cinzel', serif);
   font-size: 2.85rem;
   font-weight: 600;
   color: #DDA03B;
   line-height: 1;
   margin-bottom: 8px;
-  letter-spacing: -0.01em;
-  text-shadow: 0 2px 16px rgba(221, 160, 59, 0.35);
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 10px rgba(221, 160, 59, 0.22);
 }
 
 .trust-stat-label {
   font-family: var(--font-sans);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.90);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.35;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive queries for Centered Hero */
@@ -248,14 +249,17 @@
     padding: 120px 0 60px;
     min-height: auto;
   }
+
   .hero-title {
     font-size: 2.85rem;
   }
+
   .hero-trust-bar {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     padding: 0;
   }
+
   .trust-stat-number {
     font-size: 2.5rem;
   }
@@ -265,13 +269,16 @@
   .hero-title {
     font-size: 2.3rem;
   }
+
   .hero-subtext {
     font-size: 1rem;
   }
+
   .hero-trust-bar {
     grid-template-columns: 1fr 1fr;
     gap: 20px 14px;
   }
+
   .trust-stat-number {
     font-size: 2.15rem;
   }
@@ -834,15 +841,18 @@
     flex-direction: column;
     align-items: center;
   }
+
   .testimonials-nav-btns {
     position: static;
     margin-top: 18px;
     align-self: center;
   }
+
   .testimonial-card-box {
     flex: 0 0 86%;
     min-width: 270px;
   }
+
   .testimonial-photo-item {
     flex: 0 0 120px;
     width: 120px;
@@ -979,13 +989,16 @@
   .hero-title {
     font-size: 3rem;
   }
+
   .hero-stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
+
   .bracelets-cards-grid {
     grid-template-columns: 1fr;
   }
+
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
@@ -995,20 +1008,25 @@
   .hero-title {
     font-size: 2.3rem;
   }
+
   .hero-location-badge {
     font-size: 0.75rem;
     padding: 5px 14px;
   }
+
   .hero-stats-grid {
     grid-template-columns: 1fr;
   }
+
   .section-header-flex {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .scroll-card {
     flex: 0 0 280px;
   }
+
   .product-card-item {
     flex: 0 0 260px;
   }
@@ -1064,8 +1082,17 @@
 }
 
 @keyframes instaPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.6; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
 }
 
 .insta-gradient-icon {

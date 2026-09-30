@@ -193,7 +193,7 @@ require_once 'includes/admin-header.php';
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Email</th>
+                            <th>Contact</th>
                             <th>Message</th>
                             <th>Date</th>
                             <th>Status</th>
@@ -215,7 +215,13 @@ require_once 'includes/admin-header.php';
                                     <strong><?= htmlspecialchars($inq['name'] ?? 'Guest') ?></strong>
                                 </td>
                                 <td class="text-muted" style="font-size: 0.85rem;">
-                                    <span class="text-truncate-email" title="<?= htmlspecialchars($inq['email'] ?? '') ?>"><?= htmlspecialchars($inq['email'] ?? '—') ?></span>
+                                    <?php if (!empty($inq['phone'])): ?>
+                                        <a href="tel:<?= htmlspecialchars($inq['phone']) ?>" style="color: inherit; text-decoration: none; font-weight: 500;"><?= htmlspecialchars($inq['phone']) ?></a>
+                                    <?php elseif (!empty($inq['email']) && strtoupper(trim($inq['email'])) !== 'N/A' && strtolower(trim($inq['email'])) !== 'not provided'): ?>
+                                        <span class="text-truncate-email" title="<?= htmlspecialchars($inq['email']) ?>"><?= htmlspecialchars($inq['email']) ?></span>
+                                    <?php else: ?>
+                                        <span>—</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td style="font-size: 0.84rem;">
                                     <span class="text-truncate-msg" title="<?= htmlspecialchars($inq['message'] ?? '') ?>"><?= htmlspecialchars($truncatedMsg) ?></span>

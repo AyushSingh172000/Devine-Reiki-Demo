@@ -208,10 +208,10 @@ $currentUrl = "{$scheme}://{$host}{$uri}";
     </script>
     <?php endif; ?>
 
-    <!-- Google Fonts: Cormorant Garamond (Headings) & Plus Jakarta Sans (Body) -->
+    <!-- Google Fonts: Cormorant Garamond, Cinzel & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Stylesheets with Dynamic Cache-Busting -->
     <?php

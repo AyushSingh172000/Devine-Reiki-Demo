@@ -12,11 +12,14 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Color Palette (Luminous Zen Light Theme - new_theme_template.pdf) */
-  --primary-purple: #0F1117; /* Obsidian from PDF for regal high contrast */
+  --primary-purple: #0F1117;
+  /* Obsidian from PDF for regal high contrast */
   --primary-purple-dark: #000000;
-  --accent-gold: #C89B3C; /* Sacred Gold from PDF */
+  --accent-gold: #C89B3C;
+  /* Sacred Gold from PDF */
   --accent-gold-dark: #A97E25;
-  --light-cream: #FAF8F5; /* Luminous Zen Daylight Canvas */
+  --light-cream: #FAF8F5;
+  /* Luminous Zen Daylight Canvas */
   --dark-text: #0F1117;
   --white: #ffffff;
   --muted-gray: #555D6E;
@@ -26,9 +29,10 @@
   --soft-green: #ECFDF5;
   --soft-green-text: #065F46;
 
-  /* Typography (Cormorant Garamond & Plus Jakarta Sans) */
+  /* Typography (Cormorant Garamond, Cinzel & Plus Jakarta Sans) */
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-cinzel: 'Cinzel', serif;
 
   /* Spacing & Borders */
   --radius-card: 16px;
@@ -84,8 +88,10 @@ body {
 }
 
 * {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Global Hero Animation Canvas Layer */
@@ -113,11 +119,15 @@ img {
   display: block;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: inherit;
 }
@@ -153,9 +163,12 @@ h3 {
 }
 
 /* Italic styling inside headings */
-h1 em, h1 i,
-h2 em, h2 i,
-h3 em, h3 i,
+h1 em,
+h1 i,
+h2 em,
+h2 i,
+h3 em,
+h3 i,
 .section-heading em,
 .section-heading i {
   font-family: var(--font-serif);
@@ -362,6 +375,7 @@ p:last-child {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -372,6 +386,7 @@ p:last-child {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -429,12 +444,10 @@ p:last-child {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle at 50% 35%,
-    rgba(157, 20, 227, 0.88) 0%,
-    rgba(95, 12, 142, 0.94) 50%,
-    rgba(46, 5, 71, 0.98) 100%
-  );
+  background: radial-gradient(circle at 50% 35%,
+      rgba(157, 20, 227, 0.88) 0%,
+      rgba(95, 12, 142, 0.94) 50%,
+      rgba(46, 5, 71, 0.98) 100%);
   z-index: 1;
 }
 
@@ -519,9 +532,12 @@ p:last-child {
   h1 {
     font-size: 3rem;
   }
-  h2, .section-heading {
+
+  h2,
+  .section-heading {
     font-size: 2.15rem;
   }
+
   .section-padding {
     padding: 75px 0;
   }
@@ -531,15 +547,20 @@ p:last-child {
   h1 {
     font-size: 2.35rem;
   }
-  h2, .section-heading {
+
+  h2,
+  .section-heading {
     font-size: 1.75rem;
   }
+
   h3 {
     font-size: 1.15rem;
   }
+
   .section-padding {
     padding: 60px 0;
   }
+
   .container {
     padding: 0 16px;
   }

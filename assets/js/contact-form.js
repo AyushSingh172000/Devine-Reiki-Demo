@@ -13,27 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     // Reset Alert Box
+    if (dismissTimer) {
+      clearTimeout(dismissTimer);
+      dismissTimer = null;
+    }
     if (alertBox) {
       alertBox.style.display = 'none';
+      alertBox.style.opacity = '1';
       alertBox.className = 'form-alert-box';
       alertBox.textContent = '';
     }
 
     // Client-side Validation
     const nameInput = contactForm.querySelector('[name="name"]');
-    const emailInput = contactForm.querySelector('[name="email"]');
     const phoneInput = contactForm.querySelector('[name="phone"]');
     const messageInput = contactForm.querySelector('[name="message"]');
 
     if (!nameInput.value.trim()) {
       showAlert('Please enter your full name.', 'error');
       nameInput.focus();
-      return;
-    }
-
-    if (!emailInput.value.trim() || !emailInput.value.includes('@')) {
-      showAlert('Please enter a valid email address.', 'error');
-      emailInput.focus();
       return;
     }
 
@@ -66,14 +64,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await response.json();
 
       if (result.success) {
-        showAlert(result.message, 'success');
+        showAlert(result.message, 'success', true);
         contactForm.reset();
+
+        if (result.whatsapp_url) {
+          // Open WhatsApp in new tab / app
+          setTimeout(() => {
+            const waWindow = window.open(result.whatsapp_url, '_blank');
+            if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
+              // If popup was blocked by browser, redirect current window
+              window.location.href = result.whatsapp_url;
+            }
+          }, 800);
+        }
       } else {
-        showAlert(result.message || 'Failed to submit form.', 'error');
+        showAlert(result.message || 'Failed to submit form.', 'error', false);
       }
     } catch (error) {
       console.error('Contact submission error:', error);
-      showAlert('An unexpected network error occurred. Please try again or WhatsApp us directly.', 'error');
+      showAlert('An unexpected network error occurred. Please try again or WhatsApp us directly.', 'error', false);
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -82,11 +91,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function showAlert(msg, type) {
+  let dismissTimer = null;
+
+  function showAlert(msg, type, autoDismiss = false) {
     if (!alertBox) return;
+    if (dismissTimer) {
+      clearTimeout(dismissTimer);
+      dismissTimer = null;
+    }
     alertBox.textContent = msg;
-    alertBox.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+    alertBox.className = 'form-alert-box ' + (type === 'success' ? 'alert-success' : 'alert-danger');
     alertBox.style.display = 'block';
+    alertBox.style.opacity = '1';
+    alertBox.style.transition = 'opacity 0.4s ease';
     alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    if (autoDismiss) {
+      dismissTimer = setTimeout(() => {
+        alertBox.style.opacity = '0';
+        setTimeout(() => {
+          alertBox.style.display = 'none';
+          alertBox.className = 'form-alert-box';
+          alertBox.textContent = '';
+        }, 400);
+      }, 5000);
+    }
   }
 });

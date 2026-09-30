@@ -23,9 +23,12 @@ if (empty($name) || strlen($name) < 2) {
     exit;
 }
 
-if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
     exit;
+}
+if (empty($email)) {
+    $email = 'N/A';
 }
 
 if (empty($phone) || strlen($phone) < 7) {
@@ -43,9 +46,25 @@ try {
     $stmt = $pdo->prepare("INSERT INTO contact_inquiries (name, email, phone, message, is_read, created_at) VALUES (?, ?, ?, ?, 0, NOW())");
     $stmt->execute([$name, $email, $phone, $message]);
 
+    // Build WhatsApp URL to Client/Admin WhatsApp number
+    $rawWa = !empty($siteSettings['whatsapp']) ? $siteSettings['whatsapp'] : (defined('SITE_WHATSAPP') ? SITE_WHATSAPP : '919971655705');
+    $cleanWa = preg_replace('/[^0-9]/', '', $rawWa);
+    if (empty($cleanWa)) {
+        $cleanWa = '919971655705';
+    }
+
+    $siteBrand = defined('SITE_NAME') ? SITE_NAME : 'Reiki Bliss';
+    $waText = "✨ *New Website Inquiry - " . $siteBrand . "*\n\n"
+            . "👤 *Name:* " . $name . "\n"
+            . "📱 *Phone:* " . $phone . "\n"
+            . "💬 *Message:*\n" . $message;
+
+    $waUrl = "https://wa.me/" . $cleanWa . "?text=" . urlencode($waText);
+
     echo json_encode([
         'success' => true, 
-        'message' => 'Thank you ' . htmlspecialchars($name) . '! Your message has been sent successfully. Reiki Grandmaster Anupama Agrawal will respond to you shortly.'
+        'message' => 'Thank you ' . htmlspecialchars($name) . '! Your message has been sent successfully.',
+        'whatsapp_url' => $waUrl
     ]);
 } catch (PDOException $e) {
     error_log("Database insertion error in contact-submit.php: " . $e->getMessage());
