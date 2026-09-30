@@ -60,6 +60,10 @@ if (!empty($prefilledProduct)) {
     $defaultMessage = "Hello, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
 }
 
+if (!empty($_GET['success'])) {
+    $defaultMessage = '';
+}
+
 // Page Metadata
 $pageTitle = "Contact Us & Book Free Session | Reiki Bliss";
 $pageDescription = "Get in touch with Reiki Grandmaster Anupama Agrawal at Reiki Bliss. Book a free 30-minute consultation or send an inquiry.";

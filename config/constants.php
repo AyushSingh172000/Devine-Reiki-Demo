@@ -1,6 +1,9 @@
 <?php
 // Project Constants and Environment Configurations
 
+// Set default timezone to Indian Standard Time (IST)
+date_default_timezone_set('Asia/Kolkata');
+
 // Dynamic Base URL definition
 if (!defined('BASE_URL')) {
     if (isset($_SERVER['HTTP_HOST']) && isset($_SERVER['SCRIPT_NAME'])) {

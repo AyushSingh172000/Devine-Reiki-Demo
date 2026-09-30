@@ -108,6 +108,15 @@ function initContactForm() {
       if (result.success) {
         showAlert(result.message, 'success', true);
         contactForm.reset();
+        if (messageInput) {
+          messageInput.value = '';
+        }
+        if (nameInput) {
+          nameInput.value = '';
+        }
+        if (phoneInput) {
+          phoneInput.value = '';
+        }
 
         if (result.whatsapp_url) {
           // Open WhatsApp in new tab / app

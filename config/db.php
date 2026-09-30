@@ -31,9 +31,13 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
+// Set default timezone to Indian Standard Time (IST)
+date_default_timezone_set('Asia/Kolkata');
+
 try {
     $pdo = new PDO($dsn, $username, $password, $options);
     $pdo->exec("SET NAMES utf8mb4");
+    $pdo->exec("SET time_zone = '+05:30'");
 } catch (\PDOException $e) {
     die("Database Connection Failed: " . $e->getMessage());
 }
