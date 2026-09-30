@@ -6,14 +6,39 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
     $pdo = require __DIR__ . '/config/db.php';
 }
 
-// Pre-filled Service/Course Parameter Handling
+// Pre-filled Service/Course/Product Parameter Handling
 $prefilledService = $_GET['service'] ?? '';
 $prefilledCourse = $_GET['course'] ?? '';
+$prefilledProduct = $_GET['product'] ?? '';
+$detectedOrderType = '';
+$detectedItemName = '';
 $defaultMessage = '';
 
-if (!empty($prefilledService)) {
-    $defaultMessage = "Hello, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
+if (!empty($prefilledProduct)) {
+    $detectedOrderType = 'product';
+    $productTitle = $prefilledProduct;
+    $productPrice = '';
+    if (isset($pdo) && $pdo instanceof PDO) {
+        try {
+            $pStmt = $pdo->prepare("SELECT title, price FROM products WHERE slug = ? LIMIT 1");
+            $pStmt->execute([$prefilledProduct]);
+            $pRow = $pStmt->fetch(PDO::FETCH_ASSOC);
+            if ($pRow && !empty($pRow['title'])) {
+                $productTitle = $pRow['title'];
+                if (!empty($pRow['price'])) {
+                    $productPrice = ' (Price: ₹' . number_format($pRow['price'], 2) . ')';
+                }
+            } else {
+                $productTitle = ucwords(str_replace('-', ' ', $prefilledProduct));
+            }
+        } catch (PDOException $e) {
+            $productTitle = ucwords(str_replace('-', ' ', $prefilledProduct));
+        }
+    }
+    $detectedItemName = $productTitle . $productPrice;
+    $defaultMessage = "Hello Reiki Bliss, I would like to order the " . $productTitle . $productPrice . ". Please assist me with payment and delivery details.";
 } elseif (!empty($prefilledCourse)) {
+    $detectedOrderType = 'course';
     $courseName = $prefilledCourse;
     if (isset($pdo) && $pdo instanceof PDO) {
         try {
@@ -29,7 +54,10 @@ if (!empty($prefilledService)) {
             $courseName = ucwords(str_replace('-', ' ', $prefilledCourse));
         }
     }
-    $defaultMessage = "Hello, I am interested in enrolling in the " . htmlspecialchars($courseName) . " certification course.";
+    $detectedItemName = $courseName;
+    $defaultMessage = "Hello Reiki Bliss, I am interested in enrolling in the " . $courseName . " certification course.";
+} elseif (!empty($prefilledService)) {
+    $defaultMessage = "Hello, I would like to book a session for " . htmlspecialchars($prefilledService) . ".";
 }
 
 // Page Metadata
@@ -232,9 +260,19 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
         
         <div class="contact-form-card animate-on-scroll" id="book-form" style="scroll-margin-top: 100px;">
             <div class="form-title-box">
-                <span class="badge badge-gold" style="margin-bottom: 12px;">Direct Message</span>
-                <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #0F1117;">Send Us a <em>Message</em></h2>
-                <p style="color: #555D6E; font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Fill out the form below and our healing masters will reach out to you promptly within 24 hours.</p>
+                <?php if ($detectedOrderType === 'product'): ?>
+                    <span class="badge badge-gold" style="margin-bottom: 12px;">🛍️ Product Order</span>
+                    <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #0F1117;">Order via <em>WhatsApp</em></h2>
+                    <p style="color: #555D6E; font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Ordering: <strong><?php echo htmlspecialchars($detectedItemName); ?></strong>. Provide your name &amp; phone to place your order directly on WhatsApp.</p>
+                <?php elseif ($detectedOrderType === 'course'): ?>
+                    <span class="badge badge-gold" style="margin-bottom: 12px;">🎓 Course Enrollment</span>
+                    <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #0F1117;">Enrol via <em>WhatsApp</em></h2>
+                    <p style="color: #555D6E; font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Course: <strong><?php echo htmlspecialchars($detectedItemName); ?></strong>. Provide your details below to enquire or book your seat on WhatsApp.</p>
+                <?php else: ?>
+                    <span class="badge badge-gold" style="margin-bottom: 12px;">Direct Message</span>
+                    <h2 class="section-heading" style="font-size: 2.5rem; margin-bottom: 10px; color: #0F1117;">Send Us a <em>Message</em></h2>
+                    <p style="color: #555D6E; font-size: 0.98rem; max-width: 600px; margin: 0 auto;">Fill out the form below and our healing masters will reach out to you promptly within 24 hours.</p>
+                <?php endif; ?>
             </div>
 
             <!-- AJAX / Fallback Response Alert Box -->
@@ -245,6 +283,9 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
             <div id="form-response-alert" class="form-alert-box<?php echo $feedbackSuccess ? ' alert-success' : ($feedbackError ? ' alert-danger' : ''); ?>" <?php echo ($feedbackSuccess || $feedbackError) ? 'style="display:block;"' : ''; ?> role="alert"><?php echo htmlspecialchars($feedbackSuccess ?: $feedbackError); ?></div>
 
             <form id="contact-form-element" action="<?php echo BASE_URL; ?>api/contact-submit.php" method="POST" novalidate>
+                <input type="hidden" name="order_type" value="<?php echo htmlspecialchars($detectedOrderType); ?>">
+                <input type="hidden" name="item_name" value="<?php echo htmlspecialchars($detectedItemName); ?>">
+
                 <div class="form-grid-2col">
                     <!-- Name Input -->
                     <div class="form-group">
@@ -267,7 +308,7 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
 
                 <div style="text-align: center; margin-top: 10px;">
                     <button type="submit" id="contact-submit-btn" class="btn-gold" style="padding: 14px 44px; font-size: 1.05rem; cursor: pointer; border: none;">
-                        Send Message →
+                        <?php echo !empty($detectedOrderType) ? ($detectedOrderType === 'product' ? 'Order on WhatsApp →' : 'Enrol on WhatsApp →') : 'Send Message →'; ?>
                     </button>
                 </div>
             </form>
@@ -288,7 +329,7 @@ $cCard4Url = !empty(trim((string)($siteSettings['contact_card4_url'] ?? ''))) ? 
 <!-- Include Footer Component -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.hash === '#enquire' || window.location.hash === '#book-form' || window.location.hash === '#contact-form-section' || window.location.search.includes('course=') || window.location.search.includes('service=')) {
+    if (window.location.hash === '#enquire' || window.location.hash === '#book-form' || window.location.hash === '#contact-form-section' || window.location.search.includes('course=') || window.location.search.includes('service=') || window.location.search.includes('product=')) {
         var target = document.getElementById('book-form') || document.getElementById('enquire') || document.getElementById('contact-form-section');
         if (target) {
             setTimeout(function() {

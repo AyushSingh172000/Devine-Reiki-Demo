@@ -221,11 +221,7 @@ include __DIR__ . '/includes/header.php';
                     <a href="<?php echo BASE_URL; ?>contact.php?course=<?php echo urlencode($course['slug']); ?>#enquire" class="btn-gold w-full text-center" style="padding: 12px; font-size: 1rem;">
                         Enquire Now →
                     </a>
-                    <?php 
-                        $courseWaPhone = preg_replace('/[^0-9]/', '', $siteSettings['whatsapp'] ?? '919971655705');
-                        $courseWaText = urlencode('Hello Reiki Bliss, I want to enquire about the ' . $course['title'] . ' course.');
-                    ?>
-                    <a href="https://wa.me/<?php echo htmlspecialchars($courseWaPhone); ?>?text=<?php echo $courseWaText; ?>" target="_blank" rel="noopener" class="btn-course-whatsapp w-full text-center">
+                    <a href="<?php echo BASE_URL; ?>contact.php?course=<?php echo urlencode($course['slug']); ?>#enquire" class="btn-course-whatsapp w-full text-center">
                         <span style="font-size: 1.1rem;">💬</span> Chat on WhatsApp
                     </a>
                 </div>

@@ -71,10 +71,12 @@ if (!empty($search)) {
     $params[] = '%' . $search . '%';
 }
 
-if ($typeFilter === 'birth-chart') {
-    $whereParts[] = "order_type = 'birth-chart'";
-} elseif ($typeFilter === 'customized') {
-    $whereParts[] = "order_type = 'customized'";
+if ($typeFilter === 'product') {
+    $whereParts[] = "order_type = 'product'";
+} elseif ($typeFilter === 'course') {
+    $whereParts[] = "order_type = 'course'";
+} elseif ($typeFilter === 'bracelet') {
+    $whereParts[] = "order_type IN ('customized', 'birth-chart', 'bracelet')";
 }
 
 if (in_array($statusFilter, ['pending', 'contacted', 'completed'])) {
@@ -312,15 +314,57 @@ require_once 'includes/admin-header.php';
     padding: 14px 16px;
     margin-bottom: 14px;
 }
-.birth-chart-card {
-    background: linear-gradient(135deg, #fbfaff 0%, #ffffff 100%);
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.04);
-}
-.customized-card {
+.order-details-card {
     background: linear-gradient(135deg, #fffdf8 0%, #ffffff 100%);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.05);
+}
+.order-item-box {
+    background: #ffffff;
+    border: 1px solid #fef3c7;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+.order-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #f1f5f9;
+}
+.order-item-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: rgba(212, 175, 55, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.order-detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+.order-detail-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+.order-detail-val {
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    word-break: break-word;
 }
 .notes-card {
     background: #f8fafc;
@@ -341,46 +385,6 @@ require_once 'includes/admin-header.php';
     display: flex;
     align-items: center;
     gap: 6px;
-}
-.birth-details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-.birth-detail-item {
-    background: #ffffff;
-    border: 1px solid #ede9fe;
-    border-radius: 8px;
-    padding: 8px 12px;
-}
-.birth-detail-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--purple-accent);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 3px;
-}
-.birth-detail-value {
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    word-break: break-word;
-}
-.intention-text {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text-primary);
-    font-weight: 500;
-    background: #ffffff;
-    border: 1px solid #fef3c7;
-    border-left: 3px solid var(--gold);
-    border-radius: 8px;
-    padding: 10px 14px;
-    word-break: break-word;
 }
 .notes-text {
     font-size: 0.88rem;
@@ -472,9 +476,6 @@ require_once 'includes/admin-header.php';
     .modal-contact-grid {
         grid-template-columns: 1fr;
     }
-    .birth-details-grid {
-        grid-template-columns: 1fr;
-    }
     .order-status-card {
         flex-direction: column;
         align-items: stretch;
@@ -501,7 +502,7 @@ require_once 'includes/admin-header.php';
             <input type="hidden" name="type" value="<?= htmlspecialchars($typeFilter) ?>">
             <input type="hidden" name="status" value="<?= htmlspecialchars($statusFilter) ?>">
             <?php if (!empty($search)): ?>
-                <a href="orders.php?type=<?= urlencode($typeFilter) ?>&status=<?= urlencode($statusFilter) ?>" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 2px;">
+                <a href="orders.php?status=<?= urlencode($statusFilter) ?>&type=<?= urlencode($typeFilter) ?>" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 2px;">
                     <i data-lucide="x" style="width: 12px; height: 12px;"></i> Clear
                 </a>
             <?php endif; ?>
@@ -513,8 +514,9 @@ require_once 'includes/admin-header.php';
             <input type="hidden" name="status" value="<?= htmlspecialchars($statusFilter) ?>">
             <select name="type" class="filter-select" onchange="this.form.submit()">
                 <option value="All" <?= $typeFilter === 'All' ? 'selected' : '' ?>>All Order Types</option>
-                <option value="birth-chart" <?= $typeFilter === 'birth-chart' ? 'selected' : '' ?>>Birth Chart Bracelets</option>
-                <option value="customized" <?= $typeFilter === 'customized' ? 'selected' : '' ?>>Customized Intentions</option>
+                <option value="product" <?= $typeFilter === 'product' ? 'selected' : '' ?>>🛍️ Products</option>
+                <option value="course" <?= $typeFilter === 'course' ? 'selected' : '' ?>>🎓 Courses</option>
+                <option value="bracelet" <?= ($typeFilter === 'bracelet' || $typeFilter === 'customized' || $typeFilter === 'birth-chart') ? 'selected' : '' ?>>📿 Bracelets</option>
             </select>
         </form>
 
@@ -549,9 +551,9 @@ require_once 'includes/admin-header.php';
             <div style="margin-bottom: 12px;">
                 <i data-lucide="package" style="width: 48px; height: 48px; color: var(--gold); opacity: 0.8;"></i>
             </div>
-            <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 6px;">No bracelet orders found</h3>
+            <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 6px;">No orders found</h3>
             <p class="text-muted" style="font-size: 0.88rem;">
-                <?= (!empty($search) || $typeFilter !== 'All' || $statusFilter !== 'All') ? 'No orders match your selected filters.' : 'There are currently no custom bracelet requests.' ?>
+                <?= (!empty($search) || $typeFilter !== 'All' || $statusFilter !== 'All') ? 'No orders match your selected filters.' : 'There are currently no product, course, or custom orders.' ?>
             </p>
         </div>
     <?php else: ?>
@@ -560,7 +562,7 @@ require_once 'includes/admin-header.php';
                 <thead>
                     <tr>
                         <th style="min-width: 170px;">Customer Name</th>
-                        <th style="width: 120px;">Order Type</th>
+                        <th style="width: 110px;">Type</th>
                         <th style="width: 140px;">Contact</th>
                         <th style="width: 100px; text-align: center;">Status</th>
                         <th style="width: 125px;">Received Date</th>
@@ -570,7 +572,7 @@ require_once 'includes/admin-header.php';
                 <tbody>
                     <?php foreach ($ordersList as $order): ?>
                         <?php 
-                            $orderType = $order['order_type'] ?? 'customized';
+                            $orderType = strtolower($order['order_type'] ?? 'customized');
                             $status = $order['status'] ?? 'pending';
                         ?>
                         <tr id="orderRow_<?= $order['id'] ?>">
@@ -580,19 +582,19 @@ require_once 'includes/admin-header.php';
                                         <?= htmlspecialchars($order['name']) ?>
                                     </strong>
                                 </div>
-                                <div class="text-muted" style="font-size: 0.78rem;">
-                                    <?= htmlspecialchars($order['email'] ?? '—') ?>
-                                </div>
+                                <?php if (!empty($order['email']) && strtoupper(trim($order['email'])) !== 'N/A' && strtolower(trim($order['email'])) !== 'not provided'): ?>
+                                    <div class="text-muted" style="font-size: 0.78rem;">
+                                        <?= htmlspecialchars($order['email']) ?>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td>
-                                <?php if ($orderType === 'birth-chart'): ?>
-                                    <span class="badge" style="background: rgba(99,102,241,0.08); color: var(--purple-accent); border: 1px solid rgba(99,102,241,0.2); font-size: 0.78rem;">
-                                        Birth Chart
-                                    </span>
+                                <?php if ($orderType === 'product'): ?>
+                                    <span class="badge badge-gold" style="font-size: 0.76rem; padding: 4px 8px;">🛍️ Product</span>
+                                <?php elseif ($orderType === 'course'): ?>
+                                    <span class="badge" style="background: rgba(99,102,241,0.1); color: var(--purple-accent); border: 1px solid rgba(99,102,241,0.25); font-size: 0.76rem; padding: 4px 8px;">🎓 Course</span>
                                 <?php else: ?>
-                                    <span class="badge badge-gold" style="font-size: 0.78rem;">
-                                        Customized
-                                    </span>
+                                    <span class="badge" style="background: rgba(16,185,129,0.1); color: #059669; border: 1px solid rgba(16,185,129,0.25); font-size: 0.76rem; padding: 4px 8px;">📿 Bracelet</span>
                                 <?php endif; ?>
                             </td>
                             <td class="text-muted" style="font-size: 0.85rem; white-space: nowrap;">
@@ -675,7 +677,7 @@ require_once 'includes/admin-header.php';
     <div class="modal order-modal-dialog">
         <div class="modal-header">
             <h3 class="modal-title flex items-center gap-2" style="font-size: 1.05rem; font-weight: 600;">
-                <i data-lucide="package" style="width: 18px; height: 18px; color: var(--gold);"></i> Bracelet Order Details
+                <i data-lucide="package" style="width: 18px; height: 18px; color: var(--gold);"></i> Order Details
             </h3>
             <button type="button" class="modal-close flex items-center justify-center" onclick="closeOrderDetailModal()" title="Close dialog">
                 <i data-lucide="x" style="width: 18px; height: 18px;"></i>
@@ -689,7 +691,7 @@ require_once 'includes/admin-header.php';
                 <div style="flex: 1; min-width: 0;">
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
                         <h2 id="modalOrderCustomer" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2;"></h2>
-                        <div class="flex items-center gap-1">
+                        <div class="flex items-center gap-2">
                             <span id="modalOrderTypeBadge" class="badge"></span>
                             <span id="modalOrderStatusBadge" class="badge"></span>
                         </div>
@@ -701,23 +703,9 @@ require_once 'includes/admin-header.php';
                 </div>
             </div>
 
-            <!-- Contact Details Cards Grid -->
-            <div class="modal-contact-grid">
-                <!-- Email Card -->
-                <div class="modal-contact-card">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                        <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-                            <i data-lucide="mail" style="width: 12px; height: 12px; color: var(--gold);"></i> Email Address
-                        </span>
-                        <button type="button" class="copy-mini-btn" onclick="copyOrderValue('modalOrderEmail', this)" title="Copy email">
-                            <i data-lucide="copy" style="width: 12px; height: 12px;"></i> Copy
-                        </button>
-                    </div>
-                    <a id="modalOrderEmail" href="" class="text-gold" style="text-decoration: none; font-weight: 600; font-size: 0.88rem; word-break: break-all;"></a>
-                </div>
-
-                <!-- Phone & WhatsApp Card -->
-                <div class="modal-contact-card">
+            <!-- Contact Details: Phone & WhatsApp -->
+            <div style="margin-bottom: 14px;">
+                <div class="modal-contact-card" style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
                         <span style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
                             <i data-lucide="phone" style="width: 12px; height: 12px; color: #10b981;"></i> Phone & WhatsApp
@@ -727,44 +715,41 @@ require_once 'includes/admin-header.php';
                         </button>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <a id="modalOrderPhone" href="" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.88rem;"></a>
+                        <a id="modalOrderPhone" href="" style="color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.95rem;"></a>
                         <span id="modalOrderWhatsappTag" style="font-size: 0.75rem; color: var(--text-muted);"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- Specific Order Section (Birth Chart vs Customized) -->
-            <div id="birthChartSection" class="order-section-card birth-chart-card" style="display: none;">
+            <!-- Order Details: What User Ordered -->
+            <div id="orderDetailsSection" class="order-section-card order-details-card">
                 <div class="section-card-header">
                     <span class="section-card-title">
-                        <i data-lucide="sparkles" style="width: 14px; height: 14px; color: var(--purple-accent);"></i> Astrological Birth Details
+                        <i data-lucide="shopping-bag" style="width: 14px; height: 14px; color: var(--gold);"></i> Order Details
                     </span>
-                    <span class="badge badge-purple-subtle" style="font-size: 0.72rem; background: rgba(99,102,241,0.1); color: var(--purple-accent);">Birth Chart</span>
+                    <span id="modalOrderCategoryBadge" class="badge badge-gold" style="font-size: 0.72rem;">Order</span>
                 </div>
-                <div class="birth-details-grid">
-                    <div class="birth-detail-item">
-                        <span class="birth-detail-label"><i data-lucide="calendar" style="width: 12px; height: 12px;"></i> Date of Birth</span>
-                        <strong class="birth-detail-value" id="modalOrderDOB">—</strong>
+                <div class="order-item-box">
+                    <div class="order-item-header">
+                        <div class="order-item-icon" id="modalOrderItemIcon">
+                            <i data-lucide="gem" style="width: 18px; height: 18px; color: var(--gold);"></i>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 2px;">
+                                Item Ordered
+                            </div>
+                            <div id="modalOrderItemTitle" style="font-size: 0.98rem; font-weight: 700; color: var(--text-primary);">
+                                Custom Energized Reiki Healing Bracelet
+                            </div>
+                        </div>
                     </div>
-                    <div class="birth-detail-item">
-                        <span class="birth-detail-label"><i data-lucide="clock" style="width: 12px; height: 12px;"></i> Time of Birth</span>
-                        <strong class="birth-detail-value" id="modalOrderTOB">—</strong>
-                    </div>
-                    <div class="birth-detail-item" style="grid-column: 1 / -1;">
-                        <span class="birth-detail-label"><i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> Place of Birth</span>
-                        <strong class="birth-detail-value" id="modalOrderPOB">—</strong>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label" id="modalOrderLabel">
+                            <i data-lucide="sparkles" style="width: 13px; height: 13px; color: var(--gold);"></i> Healing Purpose / Intention:
+                        </span>
+                        <strong id="modalOrderIntention" class="order-detail-val text-gold"></strong>
                     </div>
                 </div>
-            </div>
-
-            <div id="customizedSection" class="order-section-card customized-card" style="display: none;">
-                <div class="section-card-header">
-                    <span class="section-card-title">
-                        <i data-lucide="gem" style="width: 14px; height: 14px; color: var(--gold);"></i> Custom Healing Intention
-                    </span>
-                    <span class="badge badge-gold" style="font-size: 0.72rem;">Custom Intention</span>
-                </div>
-                <div id="modalOrderIntention" class="intention-text"></div>
             </div>
 
             <!-- Client Additional Message Card -->
@@ -796,13 +781,10 @@ require_once 'includes/admin-header.php';
                 </button>
             </form>
 
-            <!-- Direct WhatsApp & Email Outreach Buttons -->
-            <div class="flex gap-2 modal-reply-group">
-                <a id="modalOrderWhatsAppBtn" href="" target="_blank" class="btn btn-luxury-wa flex-1 flex items-center justify-center gap-2">
+            <!-- Direct WhatsApp Outreach Button -->
+            <div class="modal-reply-group">
+                <a id="modalOrderWhatsAppBtn" href="" target="_blank" class="btn btn-luxury-wa flex items-center justify-center gap-2" style="width: 100%; padding: 11px 20px; font-weight: 600; font-size: 0.92rem;">
                     <i data-lucide="message-circle" style="width: 17px; height: 17px;"></i> Contact via WhatsApp
-                </a>
-                <a id="modalOrderEmailBtn" href="" class="btn btn-luxury-email flex-1 flex items-center justify-center gap-2">
-                    <i data-lucide="send" style="width: 17px; height: 17px;"></i> Send Email
                 </a>
             </div>
         </div>
@@ -869,7 +851,7 @@ function deleteOrderSingle(id) {
     if (targetForm) {
         targetForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     } else {
-        if (confirm('Are you sure you want to delete this bracelet order?')) {
+        if (confirm('Are you sure you want to delete this order?')) {
             document.getElementById('deleteOrderId').value = id;
             document.getElementById('deleteOrderForm').submit();
         }
@@ -892,18 +874,6 @@ function openOrderDetailModal(orderOrId) {
     document.getElementById('modalStatusOrderId').value = order.id;
     document.getElementById('modalStatusSelect').value = order.status || 'pending';
 
-    // Type Badge
-    const typeBadge = document.getElementById('modalOrderTypeBadge');
-    if (order.order_type === 'birth-chart') {
-        typeBadge.className = 'badge';
-        typeBadge.style.cssText = 'background: rgba(99,102,241,0.1); color: var(--purple-accent); border: 1px solid rgba(99,102,241,0.25); font-size: 0.75rem;';
-        typeBadge.textContent = 'Birth Chart';
-    } else {
-        typeBadge.className = 'badge badge-gold';
-        typeBadge.style.cssText = 'font-size: 0.75rem;';
-        typeBadge.textContent = 'Customized';
-    }
-
     // Status Badge
     const statusBadge = document.getElementById('modalOrderStatusBadge');
     if (order.status === 'completed') {
@@ -917,16 +887,7 @@ function openOrderDetailModal(orderOrId) {
         statusBadge.textContent = 'Pending';
     }
 
-    // Contact info
-    const emailEl = document.getElementById('modalOrderEmail');
-    if (order.email) {
-        emailEl.href = 'mailto:' + order.email;
-        emailEl.textContent = order.email;
-    } else {
-        emailEl.removeAttribute('href');
-        emailEl.textContent = 'Not provided';
-    }
-
+    // Phone & WhatsApp Contact info
     const phoneEl = document.getElementById('modalOrderPhone');
     if (order.phone) {
         phoneEl.href = 'tel:' + order.phone;
@@ -943,25 +904,75 @@ function openOrderDetailModal(orderOrId) {
         waTag.textContent = '';
     }
 
-    // Birth chart vs Customized specifics
-    const birthSection = document.getElementById('birthChartSection');
-    const customSection = document.getElementById('customizedSection');
+    // Order Type & Details handling
+    const orderType = (order.order_type || 'customized').toLowerCase();
+    const typeBadge = document.getElementById('modalOrderTypeBadge');
+    const catBadge = document.getElementById('modalOrderCategoryBadge');
+    const itemIcon = document.getElementById('modalOrderItemIcon');
+    const itemTitle = document.getElementById('modalOrderItemTitle');
+    const orderLabel = document.getElementById('modalOrderLabel');
+    const orderIntention = document.getElementById('modalOrderIntention');
 
-    if (order.order_type === 'birth-chart') {
-        birthSection.style.display = 'block';
-        customSection.style.display = 'none';
+    let waItemGreeting = 'your order with Reiki Bliss';
 
-        document.getElementById('modalOrderDOB').textContent = order.date_of_birth || '—';
-        document.getElementById('modalOrderTOB').textContent = order.time_of_birth || '—';
-        document.getElementById('modalOrderPOB').textContent = order.place_of_birth || '—';
+    if (orderType === 'product') {
+        if (typeBadge) {
+            typeBadge.className = 'badge badge-gold';
+            typeBadge.innerHTML = '🛍️ Product';
+        }
+        if (catBadge) {
+            catBadge.className = 'badge badge-gold';
+            catBadge.textContent = 'Store Product';
+        }
+        if (itemIcon) {
+            itemIcon.innerHTML = '<i data-lucide="shopping-bag" style="width: 18px; height: 18px; color: var(--gold);"></i>';
+        }
+        const pTitle = (order.intention || 'Reiki Healing Product').trim();
+        if (itemTitle) itemTitle.textContent = pTitle;
+        if (orderLabel) orderLabel.innerHTML = '<i data-lucide="tag" style="width: 13px; height: 13px; color: var(--gold);"></i> Order Type:';
+        if (orderIntention) orderIntention.textContent = 'Online Store Product (Ordered via WhatsApp)';
+        waItemGreeting = `your order for "${pTitle}"`;
+    } else if (orderType === 'course') {
+        if (typeBadge) {
+            typeBadge.className = 'badge badge-info';
+            typeBadge.innerHTML = '🎓 Course';
+        }
+        if (catBadge) {
+            catBadge.className = 'badge badge-info';
+            catBadge.textContent = 'Training Course';
+        }
+        if (itemIcon) {
+            itemIcon.innerHTML = '<i data-lucide="graduation-cap" style="width: 18px; height: 18px; color: #0284c7;"></i>';
+        }
+        const cTitle = (order.intention || 'Reiki Certification Course').trim();
+        if (itemTitle) itemTitle.textContent = cTitle;
+        if (orderLabel) orderLabel.innerHTML = '<i data-lucide="bookmark" style="width: 13px; height: 13px; color: #0284c7;"></i> Order Type:';
+        if (orderIntention) orderIntention.textContent = 'Course Enrollment (Enquired via WhatsApp)';
+        waItemGreeting = `your enrollment enquiry for "${cTitle}"`;
     } else {
-        birthSection.style.display = 'none';
-        customSection.style.display = 'block';
-
-        document.getElementById('modalOrderIntention').textContent = order.intention || 'General energetic balance, spiritual grounding, and healing wellness';
+        // Bracelet / customized / birth-chart
+        if (typeBadge) {
+            typeBadge.className = 'badge badge-secondary';
+            typeBadge.innerHTML = '📿 Bracelet';
+        }
+        if (catBadge) {
+            catBadge.className = 'badge badge-gold';
+            catBadge.textContent = 'Custom Bracelet';
+        }
+        if (itemIcon) {
+            itemIcon.innerHTML = '<i data-lucide="gem" style="width: 18px; height: 18px; color: var(--gold);"></i>';
+        }
+        if (itemTitle) itemTitle.textContent = 'Custom Energized Reiki Healing Bracelet';
+        if (orderLabel) orderLabel.innerHTML = '<i data-lucide="sparkles" style="width: 13px; height: 13px; color: var(--gold);"></i> Healing Purpose / Intention:';
+        let intentionVal = (order.intention || '').trim();
+        if (!intentionVal) {
+            intentionVal = (order.message && order.message.trim() !== '') ? 'Custom Reiki Gemstone & Energetic Alignment' : 'General Energetic Balance, Healing & Spiritual Wellness';
+        }
+        if (orderIntention) orderIntention.textContent = intentionVal;
+        waItemGreeting = 'your order of a Custom Reiki Bracelet';
     }
 
-    // Additional message
+    // Additional message / notes
     const notesSection = document.getElementById('clientNotesSection');
     if (order.message && order.message.trim() !== '') {
         notesSection.style.display = 'block';
@@ -970,21 +981,16 @@ function openOrderDetailModal(orderOrId) {
         notesSection.style.display = 'none';
     }
 
-    // Pre-filled WhatsApp and Email outreach
+    // Pre-filled WhatsApp outreach
     const phoneClean = (order.whatsapp || order.phone || '').replace(/[^\d+]/g, '');
-    const typeLabel = (order.order_type === 'birth-chart') ? 'Birth Chart' : 'Customized';
     
     if (phoneClean) {
-        const waMsg = encodeURIComponent(`Namaste ${nameStr}, thank you for your order of a ${typeLabel} Reiki Bracelet with Reiki Bliss! We are preparing your energetic customization. Could we confirm a few details with you?`);
+        const waMsg = encodeURIComponent(`Namaste ${nameStr}, thank you for ${waItemGreeting} with Reiki Bliss! We are pleased to assist you. Could we confirm a few details with you?`);
         document.getElementById('modalOrderWhatsAppBtn').href = `https://wa.me/${phoneClean.replace('+', '')}?text=${waMsg}`;
         document.getElementById('modalOrderWhatsAppBtn').style.display = 'inline-flex';
     } else {
         document.getElementById('modalOrderWhatsAppBtn').style.display = 'none';
     }
-
-    const emailSub = encodeURIComponent(`Reiki Bliss: Update on your ${typeLabel} Bracelet Order`);
-    const emailBody = encodeURIComponent(`Dear ${nameStr},\n\nThank you for ordering your ${typeLabel} Bracelet from Reiki Bliss Healing Center.\n\nWe are reviewing your energetic preferences to craft your energized gemstone piece.\n\nWarm regards,\nReiki Bliss Healers`);
-    document.getElementById('modalOrderEmailBtn').href = `mailto:${order.email || ''}?subject=${emailSub}&body=${emailBody}`;
 
     // Delete in modal
     document.getElementById('modalOrderDeleteBtn').onclick = function() {

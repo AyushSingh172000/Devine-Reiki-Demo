@@ -222,7 +222,7 @@ INSERT INTO `contact_inquiries` (`id`, `name`, `email`, `phone`, `message`, `is_
 DROP TABLE IF EXISTS `bracelet_orders`;
 CREATE TABLE `bracelet_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_type` enum('birth-chart','customized') NOT NULL,
+  `order_type` varchar(50) NOT NULL DEFAULT 'customized',
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(30) NOT NULL,

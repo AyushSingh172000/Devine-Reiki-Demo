@@ -170,7 +170,7 @@ include __DIR__ . '/includes/header.php';
                 <!-- Order via WhatsApp Action Button -->
                 <div>
                     <?php if ($product['in_stock']): ?>
-                        <a href="<?php echo htmlspecialchars($waOrderUrl); ?>" target="_blank" rel="noopener" class="btn-whatsapp-order">
+                        <a href="<?php echo BASE_URL; ?>contact.php?product=<?php echo urlencode($product['slug']); ?>#enquire" class="btn-whatsapp-order">
                             Order via WhatsApp 💬
                         </a>
                     <?php else: ?>
