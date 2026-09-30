@@ -50,8 +50,11 @@ $coursesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px auto
                         <?php endif; ?>
                         <div class="card-body-content" style="<?php echo !$hasCourseImg ? 'padding-top: 24px;' : ''; ?>">
                             <div>
-                                <span class="card-repeat-title"><?php echo htmlspecialchars($course['title']); ?></span>
-                                <h3 class="card-main-title"><?php echo htmlspecialchars($course['title']); ?></h3>
+                                <h3 class="card-main-title">
+                                    <a href="<?php echo BASE_URL; ?><?php echo !empty($course['slug']) ? 'course/' . urlencode($course['slug']) : 'courses'; ?>" style="color: inherit; text-decoration: none;">
+                                        <?php echo htmlspecialchars($course['title']); ?>
+                                    </a>
+                                </h3>
                                 <p class="card-desc-text"><?php echo htmlspecialchars($course['short_description']); ?></p>
                             </div>
                             <div class="card-footer-meta">

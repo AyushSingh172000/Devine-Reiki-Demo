@@ -1437,19 +1437,19 @@ if (!in_array($currentTab, $validTabs)) {
 
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 650px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px;">
                         <div>
-                            <div id="previewStat1Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat1_text'] ?? '15K+') ?></div>
+                            <div id="previewStat1Text" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 1.35rem; font-weight: 600; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat1_text'] ?? '15K+') ?></div>
                             <div id="previewStat1Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat1_label'] ?? 'LIVES HEALED') ?></div>
                         </div>
                         <div>
-                            <div id="previewStat2Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat2_text'] ?? '12+') ?></div>
+                            <div id="previewStat2Text" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 1.35rem; font-weight: 600; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat2_text'] ?? '12+') ?></div>
                             <div id="previewStat2Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat2_label'] ?? 'YEARS EXPERIENCE') ?></div>
                         </div>
                         <div>
-                            <div id="previewStat3Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat3_text'] ?? '10+') ?></div>
+                            <div id="previewStat3Text" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 1.35rem; font-weight: 600; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat3_text'] ?? '10+') ?></div>
                             <div id="previewStat3Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat3_label'] ?? 'COURSES OFFERED') ?></div>
                         </div>
                         <div>
-                            <div id="previewStat4Text" style="font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat4_text'] ?? '8K+') ?></div>
+                            <div id="previewStat4Text" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 1.35rem; font-weight: 600; color: #F3C966;"><?= htmlspecialchars($settings['hero_stat4_text'] ?? '8K+') ?></div>
                             <div id="previewStat4Label" style="font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.7);"><?= htmlspecialchars($settings['hero_stat4_label'] ?? 'SESSIONS COMPLETED') ?></div>
                         </div>
                     </div>
@@ -2430,16 +2430,49 @@ if (heroCta2TextInput && previewBtn2) {
 
 // 4 Stats and Slide previews
 for (let s = 1; s <= 4; s++) {
+    const numInp = document.getElementById('stat' + s + 'NumInput');
     const textInp = document.getElementById('stat' + s + 'TextInput');
     const labelInp = document.getElementById('stat' + s + 'LabelInput');
     const prevText = document.getElementById('previewStat' + s + 'Text');
     const prevLabel = document.getElementById('previewStat' + s + 'Label');
 
-    if (textInp && prevText) {
-        textInp.addEventListener('input', () => prevText.textContent = textInp.value);
+    const updateStatDisplay = () => {
+        if (prevText) {
+            if (textInp && textInp.value.trim() !== '') {
+                prevText.textContent = textInp.value.trim();
+            } else if (numInp && numInp.value.trim() !== '') {
+                const n = parseInt(numInp.value, 10);
+                if (!isNaN(n)) {
+                    prevText.textContent = n >= 1000 ? Math.floor(n / 1000) + 'K+' : n + '+';
+                }
+            }
+        }
+    };
+
+    if (numInp) {
+        ['input', 'change', 'keyup'].forEach(ev => {
+            numInp.addEventListener(ev, () => {
+                const n = parseInt(numInp.value, 10);
+                if (!isNaN(n) && textInp) {
+                    textInp.value = n >= 1000 ? Math.floor(n / 1000) + 'K+' : n + '+';
+                }
+                updateStatDisplay();
+            });
+        });
     }
+
+    if (textInp) {
+        ['input', 'change', 'keyup'].forEach(ev => {
+            textInp.addEventListener(ev, updateStatDisplay);
+        });
+    }
+
     if (labelInp && prevLabel) {
-        labelInp.addEventListener('input', () => prevLabel.textContent = labelInp.value.toUpperCase());
+        ['input', 'change', 'keyup'].forEach(ev => {
+            labelInp.addEventListener(ev, () => {
+                prevLabel.textContent = labelInp.value.toUpperCase();
+            });
+        });
     }
 
     const slideInp = document.getElementById('heroSlideInput' + s);

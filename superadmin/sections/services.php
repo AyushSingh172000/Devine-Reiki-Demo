@@ -72,7 +72,6 @@ $servicesSubtextMargin = (($secAlign ?? 'left') === 'center') ? 'margin: 8px aut
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
-                                <span class="card-repeat-title"><?php echo htmlspecialchars($service['title']); ?></span>
                                 <h3 class="card-main-title">
                                     <a href="<?php echo BASE_URL; ?>service/<?php echo htmlspecialchars($service['slug']); ?>" style="color: inherit; text-decoration: none;">
                                         <?php echo htmlspecialchars($service['title']); ?>
